@@ -1,0 +1,16 @@
+Package: QuasiSeq
+Version: 1.0-8
+Date: 2015-05-14
+Title: Analyzing RNA Sequencing Count Tables Using Quasi-Likelihood
+Authors@R: c(
+  person("Steve", "Lund", role=c("aut"), email="lundsp@gmail.com"),
+  person("Long", "Qu", role=c("aut", "cre","ctb"), email="long.qu@wright.edu"), 
+  person("Ian", "Marschner", role="aut", comment="The author of glm2::glm.fit2, which was modified slightly leading to glm.fit3 in this package."), 
+  person("", "R Core Team", role="aut", comment="The author of stats::glm.fit, which was modified slightly leading to glm.fit3 in this package.")
+  )
+Depends: R (>= 3.1.2)
+Imports: edgeR, mgcv, pracma
+Suggests: BB, nleqslv
+Description: Identify differentially expressed genes in RNA-seq count data using quasi-Poisson or quasi-negative binomial models with 'QL', 'QLShrink' and 'QLSpline' methods (Lund, Nettleton, McCarthy, and Smyth, 2012).
+License: GPL (>= 2)
+NeedsCompilation: yes
