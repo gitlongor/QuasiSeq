@@ -279,7 +279,7 @@
 
 	if(!isTRUE(control$coefOnly)) finalAdjScore = adjScoreFunc(ans)
 	
-	.C(C_finalQRdecomp)  ## should not call adjScoreFunc anymore
+	#.C(C_finalQRdecomp)  ## should not call adjScoreFunc anymore
 	
 	if(rk<ncolx){
 		ans0=ans
