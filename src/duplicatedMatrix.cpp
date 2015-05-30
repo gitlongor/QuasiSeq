@@ -24,6 +24,7 @@ class rcVec {		// a row vec or a col vec
 		int len;    // length of vector: ncol for row vec; nrow for col vec
 		int eltShift;  // index shift between adjacent elements: nrow for row vec; 1 for col vec
 		int vecShift;  // index shift between adjacent vectors: 1 for row vec; nrow for col vec
+		int nVec;		// number of vectors: nrow for row vec; ncol for col vec
 		friend inline bool operator< (const rcVec& lhs, const rcVec& rhs){
 			// elementwise comparison of two vectors from the end
 			// assuming operator== and operator< defined for type T 
@@ -55,23 +56,22 @@ template <typename T>
 void vecMap<T>::dupMat (const T* x, const int* nrow, const int* ncol, int* const out, bool const byRow, bool const fromLast)
 {
 /* put a logical vector of duplicated rows of numeric matrix x into out */
-	int i;	
 	if(byRow){
-		aRC.eltShift = (int)(*nrow);
+		aRC.eltShift = aRC.nVec = (int)(*nrow);
 		aRC.vecShift = 1;
 		aRC.len = (int)(*ncol);
 	}else{
 		aRC.eltShift = 1;
-		aRC.vecShift = (int)(*nrow);
-		aRC.len = (int)(*nrow);
+		aRC.vecShift = aRC.len = (int)(*nrow);
+		aRC.nVec = (int)(*ncol);
 	}
 	if (fromLast) {
 		aRC.x=const_cast<T*>(x) + ( byRow ? (*nrow)-1 : ((*ncol)-1)*(*nrow) ); 
-		for(i=aRC.len-1; i>=0; aRC.x -= aRC.vecShift)
+		for(int i=aRC.nVec-1; i>=0; aRC.x -= aRC.vecShift)
 			out[i--] = (int) !(rowMap.insert( std::pair<rcVec<T>, int>(aRC, 0) ).second);
 	}else {
 		aRC.x=const_cast<T*>(x);
-		for(i=0; i<aRC.len; aRC.x += aRC.vecShift)
+		for(int i=0; i<aRC.nVec; aRC.x += aRC.vecShift) 
 			out[i++] = (int) !(rowMap.insert( std::pair<rcVec<T>, int>(aRC, 0) ).second);
 	}
 	rowMap.clear();
