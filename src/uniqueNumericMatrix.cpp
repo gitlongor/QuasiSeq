@@ -9,9 +9,19 @@ typedef struct {
 } tDoubleRowVec;
 
 bool fncomp (tDoubleRowVec lhs, tDoubleRowVec rhs) 
-{
-	for(int i=lhs.len-1; i>=0; i--)
-		if(*(lhs.x+lhs.shift*i) < *(rhs.x+rhs.shift*i)) return(true);
+{	double tmp;
+	for(int i=lhs.len-1; i>=0; i--){
+		Rprintf("lhs[%d]=%.0f\trhs[%d]=%.0f\n", i, *(lhs.x+lhs.shift*i), i, *(rhs.x+rhs.shift*i));
+		tmp =(*(lhs.x+lhs.shift*i) - *(rhs.x+rhs.shift*i)) ;
+		if (tmp>0.0){
+			Rprintf("\tReturn false\n");
+			return(false);
+		}else if (tmp<0.0) {
+			Rprintf("\tReturn true\n");
+			return(true);
+		}
+	}
+	Rprintf("\tReturn false\n");
 	return(false);
 }
 bool(*fn_pt)(tDoubleRowVec,tDoubleRowVec) = fncomp;
@@ -21,7 +31,7 @@ typedef std::map<tDoubleRowVec,int,bool(*)(tDoubleRowVec,tDoubleRowVec)> tdmap;
 tDoubleRowVec arow;
 tdmap::iterator it;
 tdmap rowMap(fn_pt);
-std::pair<tdmap::iterator, bool> returnPair;
+// std::pair<tdmap::iterator, bool> returnPair;
 
 extern "C" {
 
