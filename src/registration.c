@@ -5,14 +5,12 @@
 #include <R_ext/Lapack.h>
 
 
-extern SEXP dupRowNumMat(SEXP, SEXP);
 extern SEXP dupNumMat(SEXP, SEXP);
 extern SEXP getGlmBias(SEXP, SEXP, SEXP, SEXP);
 extern void initQRdecomp(int*, int*);
 extern void finalQRdecomp(void);
 
 static R_CallMethodDef callMethods[]  = {
-  {"dupRowNumMat", (DL_FUNC) &dupRowNumMat, 2},
   {"dupNumMat", (DL_FUNC) &dupNumMat, 2},
   {"getGlmBias", (DL_FUNC) &getGlmBias, 4},
   {NULL, NULL, 0}
