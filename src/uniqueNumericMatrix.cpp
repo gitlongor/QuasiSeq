@@ -11,17 +11,17 @@ typedef struct {
 bool fncomp (tDoubleRowVec lhs, tDoubleRowVec rhs) 
 {	double tmp;
 	for(int i=lhs.len-1; i>=0; i--){
-		Rprintf("lhs[%d]=%.0f\trhs[%d]=%.0f\n", i, *(lhs.x+lhs.shift*i), i, *(rhs.x+rhs.shift*i));
+		// Rprintf("lhs[%d]=%.0f\trhs[%d]=%.0f\n", i, *(lhs.x+lhs.shift*i), i, *(rhs.x+rhs.shift*i));
 		tmp =(*(lhs.x+lhs.shift*i) - *(rhs.x+rhs.shift*i)) ;
 		if (tmp>0.0){
-			Rprintf("\tReturn false\n");
+			// Rprintf("\tReturn false\n");
 			return(false);
 		}else if (tmp<0.0) {
-			Rprintf("\tReturn true\n");
+			// Rprintf("\tReturn true\n");
 			return(true);
 		}
 	}
-	Rprintf("\tReturn false\n");
+	// Rprintf("\tReturn false\n");
 	return(false);
 }
 bool(*fn_pt)(tDoubleRowVec,tDoubleRowVec) = fncomp;

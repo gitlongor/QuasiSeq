@@ -10,9 +10,14 @@ class rowVec {
 		int shift;  // index shift between adjacent elements
 		friend inline bool operator< (const rowVec& lhs, const rowVec& rhs){
 			// elementwise comparison of two vectors from the end
-			// assuming operator< defined for type T 
-			for(int i=lhs.len-1; i>=0; i--)
-				if(*(lhs.x+lhs.shift*i) < *(rhs.x+rhs.shift*i)) return(true);
+			// assuming operator< and operator> defined for type T 
+			T L, R;
+			for(int i=lhs.len-1; i>=0; i--){
+				L= *(lhs.x+lhs.shift*i) ;
+				R= *(rhs.x+rhs.shift*i) ;
+				if(L > R) return(false);
+				else if(L < R) return(true);
+			}
 			return(false);
 		}
 		friend inline bool operator> (const rowVec& lhs, const rowVec& rhs){return rhs < lhs;}
