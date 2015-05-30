@@ -2,54 +2,77 @@
 #include <Rinternals.h>
 #include <map>
 
+/*
+bool operator==(const char* lhs, const char* rhs)
+{
+	return(strcmp(lhs, rhs) == 0);
+}
+bool operator<(const char* lhs, const char* rhs)
+{
+	return(strcmp(lhs, rhs) < 0);
+}
+bool operator>(const char* lhs, const char* rhs)
+{
+	return(strcmp(lhs, rhs) > 0);
+}
+*/
+
 template <typename T>
-class rowVec {
+class rcVec {
 	public:
 		T * x; 		// pointer to the first element
-		int len;    // length of vector
-		int shift;  // index shift between adjacent elements
-		friend inline bool operator< (const rowVec& lhs, const rowVec& rhs){
+		int len;    // length of vector: ncol for row vec; nrow for col vec
+		int eltShift;  // index shift between adjacent elements: nrow for row vec; 1 for col vec
+		int vecShift;  // index shift between adjacent vectors: 1 for row vec; nrow for col vec
+		friend inline bool operator< (const rcVec& lhs, const rcVec& rhs){
 			// elementwise comparison of two vectors from the end
 			// assuming operator== and operator> defined for type T 
 			T L, R;
 			for(int i=lhs.len-1; i>=0; i--){
-				if ( (L= *(lhs.x+lhs.shift*i)) == (R= *(rhs.x+rhs.shift*i)) ) continue;
+				if ( (L= *(lhs.x+lhs.eltShift*i)) == (R= *(rhs.x+rhs.eltShift*i)) ) continue;
 				return(L < R);
 			}
 			return(false);
 		}
-		friend inline bool operator> (const rowVec& lhs, const rowVec& rhs){return rhs < lhs;}
-		friend inline bool operator<=(const rowVec& lhs, const rowVec& rhs){return !(lhs > rhs);}
-		friend inline bool operator>=(const rowVec& lhs, const rowVec& rhs){return !(lhs < rhs);}
+		friend inline bool operator> (const rcVec& lhs, const rcVec& rhs){return rhs < lhs;}
+		friend inline bool operator<=(const rcVec& lhs, const rcVec& rhs){return !(lhs > rhs);}
+		friend inline bool operator>=(const rcVec& lhs, const rcVec& rhs){return !(lhs < rhs);}
 };
 
 template <typename T>
-class vecMap {  // a map with key being rowVec type; values are not used.
+class vecMap {  // a map with key being rcVec type; values are not used.
 	public:
-		typedef std::map<rowVec<T>, int> tMap;
-		rowVec<T> arow; 
+		typedef std::map<rcVec<T>, int> tMap;
+		rcVec<T> aRC; 
 		typename tMap::iterator it;
 		tMap rowMap;
 		std::pair<typename tMap::iterator, bool> returnPair;
 		
-		void dupMat		(const T* x, const int* nrow, const int*ncol, int* const out, bool const fromLast=false);
+		void dupMat		(const T* x, const int* nrow, const int*ncol, int* const out, bool const byRow=true, bool const fromLast=false);
 };
 
 template <typename T>
-void vecMap<T>::dupMat (const T* x, const int* nrow, const int*ncol, int* const out, bool const fromLast)
+void vecMap<T>::dupMat (const T* x, const int* nrow, const int*ncol, int* const out, bool const byRow, bool const fromLast)
 {
 /* put a logical vector of duplicated rows of numeric matrix x into out */
 	int i;	
-	arow.shift = (int)(*nrow);
-	arow.len = (int)(*ncol);
+	if(byRow){
+		aRC.eltShift = (int)(*nrow);
+		aRC.vecShift = 1;
+		aRC.len = (int)(*ncol);
+	}else{
+		aRC.eltShift = 1;
+		aRC.vecShift = (int)(*nrow);
+		aRC.len = (int)(*nrow);
+	}
 	if (fromLast) {
-		arow.x=const_cast<T*>(x) + (*nrow)-1;
-		for(i=*nrow-1; i>=0; --i, --(arow.x))
-			out[i] = (int) !(rowMap.insert( std::pair<rowVec<T>, int>(arow, 0) ).second);
+		aRC.x=const_cast<T*>(x) + ( byRow ? (*nrow)-1 : ((*ncol)-1)*(*nrow) ); 
+		for(i=aRC.len-1; i>=0; aRC.x -= aRC.vecShift)
+			out[i--] = (int) !(rowMap.insert( std::pair<rcVec<T>, int>(aRC, 0) ).second);
 	}else {
-		arow.x=const_cast<T*>(x);
-		for(i=0; i<*nrow; ++i, ++(arow.x))
-			out[i] = (int) !(rowMap.insert( std::pair<rowVec<T>, int>(arow, 0) ).second);
+		aRC.x=const_cast<T*>(x);
+		for(i=0; i<aRC.len; aRC.x += aRC.vecShift)
+			out[i++] = (int) !(rowMap.insert( std::pair<rcVec<T>, int>(aRC, 0) ).second);
 	}
 	rowMap.clear();
 }
@@ -58,9 +81,10 @@ void vecMap<T>::dupMat (const T* x, const int* nrow, const int*ncol, int* const 
 vecMap<int> 	intVecMap;
 vecMap<double> 	doubleVecMap;
 
+
 extern "C" {
 
-SEXP dupNumMat(SEXP x, SEXP fromLast)
+SEXP dupNumMat(SEXP x, SEXP MARGIN, SEXP fromLast)
 {/* returns a logical vector of duplicated rows of numeric matrix x */
 	SEXP out;
 	int* dim;
@@ -68,11 +92,12 @@ SEXP dupNumMat(SEXP x, SEXP fromLast)
 	out = PROTECT(allocVector(LGLSXP, *dim));
 	
 	if (TYPEOF(x) == REALSXP) {
-		doubleVecMap.dupMat	(REAL(x), dim, dim+1,  LOGICAL(out), (bool)(*(LOGICAL(fromLast))) );
+		doubleVecMap.dupMat	(REAL(x), dim, dim+1,  LOGICAL(out), INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
 	}else if (isInteger(x)){
-		intVecMap.dupMat	(INTEGER(x), dim, dim+1,  LOGICAL(out), (bool)(*(LOGICAL(fromLast))) );
+		intVecMap.dupMat	(INTEGER(x), dim, dim+1,  LOGICAL(out), INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
 	}else if  (TYPEOF(x) == LGLSXP) {
-		intVecMap.dupMat	(LOGICAL(x), dim, dim+1,  LOGICAL(out), (bool)(*(LOGICAL(fromLast))) );
+		intVecMap.dupMat	(LOGICAL(x), dim, dim+1,  LOGICAL(out), INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+	}else if (TYPEOF(x) == CHARSXP) {
 	}else{
 		error("C function 'dumNumMat' only accepts REALSXP, LGLSXP and INTSXP");
 	}
