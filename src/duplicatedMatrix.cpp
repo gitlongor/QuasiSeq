@@ -39,11 +39,12 @@ void vecMap<T>::dupMat (const T* x, const int* nrow, const int*ncol, int* const 
 	int i;	
 	arow.shift = (int)(*nrow);
 	arow.len = (int)(*ncol);
-	arow.x=const_cast<T*>(x);
 	if (fromLast) {
+		arow.x=const_cast<T*>(x) + (*nrow)-1;
 		for(i=*nrow-1; i>=0; --i, --(arow.x))
 			out[i] = (int) !(rowMap.insert( std::pair<rowVec<T>, int>(arow, 0) ).second);
 	}else {
+		arow.x=const_cast<T*>(x);
 		for(i=0; i<*nrow; ++i, ++(arow.x))
 			out[i] = (int) !(rowMap.insert( std::pair<rowVec<T>, int>(arow, 0) ).second);
 	}
