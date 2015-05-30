@@ -18,7 +18,7 @@ bool operator>(const char* lhs, const char* rhs)
 */
 
 template <typename T>
-class rcVec {
+class rcVec {		// a row vec or a col vec
 	public:
 		T * x; 		// pointer to the first element
 		int len;    // length of vector: ncol for row vec; nrow for col vec
@@ -26,7 +26,7 @@ class rcVec {
 		int vecShift;  // index shift between adjacent vectors: 1 for row vec; nrow for col vec
 		friend inline bool operator< (const rcVec& lhs, const rcVec& rhs){
 			// elementwise comparison of two vectors from the end
-			// assuming operator== and operator> defined for type T 
+			// assuming operator== and operator< defined for type T 
 			T L, R;
 			for(int i=lhs.len-1; i>=0; i--){
 				if ( (L= *(lhs.x+lhs.eltShift*i)) == (R= *(rhs.x+rhs.eltShift*i)) ) continue;
@@ -48,11 +48,11 @@ class vecMap {  // a map with key being rcVec type; values are not used.
 		tMap rowMap;
 		std::pair<typename tMap::iterator, bool> returnPair;
 		
-		void dupMat		(const T* x, const int* nrow, const int*ncol, int* const out, bool const byRow=true, bool const fromLast=false);
+		void dupMat		(const T* x, const int* nrow, const int* ncol, int* const out, bool const byRow=true, bool const fromLast=false);
 };
 
 template <typename T>
-void vecMap<T>::dupMat (const T* x, const int* nrow, const int*ncol, int* const out, bool const byRow, bool const fromLast)
+void vecMap<T>::dupMat (const T* x, const int* nrow, const int* ncol, int* const out, bool const byRow, bool const fromLast)
 {
 /* put a logical vector of duplicated rows of numeric matrix x into out */
 	int i;	
@@ -89,14 +89,14 @@ SEXP dupNumMat(SEXP x, SEXP MARGIN, SEXP fromLast)
 	SEXP out;
 	int* dim;
 	dim=INTEGER(getAttrib(x, R_DimSymbol));
-	out = PROTECT(allocVector(LGLSXP, *dim));
+	out = PROTECT(allocVector(LGLSXP, dim[*INTEGER(MARGIN)-1]));
 	
 	if (TYPEOF(x) == REALSXP) {
-		doubleVecMap.dupMat	(REAL(x), dim, dim+1,  LOGICAL(out), INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+		doubleVecMap.dupMat	(REAL(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
 	}else if (isInteger(x)){
-		intVecMap.dupMat	(INTEGER(x), dim, dim+1,  LOGICAL(out), INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+		intVecMap.dupMat	(INTEGER(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
 	}else if  (TYPEOF(x) == LGLSXP) {
-		intVecMap.dupMat	(LOGICAL(x), dim, dim+1,  LOGICAL(out), INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+		intVecMap.dupMat	(LOGICAL(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
 	}else if (TYPEOF(x) == CHARSXP) {
 	}else{
 		error("C function 'dumNumMat' only accepts REALSXP, LGLSXP and INTSXP");
