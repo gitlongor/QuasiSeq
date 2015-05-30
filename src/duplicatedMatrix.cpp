@@ -8,16 +8,16 @@ class rowVec {
 		T * x; 		// pointer to the first element
 		int len;    // length of vector
 		int shift;  // index shift between adjacent elements
-		inline bool operator< (const rowVec& lhs, const rowVec& rhs){
+		friend inline bool operator< (const rowVec& lhs, const rowVec& rhs){
 			// elementwise comparison of two vectors from the end
 			// assuming operator< defined for type T 
 			for(int i=lhs.len-1; i>=0; i--)
 				if(*(lhs.x+lhs.shift*i) < *(rhs.x+rhs.shift*i)) return(true);
 			return(false);
 		}
-		inline bool operator> (const rowVec& lhs, const rowVec& rhs){return rhs < lhs;}
-		inline bool operator<=(const rowVec& lhs, const rowVec& rhs){return !(lhs > rhs);}
-		inline bool operator>=(const rowVec& lhs, const rowVec& rhs){return !(lhs < rhs);}
+		friend inline bool operator> (const rowVec& lhs, const rowVec& rhs){return rhs < lhs;}
+		friend inline bool operator<=(const rowVec& lhs, const rowVec& rhs){return !(lhs > rhs);}
+		friend inline bool operator>=(const rowVec& lhs, const rowVec& rhs){return !(lhs < rhs);}
 };
 
 template <typename T>
@@ -25,21 +25,21 @@ class vecMap {  // a map with key being rowVec type; values are not used.
 	public:
 		typedef std::map<rowVec<T>, int> tMap;
 		rowVec<T> arow; 
-		tMap::iterator it;
+		typename tMap::iterator it;
 		tMap rowMap;
-		std::pair<tMap::iterator, bool> returnPair;
+		std::pair<typename tMap::iterator, bool> returnPair;
 		
-		void dupMat		(const T* x, const int* nrow, const int*ncol, int* const out);
+		void dupMat		(const T* x, const int* nrow, const int*ncol, int* const out, bool const fromLast=false);
 };
 
 template <typename T>
-void vecMap<T>::dupMat (const T* x, const int* nrow, const int*ncol, int* const out, bool const fromLast = false)
+void vecMap<T>::dupMat (const T* x, const int* nrow, const int*ncol, int* const out, bool const fromLast)
 {
 /* put a logical vector of duplicated rows of numeric matrix x into out */
 	int i;	
 	arow.shift = (int)(*nrow);
 	arow.len = (int)(*ncol);
-	arow.x=const_cast<T*> x;
+	arow.x=const_cast<T*>(x);
 	if (fromLast) {
 		for(i=*nrow-1; i>=0; --i, --(arow.x))
 			out[i] = (int) !(rowMap.insert( std::pair<rowVec<T>, int>(arow, 0) ).second);
@@ -70,7 +70,7 @@ SEXP dupNumMat(SEXP x, SEXP fromLast)
 	}else if  (TYPEOF(x) == LGLSXP) {
 		intVecMap.dupMat	(LOGICAL(x), dim, dim+1,  LOGICAL(out), (bool)(*(LOGICAL(fromLast))) );
 	}else{
-		error("C function 'dumNumMat' only accepts REALSXP, LGLSXP and INTSXP."
+		error("C function 'dumNumMat' only accepts REALSXP, LGLSXP and INTSXP");
 	}
 	
 	UNPROTECT(1);
