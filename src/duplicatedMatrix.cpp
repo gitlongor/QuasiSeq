@@ -3,6 +3,7 @@
 #include <map>
 
 #include "CharSEXP.h"
+#include "Cmplx.h"
 
 template <typename T>
 class rcVec {		// a row vec or a col vec from a column-major order matrix
@@ -69,7 +70,7 @@ void vecMap<T>::duplicatedMat (const T* x, const int* nrow, const int* ncol, int
 vecMap<int> 		intVecMap;
 vecMap<double> 		doubleVecMap;
 vecMap<CharSEXP>	charsexpVecMap; 
-
+vecMap<Rcomplex>	cmplxVecMap;
 
 extern "C" {
 
@@ -102,6 +103,9 @@ SEXP dupAtomMat(SEXP x, SEXP MARGIN, SEXP fromLast)
 			delete[] charSexpPtr;
 			break;
 		}
+		case CPLXSXP:
+			cmplxVecMap.duplicatedMat	(COMPLEX(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			break;
 		default:
 			error("C function 'dumNumMat' only accepts REALSXP, LGLSXP, INTSXP and STRSXP");
 	}
