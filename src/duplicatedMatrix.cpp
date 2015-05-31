@@ -67,10 +67,11 @@ void vecMap<T>::duplicatedMat (const T* x, const int* nrow, const int* ncol, int
 }
 
 // instantiation of global objects:
-vecMap<int> 		intVecMap;
-vecMap<double> 		doubleVecMap;
-vecMap<CharSEXP>	charsexpVecMap; 
-vecMap<Rcomplex>	cmplxVecMap;
+vecMap<int> 			intVecMap;
+vecMap<double> 			doubleVecMap;
+vecMap<CharSEXP>		charsexpVecMap; 
+vecMap<Rcomplex>		cmplxVecMap;
+vecMap<unsigned char>	rawVecMap; 		// Rbyte is an alias of unsigned char
 
 extern "C" {
 
@@ -105,6 +106,9 @@ SEXP dupAtomMat(SEXP x, SEXP MARGIN, SEXP fromLast)
 		}
 		case CPLXSXP:
 			cmplxVecMap.duplicatedMat	(COMPLEX(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			break;
+		case RAWSXP:
+			rawVecMap.duplicatedMat	(RAW(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
 			break;
 		default:
 			error("C function 'dumNumMat' only accepts REALSXP, LGLSXP, INTSXP and STRSXP");
