@@ -3,7 +3,7 @@
 #include <map>
 
 #include "CharSEXP.h"
-#include "Cmplx.h"
+#include "CmplxOps.h"
 
 template <typename T>
 class rcVec {		// a row vec or a col vec from a column-major order matrix
