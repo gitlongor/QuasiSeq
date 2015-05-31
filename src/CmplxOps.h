@@ -1,5 +1,5 @@
 #ifndef R_COMPLEX_H
-#include <Comlex.h>
+#include <R_ext/Complex.h>
 #endif
 
 inline bool operator< (const Rcomplex& lhs, const Rcomplex& rhs)
