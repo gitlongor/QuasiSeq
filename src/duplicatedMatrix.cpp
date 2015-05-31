@@ -73,7 +73,7 @@ vecMap<CharSEXP>	charsexpVecMap;
 
 extern "C" {
 
-SEXP dupNumMat(SEXP x, SEXP MARGIN, SEXP fromLast)
+SEXP dupAtomMat(SEXP x, SEXP MARGIN, SEXP fromLast)
 {/* returns a logical vector of duplicated rows of numeric matrix x */
 	SEXP out;
 	int* dim;
