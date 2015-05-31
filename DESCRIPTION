@@ -1,6 +1,6 @@
 Package: QuasiSeq
 Version: 1.0-9
-Date: 2015-05-27
+Date: 2015-05-31
 Title: Analyzing RNA Sequencing Count Tables Using Quasi-Likelihood
 Authors@R: c(
   person("Steve", "Lund", role=c("aut"), email="lundsp@gmail.com"),
