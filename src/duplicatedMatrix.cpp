@@ -1,6 +1,6 @@
 #include <R.h>
 #include <Rinternals.h>
-#include <map>
+#include <set>
 
 #include "CharSEXP.h"
 #include "CmplxOps.h"
@@ -29,19 +29,16 @@ class rcVec {		// a row vec or a col vec from a column-major order matrix
 };
 
 template <typename T>
-class vecMap {  // a map with key being rcVec type; values (0) are not used.
+class vecSet {  // a set with key being rcVec type
 	public:
-		typedef std::map<rcVec<T>, int> tMap;
 		rcVec<T> aRC; 
-		typename tMap::iterator it;
-		tMap rcvMap;
-		std::pair<typename tMap::iterator, bool> returnPair;
+		std::set<rcVec<T> > rcvSet;
 		
 		void duplicatedMat		(const T* x, const int* nrow, const int* ncol, int* const out, bool const byRow=true, bool const fromLast=false);
 };
 
 template <typename T>
-void vecMap<T>::duplicatedMat (const T* x, const int* nrow, const int* ncol, int* const out, bool const byRow, bool const fromLast)
+void vecSet<T>::duplicatedMat (const T* x, const int* nrow, const int* ncol, int* const out, bool const byRow, bool const fromLast)
 {
 /* put a logical vector of duplicated rows of numeric matrix x into out */
 	if(byRow){
@@ -53,25 +50,25 @@ void vecMap<T>::duplicatedMat (const T* x, const int* nrow, const int* ncol, int
 		aRC.vecShift = aRC.len = (int)(*nrow);
 		aRC.nVec = (int)(*ncol);
 	}
-	// map insert: if not previously inserted, the .second of returned pair is true; otherwise false. the .first is an iterator for the (previously) inserted element, which is not used. 
+	// set insert: if not previously inserted, the .second of returned pair is true; otherwise false. the .first is an iterator for the (previously) inserted element, which is not used. 
 	if (fromLast) {
 		aRC.x=const_cast<T*>(x) + ( byRow ? (*nrow)-1 : ((*ncol)-1)*(*nrow) ); 
 		for(int i=aRC.nVec-1; i>=0; aRC.x -= aRC.vecShift)
-			out[i--] = (int) !(rcvMap.insert( std::pair<rcVec<T>, int>(aRC, 0) ).second);
+			out[i--] = (int) !(rcvSet.insert( aRC ).second);
 	}else {
 		aRC.x=const_cast<T*>(x);
 		for(int i=0; i<aRC.nVec; aRC.x += aRC.vecShift) 
-			out[i++] = (int) !(rcvMap.insert( std::pair<rcVec<T>, int>(aRC, 0) ).second);
+			out[i++] = (int) !(rcvSet.insert( aRC ).second);
 	}
-	rcvMap.clear();
+	rcvSet.clear();
 }
 
 // instantiation of global objects:
-vecMap<int> 			intVecMap;
-vecMap<double> 			doubleVecMap;
-vecMap<CharSEXP>		charsexpVecMap; 
-vecMap<Rcomplex>		cmplxVecMap;
-vecMap<unsigned char>	rawVecMap; 		// Rbyte is an alias of unsigned char
+vecSet<int> 			intVecSet;
+vecSet<double> 			doubleVecSet;
+vecSet<CharSEXP>		charsexpVecSet; 
+vecSet<Rcomplex>		cmplxVecSet;
+vecSet<unsigned char>	rawVecSet; 		// Rbyte is an alias of unsigned char
 
 extern "C" {
 
@@ -84,31 +81,31 @@ SEXP dupAtomMat(SEXP x, SEXP MARGIN, SEXP fromLast)
 	
 	switch (TYPEOF(x)) {
 		case REALSXP:
-			doubleVecMap.duplicatedMat	(REAL(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			doubleVecSet.duplicatedMat	(REAL(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
 			break;
 		case INTSXP:  // factor type is also covered here
 			// if(!inherits(x, "factor"))
-				intVecMap.duplicatedMat	(INTEGER(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+				intVecSet.duplicatedMat	(INTEGER(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
 			// else {;} 
 			break;
 		case LGLSXP:
-			intVecMap.duplicatedMat	(LOGICAL(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			intVecSet.duplicatedMat	(LOGICAL(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
 			break;
 		case STRSXP: {
 			CharSEXP* charSexpPtr = new CharSEXP [ dim[0]*dim[1] ];
 			for(int i=dim[0]*dim[1]-1; i>=0; --i)
 				charSexpPtr[i].sexp = STRING_ELT(x, i);
 			
-			charsexpVecMap.duplicatedMat	(charSexpPtr, dim, dim+1, LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			charsexpVecSet.duplicatedMat	(charSexpPtr, dim, dim+1, LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
 			
 			delete[] charSexpPtr;
 			break;
 		}
 		case CPLXSXP:
-			cmplxVecMap.duplicatedMat	(COMPLEX(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			cmplxVecSet.duplicatedMat	(COMPLEX(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
 			break;
 		case RAWSXP:
-			rawVecMap.duplicatedMat	(RAW(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
+			rawVecSet.duplicatedMat	(RAW(x), dim, dim+1,  LOGICAL(out), *INTEGER(MARGIN)==1, (bool)(*(LOGICAL(fromLast))) );
 			break;
 		default:
 			error("C function 'dumNumMat' only accepts REALSXP, LGLSXP, INTSXP and STRSXP");
