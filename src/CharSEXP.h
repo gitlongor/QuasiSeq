@@ -8,6 +8,11 @@
 
 #include <cstring>
 
+/* 
+	NOTE: R_NaString is a different SEXP than mkChar("NA"), but holding the same string "NA". 
+		  We will treat R_NaString to be smaller than every usual string, including mkChar("NA"). 
+*/
+
 class CharSEXP{
 	public:
 		SEXP sexp;
@@ -17,24 +22,39 @@ class CharSEXP{
 		CharSEXP();
 		
 		friend inline bool operator< (const CharSEXP& lhs, const CharSEXP& rhs) 
-		{return( 
-			strcmp(const_cast<const char*>(CHAR(lhs.sexp)), const_cast<const char*>(CHAR(rhs.sexp)) )<0
-		); }
+		{
+			if (lhs.sexp == R_NaString) return( rhs.sexp != R_NaString );
+			if (rhs.sexp == R_NaString) return(false);
+			return( 
+				strcmp(const_cast<const char*>(CHAR(lhs.sexp)), const_cast<const char*>(CHAR(rhs.sexp)) )<0
+			); 
+		}
 					
 		friend inline bool operator> (const CharSEXP& lhs, const CharSEXP& rhs) 
-		{return( 
-			strcmp(const_cast<const char*>(CHAR(lhs.sexp)), const_cast<const char*>(CHAR(rhs.sexp)) )>0
-		); }
-					
+		{
+			if (rhs.sexp == R_NaString) return( lhs.sexp != R_NaString );
+			if (lhs.sexp == R_NaString) return(false);
+			return( 
+				strcmp(const_cast<const char*>(CHAR(lhs.sexp)), const_cast<const char*>(CHAR(rhs.sexp)) )>0
+			); 
+		}
+			
+		 
 		friend inline bool operator== (const CharSEXP& lhs, const CharSEXP& rhs) 
-		{return( 
-			strcmp(const_cast<const char*>(CHAR(lhs.sexp)), const_cast<const char*>(CHAR(rhs.sexp)) )==0
-		); }
+		{	
+			return (lhs.sexp == rhs.sexp);  // R CHARSXP objects are cached (only one copy per string)
+			/* return( 
+				strcmp(const_cast<const char*>(CHAR(lhs.sexp)), const_cast<const char*>(CHAR(rhs.sexp)) )==0
+			); */
+		}
 					
 		friend inline bool operator!= (const CharSEXP& lhs, const CharSEXP& rhs) 
-		{return( 
-			strcmp(const_cast<const char*>(CHAR(lhs.sexp)), const_cast<const char*>(CHAR(rhs.sexp)) )!=0
-		); }
+		{ 
+			return( lhs.sexp != rhs.sexp);
+			/* return( 
+				strcmp(const_cast<const char*>(CHAR(lhs.sexp)), const_cast<const char*>(CHAR(rhs.sexp)) )!=0
+			); */
+		}
 };
 
 CharSEXP::CharSEXP(SEXP x)
@@ -45,7 +65,7 @@ CharSEXP::CharSEXP(SEXP x)
 		
 CharSEXP::CharSEXP()
 {
-	sexp = mkChar("");
+	sexp = R_NaString; 
 }
 	
 
