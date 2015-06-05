@@ -1,11 +1,12 @@
 export(NBDev, PoisDev, QL.fit, QL.results)
-export(duplicated.matrix, unique.matrix)
+#export(duplicated.matrix, unique.matrix)
 
 import(edgeR)
 
 importFrom(mgcv, negbin)
-
 importFrom(pracma, broyden)
+
+import(uniqueAtomMat)
 
 #importFrom(varComp, informationTypes)
 #import(MASS)
@@ -14,7 +15,7 @@ importFrom(pracma, broyden)
 
 
 S3method(coef, glm)
-S3method(unique, matrix)
-S3method(duplicated, matrix)
+#S3method(unique, matrix)
+#S3method(duplicated, matrix)
 
 useDynLib(QuasiSeq, .registration =TRUE, .fixes="C_")
