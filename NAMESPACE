@@ -1,4 +1,4 @@
-export(NBDev, PoisDev, QL.fit, QL.results)
+export(NBDev, PoisDev, QL.fit, QL.results, bartlettNBglm)
 #export(duplicated.matrix, unique.matrix)
 
 import(edgeR)
