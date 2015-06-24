@@ -1,22 +1,35 @@
 bartlettNBglm=function(x, y, weights = rep(1, length(y)), offset = rep(0, length(y)), family, link='log')
 {
-  mu.eta=family$mu.eta
-  variance=family$variance
+  glm.fit=glm.fit3(x=x, y=y, weights = weights, offset = offset, family = family)
 
   good.weights=weights>0
-  xx=x[good.weights,,drop=FALSE]
+  yy=y[good.weights]; xx=x[good.weights,,drop=FALSE]; oo=offset[good.weights]
 
-  D1=diag(mu.eta)
-  D2=diag()
-  W=D1*inv(variance)*D1
+  mu.eta=family$mu.eta
+  variance=family$variance
+  linkinv=family$linkinv
+  d2linkfun=family$d2linkfun
 
-  Q=xx*inv(t(xx)*W*xx)*t(xx)
-  P=D1*Q*D1*inv(variance)
+  odisp=1/family$getTheta()
+  this.beta=glm.fit$coef
+  this.eta=as.vector(xx%*%this.beta+oo)
+  this.mu=linkinv(this.eta)
+  this.mu.eta=mu.eta(this.eta)
+  this.var=variance(this.mu)
+  this.d2g=d2linkfun(this.mu)
+  this.mu2.eta=-this.d2g*(this.mu.eta)^3
+
+  D1=diag(this.mu.eta)
+  D2=diag(this.mu2.eta - (this.mu.eta)^2*(1+2*odisp*this.mu)/(this.mu+odisp*(this.mu)^2))
+  W=D1%*%inv(this.var)%*%D1
+
+  Q=xx%*%inv(t(xx)%*%W%*%xx)%*%t(xx)
+  P=D1%*%Q%*%D1%*%inv(this.var)
 
   a=0
   for(i in 1:nrow(P))
   {
-    a = a+P[i,i]^2*mean(y[i]-mean(y[i]))^4/variance[i]-3
+    a = a+P[i,i]^2*((this.mu^4+)/(this.var[i])^2-3)
   }
 
   b=0
