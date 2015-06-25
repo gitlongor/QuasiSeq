@@ -1,17 +1,19 @@
-bartlettNBglm=function(x, y, weights = rep(1, length(y)), offset = rep(0, length(y)), family, link='log')
+#bartlettNBglm=function(x, y, weights = rep(1, length(y)), offset = rep(0, length(y)), family, link='log')
+#{
+barlettFactor=function(glmFit)
 {
-  glm.fit=glm.fit3(x=x, y=y, weights = weights, offset = offset, family = family)
+  good.weights=glmFit$weights>0
+  yy=glmFit$y[good.weights]; xx=glmFit$x[good.weights,,drop=FALSE]; oo=glmFit$offset[good.weights]
 
-  good.weights=weights>0
-  yy=y[good.weights]; xx=x[good.weights,,drop=FALSE]; oo=offset[good.weights]
-
+  family=glmFit$family
+  
   mu.eta=family$mu.eta
   variance=family$variance
   linkinv=family$linkinv
   d2linkfun=family$d2linkfun
 
   odisp=1/family$getTheta()
-  this.beta=glm.fit$coef
+  this.beta=glmFit$coef
   this.eta=as.vector(xx%*%this.beta+oo)
   this.mu=linkinv(this.eta)
   this.mu.eta=mu.eta(this.eta)
