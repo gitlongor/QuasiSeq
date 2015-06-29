@@ -1,8 +1,8 @@
 #bartlettNBglm=function(x, y, weights = rep(1, length(y)), offset = rep(0, length(y)), family, link='log')
 #{
-barlettFactor=function(glmFit)
+bartlettFactor=function(glmFit)
 {
-  good.weights=glmFit$weights>0
+  good.weights=glmFit$weights>0  ## ??
   yy=glmFit$y[good.weights]; xx=glmFit$x[good.weights,,drop=FALSE]; oo=glmFit$offset[good.weights]
 
   family=glmFit$family
@@ -21,49 +21,71 @@ barlettFactor=function(glmFit)
   this.d2g=d2linkfun(this.mu)
   this.mu2.eta=-this.d2g*(this.mu.eta)^3
 
-  D1=diag(this.mu.eta)
-  D2=diag(this.mu2.eta - (this.mu.eta)^2*(1+2*odisp*this.mu)/(this.mu+odisp*(this.mu)^2))
-  W=D1%*%solve(this.var)%*%D1
+  V=diag(this.var); VI=solve(V)
+  D1=diag(this.mu.eta); d1vec=this.mu.eta
+  D2=diag(this.mu2.eta - (this.mu.eta)^2*(1+2*odisp*this.mu)/(this.mu+odisp*(this.mu)^2)); 
+	d2vec = this.mu2.eta - (this.mu.eta)^2*(1+2*odisp*this.mu)/(this.mu+odisp*(this.mu)^2)
+  W=D1%*%VI%*%D1; wvec=d1vec^2/this.var
 
-  Q=xx%*%solve(t(xx)%*%W%*%xx)%*%t(xx)
-  P=D1%*%Q%*%D1%*%solve(this.var)
+  Qmat=xx%*%solve(t(xx)%*%W%*%xx)%*%t(xx) ## switch to QR decomp
+  P=D1%*%Qmat%*%D1%*%VI
 
-  a=0
-  for(i in 1:nrow(P))
-  {
-    a = a + P[i,i]^2*(-6/this.mu[i]+1/this.var[i]+6*this.var[i]/this.mu[i]^2)
+  rho4vec= - 6/this.mu + 1/this.var+6*this.var/this.mu^2
+  a = sum(diag(P)^2 * rho4vec)
+  if(FALSE){
+	a=0
+	for(i in 1:nrow(P))
+	{
+	a = a + P[i,i]^2*(-6/this.mu[i]+1/this.var[i]+6*this.var[i]/this.mu[i]^2)
+	}
   }
 
-  b=0
-  for(i in 1:nrow(P))
-  {
-    for(j in 1:ncol(P))
-    {
-      b = b + (P[i,i]*(-this.var[i]+2*this.var[i]^2/this.mu[i])/(this.mu[i]))*solve(this.var[i])*P[i,j]*(P[j,j]*(-this.var[j]+2*this.var[j]^2/this.mu[j])/(this.mu[j]))
-    }
-  }
+  k3=(-this.var+2*this.var^2/this.mu)
+  if(FALSE){
+	  b=0
+	  for(i in 1:nrow(P))
+	  {
+		for(j in 1:ncol(P))
+		{
+		  b = b + (P[i,i]*k3[i]/this.var[i])/(this.var[i])*P[i,j]*(P[j,j]*k3[j]/this.var[j])
+		}
+	  }
+  }else b = drop((diag(P)*k3/this.var^2)%*%P%*%(diag(P)*k3/this.var))
 
-  c=0
-  for(i in 1:nrow(P))
-  {
-    for(j in 1:ncol(P))
-    {
-      c = c + (solve(this.var[i])*P[i,j])^3*(-this.var[i]+2*this.var[i]^2/this.mu[i])*(-this.var[j]+2*this.var[j]^2/this.mu[j])
-    }
-  }
+  if(FALSE){
+	  cval=0
+	  for(i in 1:nrow(P))
+	  {
+		for(j in 1:ncol(P))
+		{
+		  cval = cval + (solve(this.var[i])*P[i,j])^3*k3[i]*k3[j]
+		}
+	  }
+  }else  cval=sum((k3%o%k3)*P^3 / this.var^3)
 
-  q=diag(Q)
-  H=D2%*%solve(this.var)%*%(diag(nrow(P))-P)
 
-  d = t(q)%*%H%*%D2%*%q
+  qvec=diag(Qmat)
+  if(FALSE){
+		H=D2%*%VI%*%(diag(nrow(P))-P)
+  }else H=(d2vec/this.var) * (diag(nrow(P))-P)
 
-  e = sum(Q%*%Q%*%H%*%D2)
+  if(FALSE){
+		d = t(qvec)%*%H%*%D2%*%qvec
+  }else d = drop(qvec%*%H%*%(d2vec*qvec))
+  
+  if(FALSE){
+		e = sum(Qmat*Qmat*(H%*%D2))
+  }else e = sum(Qmat*Qmat*(H*D2[col(H)]))
 
-  f=0
-  for(j in 1:ncol(W))
-  {
-    f = f + t(q)%*%H*q[j]*W[j,j]*(-this.var[j]+2*this.var[j]^2/this.mu[j])/(this.mu[j])
-  }
-
-  ep=-1/4*a+1/4*b+1/6*c-1/4*d+1/2*e-1/2*f
+  qstar = qvec * wvec * k3 / this.var
+  if(FALSE){
+	  
+  }else f = drop(qvec%*%H%*%qstar)
+  
+  ans.MN = -1/4*a+1/4*b+1/6*cval-1/4*d+1/2*e-1/2*f  ## epsilon_p
+  
+  
+  ans.C = 0
+  
+  list(nelder=ans.MN, cordeiro = ans.C)
 }
