@@ -30,6 +30,9 @@ negbin=function( link = "log", overdisp = stop("'overdisp' must be specified"))
 	}
 	environment(ans$setTheta)=environment(ans$getTheta)
 	
+	ans$cumulant3=function(mu, var, ...)	(-var+2*var^2/mu)
+	ans$cumulant4=function(mu, var, ...)	var - (6 * var^2 )/ mu + (6 * var^3)/mu^2
+	environment(ans$cumulant3)=environment(ans$cumulant4)=environment(ans$variance)
 	
 	ans$initializers=list(
 		expression({  ## lm + bias reduction on zeros only

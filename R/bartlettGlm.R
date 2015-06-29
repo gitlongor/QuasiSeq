@@ -1,5 +1,3 @@
-#bartlettNBglm=function(x, y, weights = rep(1, length(y)), offset = rep(0, length(y)), family, link='log')
-#{
 bartlettFactor=function(glmFit)
 {
   good.weights=glmFit$weights>0  ## ??
@@ -18,29 +16,38 @@ bartlettFactor=function(glmFit)
   this.mu=linkinv(this.eta)
   this.mu.eta=mu.eta(this.eta)
   this.var=variance(this.mu)
+  this.dvar=family$dvar(this.mu)
   this.d2g=d2linkfun(this.mu)
   this.mu2.eta=-this.d2g*(this.mu.eta)^3
+  this.cum3 = family$cumulant3(mu=this.mu, var=this.var)
+  this.cum4 = family$cumulant4(mu=this.mu, var=this.var)
 
-  V=diag(this.var); VI=solve(V)
-  D1=diag(this.mu.eta); d1vec=this.mu.eta
-  D2=diag(this.mu2.eta - (this.mu.eta)^2*(1+2*odisp*this.mu)/(this.mu+odisp*(this.mu)^2)); 
-	d2vec = this.mu2.eta - (this.mu.eta)^2*(1+2*odisp*this.mu)/(this.mu+odisp*(this.mu)^2)
-  W=D1%*%VI%*%D1; wvec=d1vec^2/this.var
+  if(FALSE){
+	V=diag(this.var); VI=solve(V)
+	D1=diag(this.mu.eta); 
+	D2=diag(this.mu2.eta - (this.mu.eta)^2*(1+2*odisp*this.mu)/(this.mu+odisp*(this.mu)^2)); 
+	W=D1%*%VI%*%D1; 
+	Qmat=xx%*%solve(t(xx)%*%W%*%xx)%*%t(xx)
+	P=D1%*%Qmat%*%D1%*%VI
+  }else {
+	d1vec=this.mu.eta
+	d2vec = this.mu2.eta - (this.mu.eta)^2 / this.var * this.dvar ## 
+	wvec=d1vec^2/this.var; wvec.half=sqrt(wvec)
+	QQ = (tcrossprod(qr.Q(glmFit$qr)))
+	Qmat = 1/wvec.half * QQ / wvec.half[col(QQ)]
+	P = d1vec * Qmat * (d1vec/this.var)[col(Qmat)]
+  }
 
-  Qmat=xx%*%solve(t(xx)%*%W%*%xx)%*%t(xx) ## switch to QR decomp
-  P=D1%*%Qmat%*%D1%*%VI
-
-  rho4vec= - 6/this.mu + 1/this.var+6*this.var/this.mu^2
-  a = sum(diag(P)^2 * rho4vec)
+  rho4vec= this.cum4 / this.var^2    ## rho4vec = - 6/this.mu + 1/this.var+6*this.var/this.mu^2
   if(FALSE){
 	a=0
 	for(i in 1:nrow(P))
 	{
 	a = a + P[i,i]^2*(-6/this.mu[i]+1/this.var[i]+6*this.var[i]/this.mu[i]^2)
 	}
-  }
+  }else a = sum(diag(P)^2 * rho4vec)
 
-  k3=(-this.var+2*this.var^2/this.mu)
+  k3= this.cum3		## k3 = (-this.var+2*this.var^2/this.mu)
   if(FALSE){
 	  b=0
 	  for(i in 1:nrow(P))
