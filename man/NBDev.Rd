@@ -24,7 +24,7 @@
 }
 
 \details{
-This functions fits, for each row of \code{counts}, a negative binomial log-linear model through GLM framework with the over-dispersion parameter fixed. Asymptotic biases of regression coefficients (i.e., log fold changes) are then estimated by a plug-in estimate [eqn. (15.4) of McCullagh and Nelder, 1989] from the last iteration of iteratively re-weighted least squares (IWLS) procedure. The fitted response values are then compared with or without such a bias term. If the ratio of fitted response values are larger than \code{bias.fold.tolerance} for any observation, then the bias-reduction (not bias-correction) procedure according to Firth (1993) and Kosmidis & Firth (2009) is applied to such rows of \code{counts}, by adjusting the score equation with a term based on the observed information. Such bias-reduced estimates are more advantageous than directly subtracting the estimated bias from the maximum likelihood estimates as the latter may not exist (e.g., when all counts in one treatment group are zeros). 
+This functions fits, for each row of \code{counts}, a negative binomial log-linear model through GLM framework with the over-dispersion parameter fixed. Asymptotic biases of regression coefficients (i.e., log fold changes) are then estimated by a plug-in estimate [eqn. (6.3) of Cordeiro and McCullagh, 1991] from the last iteration of iteratively re-weighted least squares (IWLS) procedure. The fitted response values are then compared with or without such a bias term. If the ratio of fitted response values are larger than \code{bias.fold.tolerance} for any observation, then the bias-reduction (not bias-correction) procedure according to Firth (1993) and Kosmidis & Firth (2009) is applied to such rows of \code{counts}, by adjusting the score equation with a term based on the observed information. Such bias-reduced estimates are more advantageous than directly subtracting the estimated bias from the maximum likelihood estimates as the latter may not exist (e.g., when all counts in one treatment group are zeros). 
 }
 
 \references{
@@ -34,13 +34,13 @@ Kosmidis and Firth (2009) "Bias reduction in exponential family nonlinear models
 
 Lund, Nettleton, McCarthy and Smyth (2012) "Detecting differential expression in RNA-sequence data using quasi-likelihood with shrunken dispersion estimates" emph{SAGMB}, \bold{11}(5).
 
-McCullagh and Nelder (1989) "Generalized Linear Models", 2nd edition. London: Chapman and Hall. 
+Cordeiro and McCullagh (1991) "Bias correction in generalized linear models", \emph{Journal of Royal Statistical Society, Series B}, \bold{53}(3), 629--643.
 }
 
 
 \author{Steve Lund (\email{lundsp@gmail.com}), Long Qu (\email{long.qu@wright.edu})}
 
-     \keyword{RNA-seq, quasi-likelihood, differential expression, negative binomial}
+\keyword{RNA-seq, quasi-likelihood, differential expression, negative binomial}
 
 
 

@@ -82,7 +82,7 @@ bartlettFactor=function(glmFit)
   
   if(FALSE){
 		e = sum(Qmat*Qmat*(H%*%D2))
-  }else e = sum(Qmat*Qmat*(H*D2[col(H)]))
+  }else e = sum(Qmat*Qmat*(H*d2vec[col(H)]))
 
   qstar = qvec * wvec * k3 / this.var
   if(FALSE){
