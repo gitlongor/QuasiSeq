@@ -14,7 +14,7 @@ coef.glm=function(object, type=c('raw','bias','corrected'), ...)
 	## mu'' is the same as -d2linkfun(mu) * (du/deta)^3
 	## thus mu''/mu' is -d2linkfun(mu) * (du/deta)^2
 	
-	this.w2ksi = this.w2ksi / object$prior.weights ## Cordeiro & McCullagh (JRSSB,1991)
+	this.w2ksi = this.w2ksi * object$prior.weights ## Cordeiro & McCullagh (JRSSB,1991)
 	
 	this.bias=qr.coef(this.qr, this.w2ksi)
 	if(type=='bias') return(this.bias)
