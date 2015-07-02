@@ -30,6 +30,7 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
   p <- NULL
   n <- ncol(counts)  # p is used to store the d.f. for each model (it will be a vector) and n is the total number of samples (also the number of observations for each gene)
   
+  bartEpsilons = matrix(NA_real_, nrow(counts), length(design.list))
   for (jj in 1:length(design.list)) {
     design <- design.list[[jj]]
     
@@ -124,9 +125,10 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
       parms <- res$parms
     }
     deviance.list[[jj]] <- res$dev
+	bartEpsilons[,jj] = res$bartlett.epsilon
   }
   
-  LRT <- num.df <- NULL
+  LRT <- LRT.bart <- num.df <- NULL
   
   if (length(design.list) > 1) {
     ### Compute likelihood ratio test statistics. If not otherwise specified, compare each model to the first model
@@ -142,9 +144,11 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
       i1 <- test.mat[i, 1]
       i2 <- test.mat[i, 2]
       num.df <- c(num.df, abs(p[i2] - p[i1]))
-      LRT <- cbind(LRT, -(deviance.list[[i2]] - deviance.list[[i1]])/(p[i2] - p[i1]))
+	  tmp  = -(deviance.list[[i2]] - deviance.list[[i1]])/(p[i2] - p[i1])
+      LRT <- cbind(LRT, tmp)
+	  LRT.bart = cbind(LRT.bart, tmp/(1+ (bartEpsilons[,i2]-bartEpsilons[,i1])/(p[i2] - p[i1])))
     }
-    colnames(LRT) <- rownames(test.mat)
+    colnames(LRT) <- colnames(LRT.bart) <- rownames(test.mat)
   }
   den.df <- (n - p[1])
   
@@ -163,6 +167,6 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
     return(list(LRT = LRT, phi.hat.dev = phi.hat.dev, phi.hat.pearson = phi.hat.pearson, mn.cnt = rowMeans(counts), 
                 den.df = den.df, num.df = num.df, Model = Model, fitted.values = means, coefficients = parms))
   if (Model == "NegBin") 
-    return(list(LRT = LRT, phi.hat.dev = phi.hat.dev, phi.hat.pearson = phi.hat.pearson, mn.cnt = rowMeans(counts), 
+    return(list(LRT = LRT, LRT.Bart=LRT.bart, phi.hat.dev = phi.hat.dev, phi.hat.pearson = phi.hat.pearson, mn.cnt = rowMeans(counts), 
                 den.df = den.df, num.df = num.df, Model = Model, NB.disp = nb.disp, fitted.values = means, coefficients = parms))
 } 

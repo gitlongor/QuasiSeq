@@ -9,6 +9,7 @@ NBDev <- function(counts, design, log.offset, nb.disp, print.progress = TRUE, bi
     deviance.vector <- rep(NA, nrow(counts))
     means <- matrix(NA, nrow(counts), ncol(counts))
     parms <- matrix(NA, nrow(counts), ncol(design))
+	BartEpsilons = numeric(nrow(counts))
 	design.df=as.data.frame(design)
 	glm.ctrl=glm.control(epsilon = 1e-08, maxit = 1500L, trace = FALSE)
 	fbrNBglm.ctrl=fbrNBglm.control(coefOnly=TRUE, infoParms=list(j=1,k=1,m=1), maxit=1500L, tol=1e-8, standardizeX=TRUE)
@@ -26,7 +27,8 @@ NBDev <- function(counts, design, log.offset, nb.disp, print.progress = TRUE, bi
 		glm.fitted <- glmsolve(formula = counts[gn, ] ~ . - 1 + offset(log.offset), family = update.fbrNBfamily(nbLogFamily, overdisp=nb.disp[gn]), data = design.df, control = glm.ctrl, x=TRUE) 
 			
         parms[gn, ] <- glm.fitted$coefficients
-        
+        BartEpsilons[gn] = bartlettFactor(glm.fitted)
+		
         ### Save deviance (used to compute LRT for comparing models and also deviance dispersion estimator)
         deviance.vector[gn] <- glm.fitted$deviance
         
@@ -50,7 +52,7 @@ NBDev <- function(counts, design, log.offset, nb.disp, print.progress = TRUE, bi
 		### NOTE: This line was originally before the Firth bias correction block. 
 		means[gn, ] <- as.vector(exp(design[,tmp.nonNA,drop=FALSE] %*% parms[gn, tmp.nonNA]) * est.offset)
     }
-    return(list(dev = deviance.vector, means = means, parms = parms))
+    return(list(dev = deviance.vector, means = means, parms = parms, bartlett.epsilon = BartEpsilons))
 } 
 
 

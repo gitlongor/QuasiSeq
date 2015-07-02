@@ -1,4 +1,5 @@
-bartlettFactor=function(glmFit)
+if(FALSE){### implementation based on the GLM book (chapter 15)
+bartlettFactor=function(glmFit)  
 {
   good.weights=glmFit$weights>0  ## ??
   yy=glmFit$y[good.weights]; xx=glmFit$x[good.weights,,drop=FALSE]; oo=glmFit$offset[good.weights]
@@ -90,23 +91,51 @@ bartlettFactor=function(glmFit)
 
   }else f = drop(qvec%*%H%*%qstar)
 
-  ans.MN = -1/4*a+1/4*b+1/6*cval-1/4*d+1/2*e-1/2*f  ## epsilon_p
+  -1/4*a+1/4*b+1/6*cval-1/4*d+1/2*e-1/2*f  ## epsilon_p
+}
+}
 
-  wvec.cord=(this.mu.eta)^2/this.var; wvec.half.cord=sqrt(wvec.cord); wmat.cord=diag(wvec.cord)
+bartlettFactor=function(glmFit) ## based Cordeiro, JRSSB, 1983
+{
+  good.weights=glmFit$weights>0  ## ??
+  yy=glmFit$y[good.weights]; xx=glmFit$x[good.weights,,drop=FALSE]; oo=glmFit$offset[good.weights]
+
+  family=glmFit$family
+
+  mu.eta=family$mu.eta
+  variance=family$variance
+  linkinv=family$linkinv
+  d2linkfun=family$d2linkfun
+
+  odisp=1/family$getTheta()
+  this.beta=glmFit$coef
+  this.eta=as.vector(xx%*%this.beta+oo)
+  this.mu=linkinv(this.eta)
+  this.mu.eta=mu.eta(this.eta)
+  this.var=variance(this.mu)
+  this.dvar=family$dvar(this.mu)
+  this.d2var=family$d2var(this.mu)
+  this.d2g=d2linkfun(this.mu)
+  this.mu2.eta=-this.d2g*(this.mu.eta)^3
+  #this.cum3 = family$cumulant3(mu=this.mu, var=this.var)
+  #this.cum4 = family$cumulant4(mu=this.mu, var=this.var)
+
+  wvec.cord=(this.mu.eta)^2/this.var; wvec.half.cord=sqrt(wvec.cord); #wmat.cord=diag(wvec.cord)
   ZZ.cord=(tcrossprod(qr.Q(glmFit$qr)))
-  phi.cord=diag(nrow(wmat.cord))
-  Z.cord=1/wvec.half.cord*ZZ.cord*phi.cord/wvec.half.cord[col(ZZ.cord)]
+  nncol=col(ZZ.cord)
+  
+  phi.cord =  if(FALSE) glmFit$df.residual / glmFit$deviance else 1
+  Z.cord=phi.cord * 1/wvec.half.cord*ZZ.cord/wvec.half.cord[nncol]
   Z3.cord=Z.cord^3
 
-  H.cord=1/this.var*this.mu2.eta*(this.mu2.eta-4*w.cord*this.dvar)+w.cord^2*(2/this.var*this.dvar^2-this.d2var)
+  H.cord=1/this.var*this.mu2.eta*(this.mu2.eta-4*wvec.cord*this.dvar)+wvec.cord^2*(2/this.var*this.dvar^2-this.d2var)
   F.cord=1/this.var*this.mu.eta*this.mu2.eta
-  G.cord=1/this.var*this.mu.eta*this.mu2.eta-1/this.var^2*this.dvar*this.mu.eta^3
+  G.cord=F.cord-1/this.var^2*this.dvar*this.mu.eta^3
   Zd.cord=diag(Z.cord)
 
-  a.cord=sum(diag(phi.cord*H.cord*Zd.cord^2))
-  b.cord=sum(phi.cord*G.cord*Z3.cord*(F.cord+G.cord)*phi.cord)
-  c.cord=drop(sum(phi.cord*F.cord*(2*Z3.cord+3*Zd.cord %*% Z.cord %*% Zd.cord)*F.cord*phi.cord))
-  ans.C = 1/4*a.cord-1/3*b.cord+1/12*c.cord ## epsilon_k
-
-  list(nelder=ans.MN, cordeiro = ans.C)
+  nncol=col(Z.cord)
+  a.cord=sum(phi.cord*H.cord*Zd.cord^2)
+  b.cord=sum((phi.cord*G.cord)*Z3.cord*((F.cord+G.cord)*phi.cord)[nncol])
+  c.cord=sum((phi.cord*F.cord)*(2*Z3.cord+3*Zd.cord * Z.cord * Zd.cord[nncol])*(F.cord*phi.cord)[nncol])
+  1/4*a.cord-1/3*b.cord+1/12*c.cord ## epsilon_k
 }
