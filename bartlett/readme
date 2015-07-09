@@ -1,0 +1,14 @@
+This folder contains R source code to produce the simulation study based on the KIRC dataset.
+
+The files should be run in the following order:
+
+"NB_disp_estimates.R"
+"Simulation_output.R"
+ - once with k.ind (simulation sample size) set to 5, 10, and 20 each
+"benchmarks.R"
+ - once with k.ind (simulation sample size) set to 5, 10, and 20 each
+"FDR_Plot.R"
+"FDR_Plot_Cooks.R"
+"Quant_Null_Genes_Plot.R"
+
+The file "benchmarks_quant.R" does not need to be run and is only used in "Quant_Null_Genes_Plot.R". The file "simulation_output.R" will take a while to run due to the long computational time needed for each statistical analysis method.
