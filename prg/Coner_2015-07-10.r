@@ -33,7 +33,16 @@ options(contrasts=c('contr.sum', 'contr.sum'))
 ####################################### END OF HEADER ################################################
 		
 	
+QNB=function(mu, y, tau, phi)
+{
 	
+}
+
+BNB=function(mu, y, tau, phi)
+{
+	
+}
+
 #BNB and QLNB changing with different pi values.
 =====================
 
@@ -41,6 +50,8 @@ z<-1:100
 pi<-c(2,4,6,1000000)
 t<-c(0.1,0.3,0.5,0.8)#tho values
 #x_mean values
+curve(QNB(mu=x, y=10, tau=.5, phi=1.1), 0, 50)
+
 curve((((gamma(z[7]+x*(t[1]*pi[1]+1)/(pi[1]-1)))*(beta((x*(t[1]*pi[1]+1))/(pi[1]-1)+(t[1]*(2*pi[1]-1)+1)/(t[1]*(pi[1]-1)),z[7]+1/t[1])))/
 ((factorial(z[7])*gamma(x*(t[1]*pi[1]+1)/(pi[1]-1)))*(beta((t[1]*(2*pi[1]-1)+1)/(t[1]*(pi[1]-1)),1/t[1])
 )))/(exp(1/pi[1])*((1/(1+t[1]*x))^(1/t[1])*(x/(x+1/t[1]))^z[7])),0.01,0.02,100,ylab="c",col="red")
