@@ -23,7 +23,10 @@ filter.mean <- 0 # lower bound of average read count for simulated genes
 filter.nonzero <- 1 # lower bound for nonzero read counts for simulated genes
 
 ### Load Data
-data(kidney)
+RNGkind("Mersenne-Twister", "Inversion")
+set.seed(156165L)
+data(kidney); 
+kidney$counts=kidney$counts[sample(nrow(kidney$counts)),]
 counts <- kidney$counts
 tumor <- kidney$treatment
 replic <- kidney$replic

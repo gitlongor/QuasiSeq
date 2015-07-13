@@ -5,7 +5,10 @@ require(edgeR)
 require(SimSeq)
 
 ### Load Data
-data(kidney)
+RNGkind("Mersenne-Twister", "Inversion")
+set.seed(156165L)
+data(kidney); 
+kidney$counts=kidney$counts[sample(nrow(kidney$counts)),]
 counts <- kidney$counts
 treatment <- kidney$treatment
 
