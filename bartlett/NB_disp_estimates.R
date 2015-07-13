@@ -1,3 +1,5 @@
+print(getwd())
+setwd("C:/Users/Klirk/Desktop/Simulation_Code/Simulation_Code/KIRC_Simulations/bartlett")
 ### Load Bioconductor Packages
 require(edgeR)
 
@@ -13,8 +15,8 @@ counts <- kidney$counts
 treatment <- kidney$treatment
 
 ### Set simulation variables
-filter.mean <- 10 # lower bound of average read count for simulated genes
-filter.nonzero <- 2 # lower bound for nonzero read counts for simulated genes
+filter.mean <- 0 # lower bound of average read count for simulated genes
+filter.nonzero <- 1 # lower bound for nonzero read counts for simulated genes
 
 ### Remove low count genes
 keep.counts <- ( rowMeans(counts) >= filter.mean ) & ( rowSums(counts > 0) >= filter.nonzero )
@@ -46,3 +48,6 @@ nbdisp.nontumor <- y$tagwise.dispersion
 ### Save Results
 saveRDS(nbdisp.tumor, file = "nbdisp_tumor_edgeR.RDS")
 saveRDS(nbdisp.nontumor, file = "nbdisp_nontumor_edgeR.RDS")
+
+
+save.image('NB_disp_estimates.RData')
