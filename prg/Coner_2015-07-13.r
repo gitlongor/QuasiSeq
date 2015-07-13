@@ -79,6 +79,22 @@ logLikQNB=function(y, mu, phi, tau)
 logLikQNB = Vectorize(logLikQNB, c('phi','y','tau'))
 
 
+#Simulation
+my.simu<-function(mu,phi,tau) {
+alpha<-(tau*(2*phi-1)+1)/(tau*(phi-1))
+beta<-1/tau
+r=mu*(alpha-1)/beta
+p<-sort(rbeta(100,alpha,beta))
+y<-rnbinom(100,r,prob=p)
+library(MASS)
+model<-glm.nb(y~p)
+S<-simulate(model,nsim=5)
+return(S)
+}
+
+my.simu(10,2,.5)
+
+
 curve(log(logLikQNB(y=10, mu=x, phi=1.1, tau=.5)), 8, 12)
 curve(log(my_LBNB(y=10, mu=x, phi=1.1, tau=.5)), 8, 12, add=T, col=4, lty=3, lwd=3)
 curve(log(logLikQNB(y=10, mu=x, phi=1.1, tau=.5)), 200, 2000)
@@ -97,3 +113,25 @@ curve(log(logLikQNB(y=1000, mu=x, phi=1.1, tau=.5)), 0, 500)
 curve(log(my_LBNB(y=1000, mu=x, phi=1.1, tau=.5)), 0, 500, add=T, col=4, lty=3, lwd=3)
 
 save.image(img.name)
+
+#Score functions comparison with mean
+my_BNB_Score<-function(y,mu,phi,tau){
+	term1 = mu*(tau*phi+1)/(phi-1)
+	term2 = (tau*(2*phi-1)+1)/(tau*(phi-1))
+    term3= term1+term2+y+1/tau
+	term4 = (tau*phi+1)/(phi-1)
+	ans = term4*(digamma(y+term1)+digamma(term1+term2)-
+                   digamma(term3)-digamma(term1))
+ans
+}
+my_QNB_Score<-function(y, mu,phi,tau){
+   (y-mu)/(phi*(mu+tau*mu^2))
+}
+
+curve(my_BNB_Score(y=10, mu=x, phi=1.1, tau=.5), 1, 20)
+curve(my_QNB_Score(y=10, mu=x, phi=1.1, tau=.5), 1, 20, add=T, col=4, lty=3, lwd=3)
+
+save.image(img.name)
+
+
+ 
