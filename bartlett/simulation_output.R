@@ -14,13 +14,13 @@ set.seed(1039245)
 
 ### Set simulation variables
 n.iter <- 200     # Number of iterations
-k.ind <- 10    # Sample size in each simulated treatment group 
+k.ind <- 20    # Sample size in each simulated treatment group 
 n.genes <- 8500  # No of genes in each simulated matrix
 n.diff <- 2000   # No of DE genes in each simulated matrix
 n.genes.trim <- 5000 # No of genes to trim down to
 n.diff.trim <- 1000 # No of DE genes to trim down to
-filter.mean <- 10 # lower bound of average read count for simulated genes
-filter.nonzero <- 2 # lower bound for nonzero read counts for simulated genes
+filter.mean <- 0 # lower bound of average read count for simulated genes
+filter.nonzero <- 1 # lower bound for nonzero read counts for simulated genes
 
 ### Load Data
 data(kidney)
@@ -47,40 +47,45 @@ probs <- CalcPvalWilcox(counts, treatment = tumor, replic = replic,
 wghts <- 1 - fdrtool(probs, statistic = "pvalue", plot = FALSE, verbose = FALSE)$lfdr
 
 ### Initialize matrix of p-value output for each statistical method
-pvals.samseq.simseq <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
-pvals.quasiseq.simseq <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
+#pvals.samseq.simseq <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
+pvals.quasiseq.simseq.ql <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
+pvals.quasiseq.simseq.spline <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
 pvals.quasiseq.simseq.bart <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
-pvals.edger.simseq <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
-pvals.deseq2.simseq <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
+#pvals.edger.simseq <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
+#pvals.deseq2.simseq <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
 pvals.voom.simseq <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
 
-pvals.samseq.nb <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
-pvals.quasiseq.nb <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
+#pvals.samseq.nb <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
+pvals.quasiseq.nb.ql <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
+pvals.quasiseq.nb.spline <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
 pvals.quasiseq.nb.bart <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
-pvals.edger.nb <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
-pvals.deseq2.nb <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
+#pvals.edger.nb <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
+#pvals.deseq2.nb <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
 pvals.voom.nb <- matrix(NA, nrow = n.iter, ncol = n.genes.trim)
 
 ### if sample size in simulated matrices is greater than or equal to 
 ### 7, Cook's distance filtering replaces outlier counts which creates a new
 ### dataset so that another set of p-values is needed.
+if(FALSE){
 if(k.ind >= 7)
 {
-  pvals.samseq.cooks.simseq <- vector("list", n.iter)
-  pvals.quasiseq.cooks.simseq <- vector("list", n.iter)
+  #pvals.samseq.cooks.simseq <- vector("list", n.iter)
+  pvals.quasiseq.cooks.simseq.ql <- vector("list", n.iter)
+  pvals.quasiseq.cooks.simseq.spline <- vector("list", n.iter)
   pvals.quasiseq.cooks.simseq.bart <- vector("list", n.iter)
-  pvals.edger.cooks.simseq <- vector("list", n.iter)
-  pvals.deseq2.cooks.simseq <- vector("list", n.iter)
+  #pvals.edger.cooks.simseq <- vector("list", n.iter)
+  #pvals.deseq2.cooks.simseq <- vector("list", n.iter)
   pvals.voom.cooks.simseq <- vector("list", n.iter)
   
-  pvals.samseq.cooks.nb <- vector("list", n.iter)
-  pvals.quasiseq.cooks.nb <- vector("list", n.iter)
+  #pvals.samseq.cooks.nb <- vector("list", n.iter)
+  pvals.quasiseq.cooks.nb.ql <- vector("list", n.iter)
+  pvals.quasiseq.cooks.nb.spline <- vector("list", n.iter)
   pvals.quasiseq.cooks.nb.bart <- vector("list", n.iter)
-  pvals.edger.cooks.nb <- vector("list", n.iter)
-  pvals.deseq2.cooks.nb <- vector("list", n.iter)
+  #pvals.edger.cooks.nb <- vector("list", n.iter)
+  #pvals.deseq2.cooks.nb <- vector("list", n.iter)
   pvals.voom.cooks.nb <- vector("list", n.iter)
 }
-
+}
 
 ### Preprocessing steps for simulating NB data
 lambdas <- matrix(NA, nrow = nrow(counts), ncol = 2)
@@ -149,7 +154,7 @@ for(i in 1:n.iter){
     counts.simseq <- counts.simseq[c(ee.genes, de.genes), ]
     counts.nb <- counts.nb[c(ee.genes, de.genes), ]
    
-    
+    if(FALSE){
     ### DESeq Analysis
     colData <- data.frame(trt = c(rep(0, k.ind), rep(1, k.ind)))
     
@@ -201,7 +206,7 @@ for(i in 1:n.iter){
       des.res <- results(des, cooksCutoff = FALSE, independentFiltering = FALSE)
       pvals.deseq2.cooks.nb[[i]] <- des.res$pvalue
     }
-    
+    }
     
     ### QuasiSeq Analysis
     ### Create Design Matrices
@@ -220,12 +225,13 @@ for(i in 1:n.iter){
     if( !is.list(fit) ) next
     
     res.fit <- QL.results(fit, Plot = FALSE)
-    pvals.quasiseq.simseq[i, ] <- res.fit$P.values[[3]]
+    pvals.quasiseq.simseq.ql[i, ] <- res.fit$P.values[[1]]
+    pvals.quasiseq.simseq.spline[i, ] <- res.fit$P.values[[3]]
     
     fit.bart=fit
     fit.bart$LRT = fit$LRT.Bart
     res.fit.bart = QL.results(fit.bart, Plot = FALSE)
-    pvals.quasiseq.simseq.bart[i, ] <- res.fit.bart$P.values[[3]]
+    pvals.quasiseq.simseq.bart[i, ] <- res.fit.bart$P.values[[1]]
     
     ### fit for NB data
     fit <- tryCatch(QL.fit(counts.nb, design.list = design.list, log.offset = log(nf.nb),
@@ -233,13 +239,15 @@ for(i in 1:n.iter){
     if( !is.list(fit) ) next
     
     res.fit <- QL.results(fit, Plot = FALSE)
-    pvals.quasiseq.nb[i, ] <- res.fit$P.values[[3]]
+    pvals.quasiseq.nb.ql[i, ] <- res.fit$P.values[[1]]
+    pvals.quasiseq.nb.spline[i, ] <- res.fit$P.values[[3]]
     
     fit.bart=fit
     fit.bart$LRT = fit$LRT.Bart
     res.fit.bart = QL.results(fit.bart, Plot = FALSE)
-    pvals.quasiseq.nb.bart[i, ] <- res.fit.bart$P.values[[3]]
+    pvals.quasiseq.nb.bart[i, ] <- res.fit.bart$P.values[[1]]
     
+    if(FALSE){
     if(k.ind >= 7){
       ### Compute Normalization Factors
       nf.cooks.simseq <- calcNormFactors(counts.cooks.simseq) * apply(counts.cooks.simseq, 2, sum)
@@ -271,10 +279,10 @@ for(i in 1:n.iter){
       res.fit.bart = QL.results(fit.bart, Plot = FALSE)
       pvals.quasiseq.cooks.nb.bart[[i]] <- res.fit.bart$P.values[[3]]
     }
-    
+    }
     break
   }
-    
+  if(FALSE){  
   ### edgeR Analysis
   
   ### fit for SimSeq data
@@ -314,7 +322,7 @@ for(i in 1:n.iter){
     lrt <- glmLRT(fit.edgeR, coef = 2)
     pvals.edger.cooks.nb[[i]] <- lrt$table$PValue
   }
-  
+  }
  ### Limma Voom Analysis
  
  ### fit for SimSeq data
@@ -335,6 +343,7 @@ for(i in 1:n.iter){
  fit <- eBayes(fit, proportion = 0.8)
  pvals.voom.nb[i, ] <- fit$p.value[, 2]
  
+ if(FALSE){
  if(k.ind >= 7){
    ### fit for SimSeq data
    y <- DGEList(counts = counts.cooks.simseq, group = trt)
@@ -378,7 +387,7 @@ for(i in 1:n.iter){
     samfit <- SAMseq(counts.cooks.nb, trt, resp.type = "Two class unpaired")
     pvals.samseq.cooks.nb[[i]] <- samr.pvalues.from.perms(samfit$samr.obj$tt, samfit$samr.obj$ttstar)
   }
-
+}
 }
 
 ### Save Results
@@ -393,20 +402,23 @@ if( !file.exists(file.path(mainDir, subDir, paste0("ss", k.ind))) )
 {
   dir.create(file.path(mainDir, subDir, paste0("ss", k.ind))) 
 }
-saveRDS(pvals.deseq2.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "p_deseq2_simseq.RDS"))
-saveRDS(pvals.quasiseq.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_simseq.RDS"))
+#saveRDS(pvals.deseq2.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "p_deseq2_simseq.RDS"))
+saveRDS(pvals.quasiseq.simseq.ql, file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_simseq_ql.RDS"))
+saveRDS(pvals.quasiseq.simseq.spline, file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_simseq_spline.RDS"))
 saveRDS(pvals.quasiseq.simseq.bart, file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_simseq_bart.RDS"))
-saveRDS(pvals.edger.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "p_edger_simseq.RDS"))
-saveRDS(pvals.samseq.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "p_samseq_simseq.RDS"))
+#saveRDS(pvals.edger.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "p_edger_simseq.RDS"))
+#saveRDS(pvals.samseq.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "p_samseq_simseq.RDS"))
 saveRDS(pvals.voom.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "p_voom_simseq.RDS"))
 
-saveRDS(pvals.deseq2.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "p_deseq2_nb.RDS"))
-saveRDS(pvals.quasiseq.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_nb.RDS"))
-saveRDS(pvals.quasiseq.bart.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_nb_bart.RDS"))
-saveRDS(pvals.edger.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "p_edger_nb.RDS"))
-saveRDS(pvals.samseq.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "p_samseq_nb.RDS"))
+#saveRDS(pvals.deseq2.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "p_deseq2_nb.RDS"))
+saveRDS(pvals.quasiseq.nb.ql, file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_nb_ql.RDS"))
+saveRDS(pvals.quasiseq.nb.spline, file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_nb_spline.RDS"))
+saveRDS(pvals.quasiseq.nb.bart, file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_nb_bart.RDS"))
+#saveRDS(pvals.edger.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "p_edger_nb.RDS"))
+#saveRDS(pvals.samseq.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "p_samseq_nb.RDS"))
 saveRDS(pvals.voom.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "p_voom_nb.RDS"))
 
+if(FALSE){
 if(k.ind >= 7)
 {
   saveRDS(pvals.deseq2.cooks.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "p_deseq2_cooks_simseq.RDS"))
@@ -426,3 +438,4 @@ if(k.ind >= 7)
 
 saveRDS(filt.cooks.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "filt_cooks_simseq.RDS"))
 saveRDS(filt.cooks.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "filt_cooks_nb.RDS"))
+}

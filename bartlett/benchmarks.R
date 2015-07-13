@@ -82,7 +82,7 @@ fdp.cooks <- function(pvals, filt, null.genes, qval.cuts, pvals.list = FALSE)
   return(res)
 }
 
-k.ind <- 10
+k.ind <- 5
 n.genes.trim <- 5000 # No of genes to trim down to
 n.diff.trim <- 1000 # No of DE genes to trim down to
 qval.cuts <- seq(0, 0.15, by = 0.001)
@@ -90,20 +90,23 @@ qval.cuts <- seq(0, 0.15, by = 0.001)
 mainDir <- getwd()
 subDir <- "pval_output"
 
-pvals.deseq2.simseq <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_deseq2_simseq.RDS"))
-pvals.quasiseq.simseq <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_simseq.RDS"))
+#pvals.deseq2.simseq <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_deseq2_simseq.RDS"))
+pvals.quasiseq.simseq.ql <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_simseq_ql.RDS"))
+pvals.quasiseq.simseq.spline <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_simseq_spline.RDS"))
 pvals.quasiseq.simseq.bart <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_simseq_bart.RDS"))
-pvals.edger.simseq <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_edger_simseq.RDS"))
-pvals.samseq.simseq <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_samseq_simseq.RDS"))
+#pvals.edger.simseq <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_edger_simseq.RDS"))
+#pvals.samseq.simseq <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_samseq_simseq.RDS"))
 pvals.voom.simseq <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_voom_simseq.RDS"))
 
-pvals.deseq2.nb <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_deseq2_nb.RDS"))
-pvals.quasiseq.nb <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_nb.RDS"))
+#pvals.deseq2.nb <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_deseq2_nb.RDS"))
+pvals.quasiseq.nb.ql <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_nb_ql.RDS"))
+pvals.quasiseq.nb.spline <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_nb_spline.RDS"))
 pvals.quasiseq.nb.bart <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_quasiseq_nb_bart.RDS"))
-pvals.edger.nb <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_edger_nb.RDS"))
-pvals.samseq.nb <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_samseq_nb.RDS"))
+#pvals.edger.nb <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_edger_nb.RDS"))
+#pvals.samseq.nb <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_samseq_nb.RDS"))
 pvals.voom.nb <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_voom_nb.RDS"))
 
+if(FALSE){
 if( k.ind >= 7)
 {
   pvals.deseq2.cooks.simseq <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "p_deseq2_cooks_simseq.RDS"))
@@ -123,24 +126,27 @@ if( k.ind >= 7)
 
 filt.cooks.simseq <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "filt_cooks_simseq.RDS"))
 filt.cooks.nb <- readRDS(file.path(mainDir, subDir, paste0("ss", k.ind), "filt_cooks_nb.RDS"))
-
+}
 
 ### Compute PAU
 null.genes <- c( rep(TRUE, n.genes.trim - n.diff.trim), rep(FALSE, n.diff.trim))
-pau.deseq2.simseq <- apply(pvals.deseq2.simseq, 1, pau, null.genes, specificity = 0.05)
-pau.edger.simseq <- apply(pvals.edger.simseq, 1, pau, null.genes, specificity = 0.05)
-pau.quasiseq.simseq <- apply(pvals.quasiseq.simseq, 1, pau, null.genes, specificity = 0.05)
+#pau.deseq2.simseq <- apply(pvals.deseq2.simseq, 1, pau, null.genes, specificity = 0.05)
+#pau.edger.simseq <- apply(pvals.edger.simseq, 1, pau, null.genes, specificity = 0.05)
+pau.quasiseq.simseq.ql <- apply(pvals.quasiseq.simseq.ql, 1, pau, null.genes, specificity = 0.05)
+pau.quasiseq.simseq.spline <- apply(pvals.quasiseq.simseq.spline, 1, pau, null.genes, specificity = 0.05)
 pau.quasiseq.simseq.bart <- apply(pvals.quasiseq.simseq.bart, 1, pau, null.genes, specificity = 0.05)
-pau.samseq.simseq <- apply(pvals.samseq.simseq, 1, pau, null.genes, specificity = 0.05)
+#pau.samseq.simseq <- apply(pvals.samseq.simseq, 1, pau, null.genes, specificity = 0.05)
 pau.voom.simseq <- apply(pvals.voom.simseq, 1, pau, null.genes, specificity = 0.05)
 
-pau.deseq2.nb <- apply(pvals.deseq2.nb, 1, pau, null.genes, specificity = 0.05)
-pau.edger.nb <- apply(pvals.edger.nb, 1, pau, null.genes, specificity = 0.05)
-pau.quasiseq.nb <- apply(pvals.quasiseq.nb, 1, pau, null.genes, specificity = 0.05)
+#pau.deseq2.nb <- apply(pvals.deseq2.nb, 1, pau, null.genes, specificity = 0.05)
+#pau.edger.nb <- apply(pvals.edger.nb, 1, pau, null.genes, specificity = 0.05)
+pau.quasiseq.nb.ql <- apply(pvals.quasiseq.nb.ql, 1, pau, null.genes, specificity = 0.05)
+pau.quasiseq.nb.spline <- apply(pvals.quasiseq.nb.spline, 1, pau, null.genes, specificity = 0.05)
 pau.quasiseq.nb.bart <- apply(pvals.quasiseq.nb.bart, 1, pau, null.genes, specificity = 0.05)
-pau.samseq.nb <- apply(pvals.samseq.nb, 1, pau, null.genes, specificity = 0.05)
+#pau.samseq.nb <- apply(pvals.samseq.nb, 1, pau, null.genes, specificity = 0.05)
 pau.voom.nb <- apply(pvals.voom.nb, 1, pau, null.genes, specificity = 0.05)
 
+if(FALSE){
 if(k.ind < 7)
 {
   pau.deseq2.cooks.simseq <- pau.cooks(pvals.deseq2.simseq, filt.cooks.simseq, null.genes, specificity = 0.05)
@@ -171,21 +177,24 @@ if(k.ind < 7)
   pau.samseq.cooks.nb <- pau.cooks(pvals.samseq.cooks.nb, filt.cooks.nb, null.genes, specificity = 0.05, pvals.list = TRUE)
   pau.voom.cooks.nb <- pau.cooks(pvals.voom.cooks.nb, filt.cooks.nb, null.genes, specificity = 0.05, pvals.list = TRUE)
 }
-
-fdp.deseq2.simseq <- apply(pvals.deseq2.simseq, 1, fdp, null.genes, qval.cuts)
-fdp.edger.simseq <- apply(pvals.edger.simseq, 1, fdp, null.genes, qval.cuts)
-fdp.quasiseq.simseq <- apply(pvals.quasiseq.simseq, 1, fdp, null.genes, qval.cuts)
+}
+#fdp.deseq2.simseq <- apply(pvals.deseq2.simseq, 1, fdp, null.genes, qval.cuts)
+#fdp.edger.simseq <- apply(pvals.edger.simseq, 1, fdp, null.genes, qval.cuts)
+fdp.quasiseq.simseq.ql <- apply(pvals.quasiseq.simseq.ql, 1, fdp, null.genes, qval.cuts)
+fdp.quasiseq.simseq.spline <- apply(pvals.quasiseq.simseq.spline, 1, fdp, null.genes, qval.cuts)
 fdp.quasiseq.simseq.bart <- apply(pvals.quasiseq.simseq.bart, 1, fdp, null.genes, qval.cuts)
-fdp.samseq.simseq <- apply(pvals.samseq.simseq, 1, fdp, null.genes, qval.cuts)
+#fdp.samseq.simseq <- apply(pvals.samseq.simseq, 1, fdp, null.genes, qval.cuts)
 fdp.voom.simseq <- apply(pvals.voom.simseq, 1, fdp, null.genes, qval.cuts)
 
-fdp.deseq2.nb <- apply(pvals.deseq2.nb, 1, fdp, null.genes, qval.cuts)
-fdp.edger.nb <- apply(pvals.edger.nb, 1, fdp, null.genes, qval.cuts)
-fdp.quasiseq.nb <- apply(pvals.quasiseq.nb, 1, fdp, null.genes, qval.cuts)
+#fdp.deseq2.nb <- apply(pvals.deseq2.nb, 1, fdp, null.genes, qval.cuts)
+#fdp.edger.nb <- apply(pvals.edger.nb, 1, fdp, null.genes, qval.cuts)
+fdp.quasiseq.nb.ql <- apply(pvals.quasiseq.nb.ql, 1, fdp, null.genes, qval.cuts)
+fdp.quasiseq.nb.spline <- apply(pvals.quasiseq.nb.spline, 1, fdp, null.genes, qval.cuts)
 fdp.quasiseq.nb.bart <- apply(pvals.quasiseq.nb.bart, 1, fdp, null.genes, qval.cuts)
-fdp.samseq.nb <- apply(pvals.samseq.nb, 1, fdp, null.genes, qval.cuts)
+#fdp.samseq.nb <- apply(pvals.samseq.nb, 1, fdp, null.genes, qval.cuts)
 fdp.voom.nb <- apply(pvals.voom.nb, 1, fdp, null.genes, qval.cuts)
 
+if(FALSE){
 if(k.ind < 7)
 {
   fdp.deseq2.cooks.simseq <- fdp.cooks(pvals.deseq2.simseq, filt.cooks.simseq, null.genes, qval.cuts)
@@ -216,7 +225,7 @@ if(k.ind < 7)
   fdp.samseq.cooks.nb <- fdp.cooks(pvals.samseq.cooks.nb, filt.cooks.nb, null.genes, qval.cuts, pvals.list = TRUE)
   fdp.voom.cooks.nb <- fdp.cooks(pvals.voom.cooks.nb, filt.cooks.nb, null.genes, qval.cuts, pvals.list = TRUE)
 }
-
+}
 mainDir <- getwd()
 subDir <- "fdp_output"
 if( !file.exists(file.path(mainDir, subDir)) )
@@ -227,20 +236,23 @@ if( !file.exists(file.path(mainDir, subDir, paste0("ss", k.ind))) )
 {
   dir.create(file.path(mainDir, subDir, paste0("ss", k.ind))) 
 }
-saveRDS(fdp.deseq2.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_deseq2_simseq.RDS"))
-saveRDS(fdp.quasiseq.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_quasiseq_simseq.RDS"))
+#saveRDS(fdp.deseq2.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_deseq2_simseq.RDS"))
+saveRDS(fdp.quasiseq.simseq.ql, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_quasiseq_simseq_ql.RDS"))
+saveRDS(fdp.quasiseq.simseq.spline, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_quasiseq_simseq_spline.RDS"))
 saveRDS(fdp.quasiseq.simseq.bart, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_quasiseq_simseq_bart.RDS"))
-saveRDS(fdp.edger.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_edger_simseq.RDS"))
-saveRDS(fdp.samseq.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_samseq_simseq.RDS"))
+#saveRDS(fdp.edger.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_edger_simseq.RDS"))
+#saveRDS(fdp.samseq.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_samseq_simseq.RDS"))
 saveRDS(fdp.voom.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_voom_simseq.RDS"))
 
-saveRDS(fdp.deseq2.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_deseq2_nb.RDS"))
-saveRDS(fdp.quasiseq.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_quasiseq_nb.RDS"))
+#saveRDS(fdp.deseq2.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_deseq2_nb.RDS"))
+saveRDS(fdp.quasiseq.nb.ql, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_quasiseq_nb_ql.RDS"))
+saveRDS(fdp.quasiseq.nb.spline, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_quasiseq_nb_spline.RDS"))
 saveRDS(fdp.quasiseq.nb.bart, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_quasiseq_nb_bart.RDS"))
-saveRDS(fdp.edger.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_edger_nb.RDS"))
-saveRDS(fdp.samseq.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_samseq_nb.RDS"))
+#saveRDS(fdp.edger.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_edger_nb.RDS"))
+#saveRDS(fdp.samseq.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_samseq_nb.RDS"))
 saveRDS(fdp.voom.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_voom_nb.RDS"))
 
+if(FALSE){
 saveRDS(fdp.deseq2.cooks.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_deseq2_cooks_simseq.RDS"))
 saveRDS(fdp.quasiseq.cooks.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_quasiseq_cooks_simseq.RDS"))
 saveRDS(fdp.quasiseq.cooks.simseq.bart, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_quasiseq_cooks_simseq_bart.RDS"))
@@ -254,7 +266,7 @@ saveRDS(fdp.quasiseq.cooks.nb.bart, file.path(mainDir, subDir, paste0("ss", k.in
 saveRDS(fdp.edger.cooks.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_edger_cooks_nb.RDS"))
 saveRDS(fdp.samseq.cooks.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_samseq_cooks_nb.RDS"))
 saveRDS(fdp.voom.cooks.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "fdp_voom_cooks_nb.RDS"))
-
+}
 subDir <- "pau_output"
 if( !file.exists(file.path(mainDir, subDir)) )
 {
@@ -264,20 +276,23 @@ if( !file.exists(file.path(mainDir, subDir, paste0("ss", k.ind))) )
 {
   dir.create(file.path(mainDir, subDir, paste0("ss", k.ind))) 
 }
-saveRDS(pau.deseq2.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_deseq2_simseq.RDS"))
-saveRDS(pau.quasiseq.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_quasiseq_simseq.RDS"))
+#saveRDS(pau.deseq2.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_deseq2_simseq.RDS"))
+saveRDS(pau.quasiseq.simseq.ql, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_quasiseq_simseq_ql.RDS"))
+saveRDS(pau.quasiseq.simseq.spline, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_quasiseq_simseq_spline.RDS"))
 saveRDS(pau.quasiseq.simseq.bart, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_quasiseq_simseq_bart.RDS"))
-saveRDS(pau.edger.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_edger_simseq.RDS"))
-saveRDS(pau.samseq.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_samseq_simseq.RDS"))
+#saveRDS(pau.edger.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_edger_simseq.RDS"))
+#saveRDS(pau.samseq.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_samseq_simseq.RDS"))
 saveRDS(pau.voom.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_voom_simseq.RDS"))
 
-saveRDS(pau.deseq2.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_deseq2_nb.RDS"))
-saveRDS(pau.quasiseq.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_quasiseq_nb.RDS"))
+#saveRDS(pau.deseq2.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_deseq2_nb.RDS"))
+saveRDS(pau.quasiseq.nb.ql, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_quasiseq_nb_ql.RDS"))
+saveRDS(pau.quasiseq.nb.spline, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_quasiseq_nb_spline.RDS"))
 saveRDS(pau.quasiseq.nb.bart, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_quasiseq_nb_bart.RDS"))
-saveRDS(pau.edger.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_edger_nb.RDS"))
-saveRDS(pau.samseq.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_samseq_nb.RDS"))
+#saveRDS(pau.edger.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_edger_nb.RDS"))
+#saveRDS(pau.samseq.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_samseq_nb.RDS"))
 saveRDS(pau.voom.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_voom_nb.RDS"))
 
+if(FALSE){
 saveRDS(pau.deseq2.cooks.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_deseq2_cooks_simseq.RDS"))
 saveRDS(pau.quasiseq.cooks.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_quasiseq_cooks_simseq.RDS"))
 saveRDS(pau.quasiseq.cooks.simseq.bart, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_quasiseq_cooks_simseq_bart.RDS"))
@@ -291,3 +306,4 @@ saveRDS(pau.quasiseq.cooks.nb.bart, file.path(mainDir, subDir, paste0("ss", k.in
 saveRDS(pau.edger.cooks.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_edger_cooks_nb.RDS"))
 saveRDS(pau.samseq.cooks.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_samseq_cooks_nb.RDS"))
 saveRDS(pau.voom.cooks.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "pau_voom_cooks_nb.RDS"))
+}
