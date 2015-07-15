@@ -1,3 +1,5 @@
+print(getwd())
+setwd("C:/Users/Klirk/Desktop/Simulation_Code/Simulation_Code/KIRC_Simulations/bartlett")
 ### Load Bioconductor Packages
 require(DESeq2)
 require(edgeR)
@@ -444,3 +446,5 @@ if(k.ind >= 7)
 saveRDS(filt.cooks.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "filt_cooks_simseq.RDS"))
 saveRDS(filt.cooks.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "filt_cooks_nb.RDS"))
 }
+
+save.image('simulation_output_n20.RData')

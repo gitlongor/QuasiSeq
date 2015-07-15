@@ -1,3 +1,5 @@
+print(getwd())
+setwd("C:/Users/Klirk/Desktop/Simulation_Code/Simulation_Code/KIRC_Simulations/bartlett")
 require(ggplot2, quietly = TRUE)
 cuts <- seq(0,0.15,by = 0.001)
 l <- length(cuts)
@@ -116,3 +118,5 @@ p + geom_line(aes(x = cuts, y = fdp, colour = Simulation), size = 0.5, linetype 
   theme_bw() + facet_grid(SS ~ Method) + 
   theme(axis.text.x = element_text(angle=90)) +
   xlab("Q-value Cutoff") + ylab("(Average FDP) - (Q-Value Cutoff)")
+
+save.image('FDR_Plot.RData')
