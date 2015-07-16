@@ -22,6 +22,8 @@ out.file=function(suffix, subdir) if(missing(subdir)) file.path(out.dir, paste(p
 
 setwd(out.dir)
 
+library(QuasiSeq)
+
 options(contrasts=c('contr.sum', 'contr.sum'))
 
 .sessionInfo=list(sessionInfo=sessionInfo(), Sys.info=Sys.info(),
@@ -47,7 +49,8 @@ my_LBNB<-function(y, mu,phi,tau){
 	ans = exp(		
 		numerator-lbeta(y, term1)-term3
 	)/y
-	ans[y==0]=exp(numerator-term3)
+	y0=which(y==0)
+	ans[y0]=exp(numerator-term3)[y0]
 	ans
 }
 
@@ -71,33 +74,33 @@ get.h<-function(phi,y,tau){
 
 get.h(2,10,0.2)
 
-logLikQNB=function(y, mu, phi, tau)
+likQNB=function(y, mu, phi, tau)
 {
 	h=get.h(phi, y, tau)
 	my_QLNB(y, mu, phi, tau) * h
 }
-logLikQNB = Vectorize(logLikQNB, c('phi','y','tau'))
+likQNB = Vectorize(logLikQNB, c('phi','y','tau'))
 
 
 #Simulation
-my.simu<-function(mu,phi,tau) {
-alpha<-(tau*(2*phi-1)+1)/(tau*(phi-1))
-beta<-1/tau
-r=mu*(alpha-1)/beta
-p<-sort(rbeta(100,alpha,beta))
-y<-rnbinom(100,r,prob=p)
-library(MASS)
-model<-glm.nb(y~p)
-S<-simulate(model,nsim=5)
-return(S)
+my.simu<-function(n, mu,phi,tau) {
+	alpha<-(tau*(2*phi-1)+1)/(tau*(phi-1))
+	beta<-1/tau
+	r=mu*(alpha-1)/beta
+	p<-sort(rbeta(n,alpha,beta))
+	y=rnbinom(n,r,prob=p)
+	attr(y, 'phi')=phi
+	attr(y, 'tau')=tau
+	attr(y, 'mu')=mu
+	y
 }
 
-my.simu(10,2,.5)
+my.simu(8, 10,2,.5)
 
 
-curve(log(logLikQNB(y=10, mu=x, phi=1.1, tau=.5)), 8, 12)
+curve(log(likQNB(y=10, mu=x, phi=1.1, tau=.5)), 8, 12)
 curve(log(my_LBNB(y=10, mu=x, phi=1.1, tau=.5)), 8, 12, add=T, col=4, lty=3, lwd=3)
-curve(log(logLikQNB(y=10, mu=x, phi=1.1, tau=.5)), 200, 2000)
+curve(log(likQNB(y=10, mu=x, phi=1.1, tau=.5)), 200, 2000)
 curve(log(my_LBNB(y=10, mu=x, phi=1.1, tau=.5)), 200, 2000, add=T, col=4, lty=3, lwd=3)
 abline(v=10)
 
@@ -115,7 +118,7 @@ curve(log(my_LBNB(y=1000, mu=x, phi=1.1, tau=.5)), 0, 500, add=T, col=4, lty=3, 
 save.image(img.name)
 
 #Score functions comparison with mean
-my_BNB_Score<-function(y,mu,phi,tau){
+my_BNB_Score1<-function(y,mu,phi,tau){
 	term1 = mu*(tau*phi+1)/(phi-1)
 	term2 = (tau*(2*phi-1)+1)/(tau*(phi-1))
     term3= term1+term2+y+1/tau
@@ -124,12 +127,48 @@ my_BNB_Score<-function(y,mu,phi,tau){
                    digamma(term3)-digamma(term1))
 ans
 }
-my_QNB_Score<-function(y, mu,phi,tau){
+my_QNB_Score1<-function(y, mu,phi,tau){
    (y-mu)/(phi*(mu+tau*mu^2))
 }
 
-curve(my_BNB_Score(y=10, mu=x, phi=1.1, tau=.5), 1, 20)
-curve(my_QNB_Score(y=10, mu=x, phi=1.1, tau=.5), 1, 20, add=T, col=4, lty=3, lwd=3)
+curve(my_BNB_Score1(y=10, mu=x, phi=1.1, tau=.5), 9, 12)
+curve(my_QNB_Score1(y=10, mu=x, phi=1.1, tau=.5), 9, 12, add=T, col=4, lty=3, lwd=3)
+abline(h=0)
+
+curve(my_BNB_Score1(y=0, mu=x, phi=1.1, tau=.5), 0, 1)
+curve(my_QNB_Score1(y=0, mu=x, phi=1.1, tau=.5), 0, 1, add=T, col=4, lty=3, lwd=3)
+abline(h=0)
+
+bnbScore=function(mu, y, phi, tau)sum(my_BNB_Score1(y,mu,phi,tau))
+qnbScore=function(mu, y, phi, tau)sum(my_QNB_Score1(y,mu,phi,tau))
+bnbNegLogLik=function(mu, y, phi, tau)-sum(log(my_LBNB(y,mu,phi,tau)))
+
+
+bnbMle=function(y, phi, tau)
+	tryCatch(optim(max(1e-9,mean(y)), bnbNegLogLik, method='L-BFGS-B', lower=0, y=y, phi=phi, tau=tau)$par, error=function(...)NA_real_)
+	
+
+	
+qnbMle=function(y, phi, tau) mean(y)	
+
+
+phis=seq(1+1e-3, 3, length=20)
+taus=seq(1e-3, 3, length=20)
+mus =seq(.1, 1e4, length=20)
+ns = c(2, 4, 8, 16, 32)
+cases=expand.grid(n=ns, mu=mus, tau=taus, phi=phis)
+reps=1e3L
+
+getBnbQnb=function(n, mu, tau, phi)
+{replicate(reps,
+	c(BNB=bnbMle(my.simu(n, mu, phi, tau), phi, tau),
+	  QNB=qnbMle(my.simu(n, mu, phi, tau), phi, tau)
+	)
+)
+}
+getBnbQnb2=function(x) getBnbQnb(x[1],x[2],x[3],x[4])
+est = apply(cases, 1, getBnbQnb2)
+
 
 save.image(img.name)
 
