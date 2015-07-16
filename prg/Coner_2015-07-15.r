@@ -79,7 +79,7 @@ likQNB=function(y, mu, phi, tau)
 	h=get.h(phi, y, tau)
 	my_QLNB(y, mu, phi, tau) * h
 }
-likQNB = Vectorize(logLikQNB, c('phi','y','tau'))
+likQNB = Vectorize(likQNB, c('phi','y','tau'))
 
 
 #Simulation
