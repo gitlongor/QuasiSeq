@@ -15,7 +15,7 @@ require(SimSeq)
 set.seed(1039245)
 
 ### Set simulation variables
-n.iter <- 200     # Number of iterations
+n.iter <- 5     # Number of iterations
 k.ind <- 5    # Sample size in each simulated treatment group 
 n.genes <- 8500  # No of genes in each simulated matrix
 n.diff <- 2000   # No of DE genes in each simulated matrix
@@ -232,7 +232,7 @@ for(i in 1:n.iter){
     ### QuasiSeq Analysis
     ### Create Design Matrices
     design.list <- vector("list", 2)
-    trt <- c(rep(0, k.ind), rep(1, k.ind))
+    trt <- as.factor(c(rep(0, k.ind), rep(1, k.ind)))
 	  options(contrast=c('contr.sum','contr.sum'))
     design.list[[1]] <- model.matrix(~trt)  
     # design.list[[2]] <- rep(1, length(trt))
