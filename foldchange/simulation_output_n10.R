@@ -421,7 +421,7 @@ for(i in 1:n.iter){
  design <- model.matrix(~trt)
  v <- voom(y, design)
  fit <- lmFit(v,design)
- fold.voom.simseq[i, ] = fit$coefficients[,2L]
+ fold.voom.nb[i, ] = fit$coefficients[,2L]
  
  #fit <- eBayes(fit, proportion = 0.8)
  #pvals.voom.nb[i, ] <- fit$p.value[, 2]
