@@ -261,7 +261,7 @@ for(i in 1:n.iter){
 	  fit3 <- tryCatch({
 	    d <- DGEList(counts = counts.simseq, group = design.list[[1]][, 2], lib.size = exp(log(nf.simseq)))
 	    this.nb.disp <- estimateGLMTrendedDisp(d, design.list[[1]])$trended.dispersion
-	    NBDev(counts.simseq,design.list[[1]], log(nf.simseq),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=inf)
+	    NBDev(counts.simseq,design.list[[1]], log(nf.simseq),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=Inf)
 	  },
 	  error = function(w) NA)
 	  if( !is.list(fit3) ) next
@@ -301,7 +301,7 @@ for(i in 1:n.iter){
     fit3 <- tryCatch({
       d <- DGEList(counts = counts.nb, group = design.list[[1]][, 2], lib.size = exp(log(nf.nb)))
       this.nb.disp <- estimateGLMTrendedDisp(d, design.list[[1]])$trended.dispersion
-      NBDev(counts.nb,design.list[[1]], log(nf.nb),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=inf)
+      NBDev(counts.nb,design.list[[1]], log(nf.nb),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=Inf)
     },
     error = function(w) NA)
     if( !is.list(fit3) ) next
@@ -421,7 +421,7 @@ for(i in 1:n.iter){
  design <- model.matrix(~trt)
  v <- voom(y, design)
  fit <- lmFit(v,design)
- fold.voom.simseq[i, ] = fit$coefficients[,2L]
+ fold.voom.nb[i, ] = fit$coefficients[,2L]
  
  #fit <- eBayes(fit, proportion = 0.8)
  #pvals.voom.nb[i, ] <- fit$p.value[, 2]
