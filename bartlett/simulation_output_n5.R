@@ -229,7 +229,7 @@ for(i in 1:n.iter){
     ### fit for SimSeq data
     fit <- tryCatch(QL.fit(counts.simseq, design.list = design.list, log.offset = log(nf.simseq),
                   Model = "NegBin", print.progress = FALSE), error = function(w) NA)
-    if( !is.list(fit) ) next {
+    if( !is.list(fit) ) {
 		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
 		next
 	}
@@ -246,7 +246,7 @@ for(i in 1:n.iter){
     ### fit for NB data
     fit <- tryCatch(QL.fit(counts.nb, design.list = design.list, log.offset = log(nf.nb),
                   Model = "NegBin",  print.progress = FALSE), error = function(w) NA)
-    if( !is.list(fit) ) next {
+    if( !is.list(fit) ) {
 		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
 		next
 	}
