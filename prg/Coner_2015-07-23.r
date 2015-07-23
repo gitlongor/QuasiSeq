@@ -69,20 +69,12 @@ get.h<-function(phi,y,tau){
 
 get.h(2,10,0.2)
 
-<<<<<<< HEAD
 LikQNB=function(y, mu, phi, tau)
-=======
-likQNB=function(y, mu, phi, tau)
->>>>>>> 7e13ad894119e70906e2b08277ddb3ecc5ef5615
 {
 	h=get.h(phi, y, tau)
 	my_QLNB(y, mu, phi, tau) * h
 }
-<<<<<<< HEAD
 LikQNB = Vectorize(log(LikQNB), c('phi','y','tau'))######
-=======
-likQNB = Vectorize(likQNB, c('phi','y','tau'))
->>>>>>> 7e13ad894119e70906e2b08277ddb3ecc5ef5615
 
 
 #Simulation
@@ -106,12 +98,7 @@ curve(log(my_LBNB(y=10000, mu=x, phi=1555.1, tau=.9)), 8, 12, add=T, col=4, lty=
 legend("topright", c("LogLQNB","LogLBNB"), cex=0.8,col=c("black","blue"),pch=21:22,lwd=2:3)
 dev.off()
 
-<<<<<<< HEAD
 jpeg(file = "plot11.jpg")
-=======
-curve(log(likQNB(y=10, mu=x, phi=1.1, tau=.5)), 8, 12)
-curve(log(my_LBNB(y=10, mu=x, phi=1.1, tau=.5)), 8, 12, add=T, col=4, lty=3, lwd=3)
->>>>>>> 7e13ad894119e70906e2b08277ddb3ecc5ef5615
 curve(log(likQNB(y=10, mu=x, phi=1.1, tau=.5)), 200, 2000)
 curve(log(my_LBNB(y=10, mu=x, phi=1.1, tau=.5)), 200, 2000, add=T, col=4, lty=3, lwd=3)
 legend("topright", c("LogLQNB","LogLBNB"), cex=0.8,col=c("black","blue"),pch=21:22,lwd=2:3)
@@ -183,8 +170,8 @@ bnbMle=function(y, phi, tau){
 
 qnbMle=function(y, phi, tau) mean(y)
 
-}	
-getBnbQnb=function(reps,n, mu, tau, phi)
+	
+getBnbQnb=function(reps,n, mu, tau, phi)#reps=number of replication
 {replicate(reps,
 	c(BNB=bnbMle(my.simu(n, mu, phi, tau), phi, tau),
       QNB=qnbMle(my.simu(n, mu, phi, tau), phi, tau)
@@ -230,47 +217,6 @@ getBnbQnb2=function(x) getBnbQnb(x[1],x[2],x[3],x[4])
 est = apply(cases, 1, getBnbQnb2)
 dim(est)=c(2L, reps, nrow(cases))
 
-<<<<<<< HEAD
-=======
-curve(my_BNB_Score1(y=10, mu=x, phi=1.1, tau=.5), 9, 12)
-curve(my_QNB_Score1(y=10, mu=x, phi=1.1, tau=.5), 9, 12, add=T, col=4, lty=3, lwd=3)
-abline(h=0)
-
-curve(my_BNB_Score1(y=0, mu=x, phi=1.1, tau=.5), 0, 1)
-curve(my_QNB_Score1(y=0, mu=x, phi=1.1, tau=.5), 0, 1, add=T, col=4, lty=3, lwd=3)
-abline(h=0)
-
-bnbScore=function(mu, y, phi, tau)sum(my_BNB_Score1(y,mu,phi,tau))
-qnbScore=function(mu, y, phi, tau)sum(my_QNB_Score1(y,mu,phi,tau))
-bnbNegLogLik=function(mu, y, phi, tau)-sum(log(my_LBNB(y,mu,phi,tau)))
-
-
-bnbMle=function(y, phi, tau)
-	tryCatch(optim(max(1e-9,mean(y)), bnbNegLogLik, method='L-BFGS-B', lower=0, y=y, phi=phi, tau=tau)$par, error=function(...)NA_real_)
-	
-
-	
-qnbMle=function(y, phi, tau) mean(y)	
-
-
-phis=seq(1+1e-3, 3, length=20)
-taus=seq(1e-3, 3, length=20)
-mus =seq(.1, 1e4, length=20)
-ns = c(2, 4, 8, 16, 32)
-cases=expand.grid(n=ns, mu=mus, tau=taus, phi=phis)
-reps=1e3L
-
-getBnbQnb=function(n, mu, tau, phi)
-{replicate(reps,
-	c(BNB=bnbMle(my.simu(n, mu, phi, tau), phi, tau),
-	  QNB=qnbMle(my.simu(n, mu, phi, tau), phi, tau)
-	)
-)
-}
-getBnbQnb2=function(x) getBnbQnb(x[1],x[2],x[3],x[4])
-est = apply(cases, 1, getBnbQnb2)
-
->>>>>>> 7e13ad894119e70906e2b08277ddb3ecc5ef5615
 
 save.image(img.name)
 
