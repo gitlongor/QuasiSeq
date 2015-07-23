@@ -324,9 +324,9 @@ for(i in 1:n.iter){
 		next
 	}
     
-    fold.quasiseq.nb.fit1 = fit1$parms[,2L]
-    fold.quasiseq.nb.fit2 = fit2$parms[,2L]
-    fold.quasiseq.nb.fit3 = fit3$parms[,2L]
+    fold.quasiseq.nb.fit1[i,] = fit1$parms[,2L]
+    fold.quasiseq.nb.fit2[i,] = fit2$parms[,2L]
+    fold.quasiseq.nb.fit3[i,] = fit3$parms[,2L]
     
     if(FALSE){
     fit <- tryCatch(QL.fit(counts.nb, design.list = design.list, log.offset = log(nf.nb),
