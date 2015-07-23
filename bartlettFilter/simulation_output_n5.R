@@ -21,8 +21,8 @@ n.genes <- 8500  # No of genes in each simulated matrix
 n.diff <- 2000   # No of DE genes in each simulated matrix
 n.genes.trim <- 5000 # No of genes to trim down to
 n.diff.trim <- 1000 # No of DE genes to trim down to
-filter.mean <- 0 # lower bound of average read count for simulated genes
-filter.nonzero <- 1 # lower bound for nonzero read counts for simulated genes
+filter.mean <- 10 # lower bound of average read count for simulated genes
+filter.nonzero <- 2 # lower bound for nonzero read counts for simulated genes
 
 ### Load Data
 bak.seed=.Random.seed
