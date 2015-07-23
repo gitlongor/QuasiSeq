@@ -1,10 +1,11 @@
 Package: QuasiSeq
 Version: 1.0-9
-Date: 2015-06-29
+Date: 2015-07-23
 Title: Analyzing RNA Sequencing Count Tables Using Quasi-Likelihood
 Authors@R: c(
   person("Steve", "Lund", role=c("aut"), email="lundsp@gmail.com"),
   person("Long", "Qu", role=c("aut", "cre","ctb"), email="long.qu@wright.edu"), 
+  person("Klirk", "Bhasavanich", role="aut"), 
   person("Ian", "Marschner", role="aut", comment="The author of glm2::glm.fit2, which was modified slightly leading to glm.fit3 in this package."), 
   person("", "R Core Team", role="aut", comment="The author of stats::glm.fit, which was modified slightly leading to glm.fit3 in this package.")
   )

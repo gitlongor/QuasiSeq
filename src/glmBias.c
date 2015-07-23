@@ -5,7 +5,7 @@
 #include <R_ext/Lapack.h>
 #include <R_ext/RS.h>
 
-#define LWORK 1000
+#define LWORK 10000
 
 int * jpvt=NULL;
 double * tau=NULL;
@@ -34,7 +34,8 @@ void getBias(int* n, int* p, double* rtwx, double* wrt, double* coef)
 	
 	/* QR decomposition with column pivoting using level 3 BLAS */
 	F77_CALL(dgeqp3)(n, p, rtwx, n, jpvt, tau, work, &lwork, &info); 
-	/* add test error code */
+	/* test error */
+	if(info != 0) error("'dgeqp3' QR decomposition error");
 	
 	/* Find Q matrix */
 	F77_CALL(dcopy)(&np, rtwx, &iOne, Q, &iOne);

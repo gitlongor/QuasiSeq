@@ -73,14 +73,13 @@
 		this.w2x=sqrt(this.weight)*xx
 		if(approxJacob) return(-crossprod(this.w2x))
 		
-		if(FALSE){ ## R version that is known working. 
+		this.bias=try(.Call(C_getGlmBias, rtwx = this.w2x, wrt = sqrt(this.weight), ngood, rk))
+		if(inherits(this.bias, 'try-error')) { ## original R version that is known working. 
 			## the next three rows consume 60% of the time
 			this.qr=qr(this.w2x,  tol=qr.tol)
 			this.hatd=.rowSums(qr.Q(this.qr)[,seq_len(this.qr$rank), drop=FALSE]^2, ngood, this.qr$rank)## not affected by pivoting
 			this.bias=qr.coef(this.qr, -0.5*this.hatd/sqrt(this.weight))
 			this.bias[is.na(this.bias)]=0
-		}else{
-			this.bias=.Call(C_getGlmBias, rtwx = this.w2x, wrt = sqrt(this.weight), ngood, rk)
 		}
 		
 		this.adjWt=this.weight*(
