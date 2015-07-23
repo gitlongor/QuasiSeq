@@ -15,7 +15,7 @@ require(SimSeq)
 set.seed(1039245)
 
 ### Set simulation variables
-n.iter <- 5     # Number of iterations
+n.iter <- 200     # Number of iterations
 k.ind <- 5    # Sample size in each simulated treatment group 
 n.genes <- 8500  # No of genes in each simulated matrix
 n.diff <- 2000   # No of DE genes in each simulated matrix

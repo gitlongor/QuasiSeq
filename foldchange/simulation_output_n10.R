@@ -232,7 +232,7 @@ for(i in 1:n.iter){
     ### QuasiSeq Analysis
     ### Create Design Matrices
     design.list <- vector("list", 2)
-    trt <- c(rep(0, k.ind), rep(1, k.ind))
+    trt <- as.factor(c(rep(0, k.ind), rep(1, k.ind)))
 	  options(contrast=c('contr.sum','contr.sum'))
     design.list[[1]] <- model.matrix(~trt)  
     # design.list[[2]] <- rep(1, length(trt))
@@ -248,7 +248,10 @@ for(i in 1:n.iter){
 			NBDev(counts.simseq,design.list[[1]], log(nf.simseq),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=1.10)
 			},
 		error = function(w) NA)
-    if( !is.list(fit1) ) next
+    if( !is.list(fit1) ) {
+		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
+		next
+	}
 	  
 	  fit2 <- tryCatch({
 	    d <- DGEList(counts = counts.simseq, group = design.list[[1]][, 2], lib.size = exp(log(nf.simseq)))
@@ -256,7 +259,10 @@ for(i in 1:n.iter){
 	    NBDev(counts.simseq,design.list[[1]], log(nf.simseq),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=1)
 	  },
 	  error = function(w) NA)
-	  if( !is.list(fit2) ) next
+	  if( !is.list(fit2) ) {
+		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
+		next
+	}
 	  
 	  fit3 <- tryCatch({
 	    d <- DGEList(counts = counts.simseq, group = design.list[[1]][, 2], lib.size = exp(log(nf.simseq)))
@@ -264,7 +270,10 @@ for(i in 1:n.iter){
 	    NBDev(counts.simseq,design.list[[1]], log(nf.simseq),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=inf)
 	  },
 	  error = function(w) NA)
-	  if( !is.list(fit3) ) next
+	  if( !is.list(fit3) ) {
+		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
+		next
+	}
 	  
 	  fold.quasiseq.simseq.fit1[i,] = fit1$parms[,2L]
 	  fold.quasiseq.simseq.fit2[i,] = fit2$parms[,2L]
@@ -288,7 +297,10 @@ for(i in 1:n.iter){
       NBDev(counts.nb,design.list[[1]], log(nf.nb),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=1.10)
     },
     error = function(w) NA)
-    if( !is.list(fit1) ) next
+    if( !is.list(fit1) ) {
+		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
+		next
+	}
     
     fit2 <- tryCatch({
       d <- DGEList(counts = counts.nb, group = design.list[[1]][, 2], lib.size = exp(log(nf.nb)))
@@ -296,7 +308,10 @@ for(i in 1:n.iter){
       NBDev(counts.nb,design.list[[1]], log(nf.nb),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=1)
     },
     error = function(w) NA)
-    if( !is.list(fit2) ) next
+    if( !is.list(fit2) ) {
+		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
+		next
+	}
     
     fit3 <- tryCatch({
       d <- DGEList(counts = counts.nb, group = design.list[[1]][, 2], lib.size = exp(log(nf.nb)))
@@ -304,7 +319,10 @@ for(i in 1:n.iter){
       NBDev(counts.nb,design.list[[1]], log(nf.nb),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=inf)
     },
     error = function(w) NA)
-    if( !is.list(fit3) ) next
+    if( !is.list(fit3) ) {
+		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
+		next
+	}
     
     fold.quasiseq.nb.fit1 = fit1$parms[,2L]
     fold.quasiseq.nb.fit2 = fit2$parms[,2L]
