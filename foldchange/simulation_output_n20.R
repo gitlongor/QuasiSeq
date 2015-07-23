@@ -1,5 +1,5 @@
+#setwd("D:/work/dev/Rstudio/QuasiSeq/foldchange")
 print(getwd())
-setwd("C:/Users/Klirk/Desktop/Simulation_Code/Simulation_Code/KIRC_Simulations/foldchange")
 ### Load Bioconductor Packages
 require(DESeq2)
 require(edgeR)
@@ -259,7 +259,7 @@ for(i in 1:n.iter){
 	    NBDev(counts.simseq,design.list[[1]], log(nf.simseq),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=1)
 	  },
 	  error = function(w) NA)
-	  if( !is.list(fit2) )  {
+	  if( !is.list(fit2) ) {
 		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
 		next
 	}
@@ -270,7 +270,7 @@ for(i in 1:n.iter){
 	    NBDev(counts.simseq,design.list[[1]], log(nf.simseq),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=Inf)
 	  },
 	  error = function(w) NA)
-	  if( !is.list(fit3) )  {
+	  if( !is.list(fit3) ) {
 		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
 		next
 	}
@@ -297,7 +297,7 @@ for(i in 1:n.iter){
       NBDev(counts.nb,design.list[[1]], log(nf.nb),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=1.10)
     },
     error = function(w) NA)
-    if( !is.list(fit1) )  {
+    if( !is.list(fit1) ) {
 		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
 		next
 	}
@@ -308,7 +308,7 @@ for(i in 1:n.iter){
       NBDev(counts.nb,design.list[[1]], log(nf.nb),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=1)
     },
     error = function(w) NA)
-    if( !is.list(fit2) )  {
+    if( !is.list(fit2) ) {
 		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
 		next
 	}
@@ -319,7 +319,7 @@ for(i in 1:n.iter){
       NBDev(counts.nb,design.list[[1]], log(nf.nb),this.nb.disp,print.progress=FALSE, bias.fold.tolerance=Inf)
     },
     error = function(w) NA)
-    if( !is.list(fit3) )  {
+    if( !is.list(fit3) ) {
 		dump.frames(paste0(basename(tempfile()), '.dump'), TRUE)
 		next
 	}
