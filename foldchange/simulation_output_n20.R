@@ -562,4 +562,4 @@ saveRDS(filt.cooks.simseq, file.path(mainDir, subDir, paste0("ss", k.ind), "filt
 saveRDS(filt.cooks.nb, file.path(mainDir, subDir, paste0("ss", k.ind), "filt_cooks_nb.RDS"))
 }
 
-save.image('simulation_output_n5.RData')
+save.image('simulation_output_n20.RData')
