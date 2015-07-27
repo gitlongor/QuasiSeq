@@ -110,7 +110,7 @@ abline(v=10)
 dev.off()
 
 curve(log(likQNB(y=0, mu=x, phi=1.1, tau=.5)), 0, 20)
-curve(log(my_LBNB(y=0, mu=x, phi=1.1, tau=.5)), 0, 20, add=T, col=4, lty=3, lwd=3)
+curve(log(my_LBNB(y=0, mu=x, phi=1.1, tau=.1)), 0, 20, add=T, col=4, lty=3, lwd=3)
 
 
 curve(log(likQNB(y=0, mu=x, phi=1.1, tau=.5)), 200, 2000)
@@ -127,15 +127,21 @@ curve(log(my_LBNB(y=1000, mu=x, phi=1.1, tau=.5)), 0, 500, add=T, col=4, lty=3, 
 my_BNB_Score1<-function(y,mu,phi,tau){
 	term1 = mu*(tau*phi+1)/(phi-1)
 	term2 = (tau*(2*phi-1)+1)/(tau*(phi-1))
-    term3= term1+term2+y+1/tau
+    term3= term1+term2+1/tau
 	term4 = (tau*phi+1)/(phi-1)
-	term5=tau*(tau*phi+1)*(phi-1)
-	term6=((y*tau+1)/((tau*mu*(tau*phi+1)+tau*(2*phi-1)+1+y*tau*(phi-1)+(phi-1))*(tau*mu*(tau*phi+1)+tau*(2*phi-1)+1)))
-	term7=(phi-1)*(y/(mu*(y*(phi-1)+mu*(tau*phi+1))))
-	ans = term4*(digamma(y+term1+1)+digamma(term1+term2+1)-
-                   digamma(term3+1)-digamma(term1+1))-term5*term6+term7
+	k=0:(y-1)
+	terms1=NULL
+	terms2=NULL
+	for(i in 1:y){
+	terms1[i]=(1/(k[i]+term1))
+	terms2[i]=(1/(term3+k[i]))
+}
+    term5=sum(terms1)
+    term6=sum(terms2)
+	ans = term4*(term5+digamma(term1+term2)-
+                   digamma(term3)-term6)
 	y0=which(y==0)
-	ans[y0]=term4*(digamma(term1+term2)-digamma(term1+term2+y+1/tau))[y0]
+	ans[y0]=term4*(digamma(term1+term2)-digamma(term3))[y0]
 	ans	   
 }
 my_QNB_Score1<-function(y, mu,phi,tau){
@@ -158,14 +164,17 @@ my_BNB_Hess<-function(y,mu,phi,tau){
 	term2 = (tau*(2*phi-1)+1)/(tau*(phi-1))
     term3= term1+term2+y+1/tau
 	term4 = (tau*phi+1)/(phi-1)
-	term5=tau*(tau*phi+1)*(phi-1)*(y*tau+1)
-	term6=tau*(tau*phi+1)
-	term7=tau*mu*(tau*phi+1)+tau*(2*phi-1)+1+y*tau*(phi-1)+(phi-1)
-	term8=tau*mu*(tau*phi+1)+tau*(2*phi-1)+1
-	term9=-y*(phi-1)*(mu*(tau*phi+1)+(y*(phi-1)+mu*(tau*phi+1)))
-	term10=mu*(y*(phi-1)+mu*(tau*phi+1))
-	ans=term4^2*(trigamma(y+term1+1)+trigamma(term1+term2+1)-
-                   trigamma(term3+1)-trigamma(term1+1))+term5*term6*(term7+term8)/(term7*term8)^2-term9/term10^2
+	k=0:(y-1)
+	terms1=NULL
+	terms2=NULL
+	for(i in 1:y){
+	terms1[i]=(-1/(k[i]+term1)^2)
+	terms2[i]=(-1/(term3+k[i])^2)
+}
+    term5=sum(terms1)
+    term6=sum(terms2)
+	ans=term4^2*(term5+trigamma(term1+term2)-
+                   trigamma(term3)-term6)
 	y0=which(y==0)
 	ans[y0]=term4^2*(trigamma(term1+term2)-trigamma(term3))[y0]
 	ans	
