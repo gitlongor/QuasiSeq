@@ -1,5 +1,5 @@
 print(getwd())
-setwd("C:/Users/Klirk/Desktop/Simulation_Code/Simulation_Code/KIRC_Simulations/bartlett")
+setwd("C:/Users/Klirk/Desktop/Simulation_Code/Simulation_Code/KIRC_Simulations/bartlettFilter")
 ### Load Bioconductor Packages
 require(DESeq2)
 require(edgeR)
@@ -218,7 +218,7 @@ for(i in 1:n.iter){
     ### QuasiSeq Analysis
     ### Create Design Matrices
     design.list <- vector("list", 2)
-    trt <- c(rep(0, k.ind), rep(1, k.ind))
+    trt <- as.factor(c(rep(0, k.ind), rep(1, k.ind)))
     design.list[[1]] <- model.matrix(~trt)  
     design.list[[2]] <- rep(1, length(trt))
     

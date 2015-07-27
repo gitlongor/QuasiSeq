@@ -1,5 +1,5 @@
 print(getwd())
-setwd("C:/Users/Klirk/Desktop/Simulation_Code/Simulation_Code/KIRC_Simulations/bartlett")
+setwd("C:/Users/Klirk/Desktop/Simulation_Code/Simulation_Code/KIRC_Simulations/bartlettFilter")
 require(ggplot2, quietly = TRUE)
 cuts <- seq(0,0.15,by = 0.001)
 l <- length(cuts)

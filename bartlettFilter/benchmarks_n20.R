@@ -1,5 +1,5 @@
 print(getwd())
-setwd("C:/Users/Klirk/Desktop/Simulation_Code/Simulation_Code/KIRC_Simulations/bartlett")
+setwd("C:/Users/Klirk/Desktop/Simulation_Code/Simulation_Code/KIRC_Simulations/bartlettFilter")
 bh.q=function(p)
 {
   ### The following function computes q-values given a set of p-values 
