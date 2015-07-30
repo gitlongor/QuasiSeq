@@ -70,11 +70,11 @@ for(ii in 1:200){
 fold.quasiseq.simseq.fit1 <- log2(exp(fold.quasiseq.simseq.fit1*2))
 fold.quasiseq.simseq.fit2 <- log2(exp(fold.quasiseq.simseq.fit2*2))
 fold.quasiseq.simseq.fit3 <- log2(exp(fold.quasiseq.simseq.fit3*2))
-fold.voom.simseq <- log2(exp(fold.voom.simseq*2))
+fold.voom.simseq <- fold.voom.simseq*2
 fold.quasiseq.nb.fit1 <- log2(exp(fold.quasiseq.nb.fit1*2))
 fold.quasiseq.nb.fit2 <- log2(exp(fold.quasiseq.nb.fit2*2))
 fold.quasiseq.nb.fit3 <- log2(exp(fold.quasiseq.nb.fit3*2))
-fold.voom.nb <- log2(exp(fold.voom.nb*2))
+fold.voom.nb <- fold.voom.nb*2
 
 #calculate estimate errors
 fold.quasiseq.simseq.fit1.estError = fold.quasiseq.simseq.fit1 - logLambdaFoldChangeSim
@@ -200,11 +200,11 @@ for(ii in 1:200){
 fold.quasiseq.simseq.fit1 <- log2(exp(fold.quasiseq.simseq.fit1*2))
 fold.quasiseq.simseq.fit2 <- log2(exp(fold.quasiseq.simseq.fit2*2))
 fold.quasiseq.simseq.fit3 <- log2(exp(fold.quasiseq.simseq.fit3*2))
-fold.voom.simseq <- log2(exp(fold.voom.simseq*2))
+fold.voom.simseq <- fold.voom.simseq*2
 fold.quasiseq.nb.fit1 <- log2(exp(fold.quasiseq.nb.fit1*2))
 fold.quasiseq.nb.fit2 <- log2(exp(fold.quasiseq.nb.fit2*2))
 fold.quasiseq.nb.fit3 <- log2(exp(fold.quasiseq.nb.fit3*2))
-fold.voom.nb <- log2(exp(fold.voom.nb*2))
+fold.voom.nb <- fold.voom.nb*2
 
 #calculate estimate errors
 fold.quasiseq.simseq.fit1.estError = fold.quasiseq.simseq.fit1 - logLambdaFoldChangeSim
@@ -331,11 +331,11 @@ for(ii in 1:200){
 fold.quasiseq.simseq.fit1 <- log2(exp(fold.quasiseq.simseq.fit1*2))
 fold.quasiseq.simseq.fit2 <- log2(exp(fold.quasiseq.simseq.fit2*2))
 fold.quasiseq.simseq.fit3 <- log2(exp(fold.quasiseq.simseq.fit3*2))
-fold.voom.simseq <- log2(exp(fold.voom.simseq*2))
+fold.voom.simseq <- fold.voom.simseq*2
 fold.quasiseq.nb.fit1 <- log2(exp(fold.quasiseq.nb.fit1*2))
 fold.quasiseq.nb.fit2 <- log2(exp(fold.quasiseq.nb.fit2*2))
 fold.quasiseq.nb.fit3 <- log2(exp(fold.quasiseq.nb.fit3*2))
-fold.voom.nb <- log2(exp(fold.voom.nb*2))
+fold.voom.nb <- fold.voom.nb*2
 
 #calculate estimate errors
 fold.quasiseq.simseq.fit1.estError = fold.quasiseq.simseq.fit1 - logLambdaFoldChangeSim

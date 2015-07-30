@@ -1,0 +1,10 @@
+This folder contains R source code to produce the plots in Section: Preservation of Source Data Characteristics.
+
+The files should be run in the following order:
+
+"NB_disp_estimates.R"
+"Gene_Ontologies.R"
+"Kern_Dens.R"
+"Gene_cor.R"
+"Plots.R"
+

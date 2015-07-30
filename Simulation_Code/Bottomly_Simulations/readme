@@ -1,0 +1,12 @@
+This folder contains R source code to produce the simulation study based on the Bottomly et al. (2011) dataset.
+
+The files should be run in the following order:
+
+"NB_disp_estimates.R"
+"Simulation_output.R"
+ - once with k.ind (simulation sample size) set to 3
+"benchmarks.R"
+ - once with k.ind (simulation sample size) set to 3
+"FDR_Plots.R"
+
+The file "simulation_output.R" will take a while to run due to the long computational time needed for each statistical analysis method.
