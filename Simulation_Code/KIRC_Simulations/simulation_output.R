@@ -300,7 +300,7 @@ for(i in 1:n.iter){
  design <- model.matrix(~trt)
  v <- voom(y, design)
  fit <- lmFit(v,design)
- fit <- eBayes(fit, proportion = 0.8)
+ fit <- eBayes(fit, proportion = 0.8) ## FIXME(LQ): proportion should be 0.2?
  pvals.voom.simseq[i, ] <- fit$p.value[, 2]
  
  ### fit for NB data
@@ -309,7 +309,7 @@ for(i in 1:n.iter){
  design <- model.matrix(~trt)
  v <- voom(y, design)
  fit <- lmFit(v,design)
- fit <- eBayes(fit, proportion = 0.8)
+ fit <- eBayes(fit, proportion = 0.8) ## FIXME(LQ): proportion should be 0.2?
  pvals.voom.nb[i, ] <- fit$p.value[, 2]
  
  if(k.ind >= 7){
@@ -319,7 +319,7 @@ for(i in 1:n.iter){
    design <- model.matrix(~trt)
    v <- voom(y, design)
    fit <- lmFit(v,design)
-   fit <- eBayes(fit, proportion = 0.8)
+   fit <- eBayes(fit, proportion = 0.8) ## FIXME(LQ): proportion should be 0.2?
    pvals.voom.cooks.simseq[[i]] <- fit$p.value[, 2]
    
    ### fit for NB data
@@ -328,7 +328,7 @@ for(i in 1:n.iter){
    design <- model.matrix(~trt)
    v <- voom(y, design)
    fit <- lmFit(v,design)
-   fit <- eBayes(fit, proportion = 0.8)
+   fit <- eBayes(fit, proportion = 0.8) ## FIXME(LQ): proportion should be 0.2?
    pvals.voom.cooks.nb[[i]] <- fit$p.value[, 2]
  } 
  

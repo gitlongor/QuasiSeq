@@ -35,7 +35,7 @@ counts.nontumor <- counts[ , treatment == "Non-Tumor"]
 ### Calculate tagwise estimates from edgeR. Not that edgeR uses the
 ### parameterizion: Var(y) = \mu + \omega * \mu^2 where E(Y) = \mu and
 ### \omega is a dispersion parameter for the NB model.
-y <- DGEList(counts = counts)
+y <- DGEList(counts = counts) ## FIXME(LQ): The last "counts" should be "counts.nontumor"
 y <- calcNormFactors(y)
 y <- estimateDisp(y)
 nbdisp.nontumor <- y$tagwise.dispersion
