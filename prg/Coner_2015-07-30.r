@@ -45,17 +45,13 @@ my_QLNB<-function(y, mu,phi,tau) {
 my_LBNB<-function(y, mu,phi,tau){
 	term1 = mu*(tau*phi+1)/(phi-1)
 	term2 = (tau*(2*phi-1)+1)/(tau*(phi-1))
-	term3=term1+term2+1/tau
-	term4 = lbeta(term2,1/tau)
-	k=seq_len(y)-1
-	numerator1 =lgamma(term1+term2)+lgamma(1+1/tau)+sum(log(k+1/tau))+log(term1)+sum(log(k+term1))+lgamma(term2+1/tau)
-	denomenator1=log(factorial(y))+lgamma(term2)+lgamma(1/tau)+lgamma(term3+1)+sum(log(term3+k))
-	numerator2=lgamma(term1+term2)+lgamma(1+1/tau)+sum(log(k+1/tau))+lgamma(term2+1/tau)
-	denomenator2=lgamma(term3+1)+sum(log(term3+k))+lgamma(term2)+lgamma(1/tau)
+	numerator = lbeta(term1+term2,y+1/tau)
+	term3 = lbeta(term2,1/tau)
 	ans = exp(		
-		numerator1-denomenator1)
+		numerator-lbeta(y, term1)-term3
+	)/y
 	y0=which(y==0)
-	ans[y0]=exp(numerator2-denomenator2)[y0]
+	ans[y0]=exp(numerator-term3)[y0]
 	ans
 }
 
@@ -139,7 +135,6 @@ my_BNB_Score1<-function(y,mu,phi,tau){
 	terms56=sum(1/(k+term1)-1/(k+term3))
 	term4*(terms56+digamma(term1+term2)-digamma(term3))
 }
-
 my_QNB_Score1<-function(y, mu,phi,tau){
    (y-mu)/(phi*(mu+tau*mu^2))
 }
@@ -250,11 +245,6 @@ reps=1e2L
 getBnbQnb2=function(x) getBnbQnb1(reps, x[1],x[2],x[3],x[4])
 est = apply(cases, 1, getBnbQnb2)
 dim(est)=c(2L, reps, nrow(cases))
-
-#####################################
-##for different mu##
-bnbScore2=function(mu, y, phi, tau)-sum(sapply(y, my_BNB_Score1, mu,phi=phi,tau=tau))
-
 
 
 
