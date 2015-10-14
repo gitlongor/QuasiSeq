@@ -253,10 +253,19 @@ dim(est)=c(2L, reps, nrow(cases))
 
 #####################################
 ##for different mu##
-bnbScore2=function(mu, y, phi, tau)-sum(sapply(y, my_BNB_Score1, mu,phi=phi,tau=tau))
+bnbScore2=function(mu, y, phi, tau)(sapply(y, my_BNB_Score1,mu=mu,phi=phi,tau=tau))
+bnbScore3=function(mu, y, phi, tau)(sapply(mu, bnbScore2,y,phi=phi,tau=tau))
 
+My_score_Beta<-function(x,beta,o,n){
 
-
+term1=NULL
+term2=NULL
+for(i in 1:n){
+term1[i]<-(exp(x[i,]%*%beta+o[i]))
+term2<-term1[i]*x[i,]
+}
+return(term2)
+}
 
 save.image(img.name)
 
