@@ -10,7 +10,7 @@ mu <- exp(x%*%beta+o)
 	)/y
 	y0=which(y==0)
 	ans[y0]=exp(numerator-term3)[y0]
-	ans
+	sum(log(ans))
 }
 
 
@@ -33,7 +33,7 @@ My_score_Beta<-function(beta, y, x, o, tau, phi)
 	
 	sums=numeric(n)
 	for(i in seq_len(n)){
-		k=seq_len(y)-1L
+		k=seq_len(y[i])-1L
 		pos.denom=k+mu.tau.phip1.dphin1[i]
 		neg.denom=pos.denom+ t.2phin1p1.dtphin1.p1tau
 		sums[i] = sum(1/pos.denom-1/neg.denom)
@@ -45,11 +45,15 @@ My_score_Beta<-function(beta, y, x, o, tau, phi)
 	score
 }
 library(numDeriv)
-grad(function(beta)log(my_LBNB(beta=beta, y=10,x=matrix(1:3,nrow=1),o=1, phi=2, tau=.5)), matrix(1:3,nrow=3))
-My_score_Beta(matrix(1:3,nrow=3), y=10, x=matrix(1:3,nrow=1), o=1, tau=.5, phi=2)
+set.seed(234234)
+x=cbind(1, matrix(runif(10*3, 0, 1), nc=3))
+bet=runif(4, 0,1)
+xb=x%*%bet
+y=rnbinom(10, 1/(tau=2), mu=drop(exp(xb)))
 
-grad(function(beta)log(my_LBNB(beta=beta, y=0,x=matrix(1:3,nrow=1),o=1, phi=2, tau=.5)), matrix(1:3,nrow=3))
-My_score_Beta(matrix(1:3,nrow=3), y=0, x=matrix(1:3,nrow=1), o=1, tau=.5, phi=2)
+grad(my_LBNB, x=bet,,,, y=y, x,o=rep(0,10), phi=1+1e-3, tau=2)
+My_score_Beta(bet, y=y, x=x, o=rep(0,10), tau=2, phi=1+1e-3)
+
 
  
 My_diag_hess<-function(beta, y, x, o, tau, phi)
