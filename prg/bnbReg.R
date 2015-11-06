@@ -10,7 +10,7 @@ mu <- exp(x%*%beta+o)
 	)/y
 	y0=which(y==0)
 	ans[y0]=exp(numerator-term3)[y0]
-	sum(log(ans))
+	-sum(log(ans))
 }
 
 
@@ -42,17 +42,8 @@ My_score_Beta<-function(beta, y, x, o, tau, phi)
 	
 	score=colSums(as.vector(dmu) * mu.x)
 	
-	score
+	-score
 }
-library(numDeriv)
-set.seed(234234)
-x=cbind(1, matrix(runif(10*3, 0, 1), nc=3))
-bet=runif(4, 0,1)
-xb=x%*%bet
-y=rnbinom(10, 1/(tau=2), mu=drop(exp(xb)))
-
-grad(my_LBNB, x=bet,,,, y=y, x,o=rep(0,10), phi=1+1e-3, tau=2)
-My_score_Beta(bet, y=y, x=x, o=rep(0,10), tau=2, phi=1+1e-3)
 
 
  
@@ -88,45 +79,46 @@ My_hess_beta<-function(beta, y, x, o, tau, phi)
 		sums2[i] = sum(1/pos.denom2-1/squ.neg.denom2)
 	}
 	dmu=(sums1+pos.psi0-neg.psi0)*tau.phip1.dphin1
-	dbetaj.dmuilogl.ai<-as.vector((sums2+pos.psi2-neg.psi2)*(tau.phip1.dphin1)^2)
+	dbetaj.dmuilogl.ai<-as.vector((sums2+pos.psi2-neg.psi2)*(tau.phip1.dphin1)^2*mu)
 	dmu.xi.mu<-t(as.vector(dmu)*x)%*%(as.vector(mu)*x)
 	Hess<-dmu.xi.mu+t(dbetaj.dmuilogl.ai*x)%*%(as.vector(mu)*x)
-	Hess
+	-Hess
 }
 
-hessian(function(beta)my_LBNB(beta=bet,x=x,o=rep(0,10), y=y, phi=1+1e-3, tau=2), bet) #########
-My_hess_beta(beta=bet,y=y,x=x,o=rep(0,10), phi=1+1e-3, tau=2)
 
-betaScore=function(beta,x,o, y, phi, tau)-(sapply(y, as.vector(My_score_Beta), beta,x,o,phi, tau))########
-beHess=function(beta, y, phi, tau)-sum(My_hess_beta(y,mu,phi,tau))
-betaNegbnbLogLik=function(beta, y,o,x, phi, tau)-sum(my_LBNB(y,beta,o,x,phi,tau))
 
-Mlebeta=function(y, phi, tau){
+Mlebeta=function(y, x,o,phi,tau,start=rep(1,NCOL(x))){
 	
-	par.hess=tryCatch(optim(max(0,10), betaNegbnbLogLik,betaScore,method='L-BFGS-B',lower=-inf, y=y, phi=phi, tau=tau,hessian=TRUE), error=function(...)NA_real_)
-    par=par.hess$par
-	hessian=par.hess$hessian
-	variance=(hessian)
-	var2=My_hess_beta(par, y=y, phi=phi, tau=tau)
-	return(c(mu=par1,var.numerical=variance,
-			 var.theoretical=var2))
-	}
+	par.hess=#tryCatch(
+			#optim(start, my_LBNB,My_score_Beta,method='BFGS',x=x,o=o, y=y, phi=phi, tau=tau,hessian=TRUE)
+			nlminb(start, objective=my_LBNB, gradient = My_score_Beta, hessian = My_hess_beta,x=x,o=o, y=y, phi=phi, tau=tau)	
+		#, error=function(...)NA_real_)
+
+	par=par.hess$par
+	#hessian=par.hess$hessian
+	#variance=solve(hessian)
+	var2=solve(My_hess_beta(par, y=y, x=x,o=o, phi=phi, tau=tau))
+	return(list(bet=par, #var.numerical=variance,
+			 var.theoretical=var2, optim=par.hess))
+}
+
+
+if(FALSE){
+	library(numDeriv)
+	set.seed(234234)
+	x=cbind(1, matrix(runif(10*3, 0, 1), nc=3))
+	bet=runif(4, 0,1)
+	xb=x%*%bet
+	y=rnbinom(10, 1/(tau=2), mu=drop(exp(xb)))
+
+	grad(my_LBNB, x=bet,,,, y=y, x,o=rep(0,10), phi=1+1e-3, tau=2)
+	My_score_Beta(bet, y=y, x=x, o=rep(0,10), tau=2, phi=1+1e-3)
+
+	hessian(function(bet)my_LBNB(beta=bet,x=x,o=rep(0,10), y=y, phi=1+1e-3, tau=2), bet) 
+	My_hess_beta(beta=bet,y=y,x=x,o=rep(0,10), phi=1+1e-3, tau=2)
+
 	
-my.simu<-function(n, beta,phi,tau) {
-mu <- exp(x%*%beta+o)
-	alpha<-(tau*(2*phi-1)+1)/(tau*(phi-1))
-	beta<-1/tau
-	r=mu*(alpha-1)/beta
-	p<-sort(rbeta(n,alpha,beta))
-	y=rnbinom(n,r,prob=p)
-	attr(y, 'phi')=phi
-	attr(y, 'tau')=tau
-	attr(y, 'mu')=mu
-	y
-}	
-	getBnbQnb=function(reps,n, beta, tau, phi)#reps=number of replication
-{replicate(reps,
-	Beta=Mlebeta(my.simu(n, beta, phi, tau), phi, tau)
-      
-)
-}	
+	(tmp=Mlebeta(y, x=x,o=rep(0,length(y)), phi=1+1e-3, tau=2))
+
+	My_score_Beta(tmp$bet, y=y, x=x, o=rep(0,10), tau=2, phi=1+1e-3)
+}
