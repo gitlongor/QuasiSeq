@@ -30,21 +30,24 @@ my_LBNB_mu<-function(y,mu,phi,tau)
 dtau=function(y, mu, phi, tau)
 {
 -sum(
-	(1/(tau^2 * (-1 + phi))) * 
-	(
-		-(-1 + phi) * digamma(y + 1/tau) + 
+	(1/(tau^2 * (-1 + phi))) * (
 		(-1 + phi) * digamma(1/tau) - 
 		phi * digamma((tau - phi - 2 * tau * phi)/(tau - tau * phi)) - 
 		mu * tau^2 * phi * digamma((mu * (1 + tau * phi))/(-1 + phi)) + 
 		digamma(( 1 - tau + 2 * tau * phi)/(tau * (-1 + phi))) - 
 		digamma(( 1 + mu * tau^2 * phi + tau * (-1 + mu + 2 * phi))/(tau * (-1 + phi))) + 
-		mu * tau^2 * phi * digamma(( 1 + mu * tau^2 * phi + tau * (-1 + mu + 2 * phi))/(tau * (-1 + phi))) + 
+		mu * tau^2 * phi * digamma(( 1 + mu * tau^2 * phi + tau * (-1 + mu + 2 * phi))/(tau * (-1 + phi)))
+
+		-(-1 + phi) * digamma(y + 1/tau) + 
 		mu * tau^2 * phi * digamma(y + (mu + mu * tau * phi)/(-1 + phi)) + 
 		phi * digamma(y + (phi + mu * tau^2 * phi + tau * (-1 + mu + 2 * phi))/(tau * (-1 + phi))) - 
 		mu * tau^2 * phi * digamma(y + (phi + mu * tau^2 * phi + tau * (-1 + mu + 2 * phi))/(tau * (-1 + phi)))
-	) 
+	)
 )
 } 
+
+
+
 My_phi_score<-function(y, mu,phi,tau)
 {
     term1=mu*(tau*phi+1)/(phi-1)
@@ -60,8 +63,8 @@ My_phi_score<-function(y, mu,phi,tau)
 	sums1=sums2=numeric(length(y))
 	for(i in seq_along(y)){
 		k=seq_len(y[i])-1
-		pos.denom=k+term1
-		neg.denom=k+term1+term2+1/tau
+		pos.denom=k+term1[i]
+		neg.denom=k+term1[i]+term2+1/tau
 		sums1[i] = sum(1/pos.denom)
 		sums2[i]=sum(1/neg.denom)
 	}
@@ -110,15 +113,36 @@ grad(function(phi)my_LBNB_mu(phi=phi, y=10, tau=.5, mu=10.5), 2)
 My_phi_score(y=10, mu=10.5, phi=2, tau=.5)
 
 
-grad(function(tau)my_LBNB_mu(tau=tau, y=10:20, phi=2, mu=10.5), .5)
-dtau(y=10:20, mu=10.5, phi=2, tau=.5)
+grad(function(tau)my_LBNB_mu(tau=tau, y=10:20, phi=2, mu=10.5:20.5), .5)
+dtau(y=10:20, mu=10.5:20.5, phi=2, tau=.5)
 
-grad(function(phi)my_LBNB_mu(phi=phi, y=10:20, tau=.5, mu=10.5), 2)
-My_phi_score(y=10:20, mu=10.5, phi=2, tau=.5)
+grad(function(phi)my_LBNB_mu(phi=phi, y=10:20, tau=.5, mu=10.5:20.5), 2)
+My_phi_score(y=10:20, mu=10.5:20.5, phi=2, tau=.5)
 
 ## need: 
 mle=function(y, x, o)
 {
-
-	return(list(beta=bet, phi=phi, tau=tau))
+beta=function(y, x, o,phi=2,tau=.5){
+par.beta=tryCatch(optim(max(0,10), my_LBNB_beta,My_score_Beta,method='L-BFGS-B',lower=-inf, y=y, phi=phi, tau=tau,hessian=TRUE), error=function(...)NA_real_)
+beta=par.beta$par
+beta
+}
+phi=function(y,x,o,tau=.5){
+beta=runif(4, 0,1)
+mu = exp(x%*%beta+o)
+par.phi=tryCatch(optim(max(0,10), my_LBNB_beta,My_phi_score,method='L-BFGS-B',lower=-inf, y=y, mu=mu, tau=tau,hessian=TRUE), error=function(...)NA_real_)
+phi=par.phi$par
+phi
+}
+tau=function(y,x,o,phi=2){
+beta=runif(4, 0,1)
+mu = exp(x%*%beta+o)
+par.tau=tryCatch(optim(max(0,10), my_LBNB_beta,dtau,method='L-BFGS-B',lower=-inf, y=y, phi=phi, mu=mu,hessian=TRUE), error=function(...)NA_real_)
+tau=par.tau$par
+tau
+}
+beta=beta(y, x, o,phi=2,tau=.5)
+phi=phi(y,x,o,tau=.5)
+tau=tau(y,x,o,phi=2)
+return(list(beta=beta, phi=phi, tau=tau))
 }
