@@ -1,0 +1,96 @@
+
+my_LBNB<-function(y, mu,phi,tau){
+	term1 = mu*(tau*phi+1)/(phi-1)
+	term2 = (tau*(2*phi-1)+1)/(tau*(phi-1))
+	numerator = lbeta(term1+term2,y+1/tau)
+	term3 = lbeta(term2,1/tau)
+	ans = exp(		
+		numerator-lbeta(y, term1)-term3
+	)/y
+	y0=which(y==0)
+	ans[y0]=exp(numerator-term3)[y0]
+	ans
+}
+
+My_tau_score<-function(y, mu,phi,tau){
+term1 = mu*(tau*phi+1)/(phi-1)
+	term2 = (tau*(2*phi-1)+1)/(tau*(phi-1))
+	term3=(mu*phi)/(phi-1)
+	term4=-1/(tau^2*(phi-1))
+	term5=term3+term4-1/tau^2
+	
+	
+	digam.term1.term2=digamma(term1+term2)
+	digam.tau=digamma(1/tau)
+	digam.term2.tau=digamma(term2+1/tau)
+	digam.term1.term2.tau=digamma(term1+term2+1/tau)
+	digam.term2=digamma(term2)
+	
+
+		k=seq_len(y)-1
+		pos.denom1=k+term1
+		pos.denom2=k+1/tau
+		neg.denom=k+term1+term2+1/tau
+		
+		sums1 = sum(1/pos.denom1)
+		sums2=sum(1/pos.denom2)
+		sums3=sum(1/neg.denom)
+		
+		dtau=sums1*term3+digam.term1.term2*(term3+term4)-(sums2+digam.tau)*(1/tau^2)+
+		       digam.term2.tau*(term4-1/tau^2)-(digam.term1.term2.tau+sums3)*(term5)
+			   -digam.term2*term4+digam.tau*(1/tau^2)
+	dtau
+	}
+library(numDeriv)
+grad(function(tau)log(my_LBNB(tau=tau, y=10, phi=2, mu=10.5)), .5)
+My_tau_score(y=10, mu=10.5, phi=2, tau=.5)
+
+My_tau_hess<-function(y, mu,phi,tau)
+{
+    term1=mu*(tau*phi+1)/(phi-1)
+	term2=(tau*(2*phi-1)+1)/(tau*(phi-1))
+	term3=(mu*phi)/(phi-1)
+	term4=-1/(tau^2*(phi-1))
+	term6=2/(tau^3*(phi-1))
+	
+	digam.term1.term2=digamma(term1+term2)
+	digam.tau=digamma(1/tau)
+	digam.term2.tau=digamma(term2+1/tau)
+	digam.term1.term2.tau=digamma(term1+term2+1/tau)
+	digam.term2=digamma(term2)
+	trigam.term1.term2=trigamma(term1+term2)
+	trigam.term1.term2.tau=trigamma(term1+term2+1/tau)
+	trigam.term2.tau=trigamma(term2+1/tau)
+	trigam.tau=trigamma(1/tau)
+	trigam.term2=trigamma(term2)
+	
+	k=seq_len(y)-1
+		pos.denom1=k+term1
+		squ.pos.denom1=pos.denom1^2
+		pos.denom2=k+1/tau
+		squ.pos.denom2=pos.denom2^2
+		neg.denom=k+term1+term2+1/tau
+		squ.neg.denom=neg.denom^2
+		
+		
+		sums1 = sum(1/pos.denom1)
+		sums2=sum(1/squ.pos.denom1)
+		sums3=sum(1/pos.denom2)
+		sums4=sum(1/squ.pos.denom2)
+		sums5=sum(1/neg.denom)
+		sums6=sum(1/neg.denom^2)
+		
+		dtausqu=term3^2*(-sums2)+digam.term1.term2*term6+(term3+term4)^2*trigam.term1.term2
+		         +(sums3+digam.tau)*(2/tau^3)+(1/tau^4)*(trigam.tau-sums4)
+				 +trigam.term2.tau*(term6+2/tau^3)+(term4-1/tau^2)^2*trigam.term2.tau
+				 -(sums5+trigam.term1.term2.tau)*(term6+2/tau^3)
+				 -(term3+term4-1/tau^2)*(trigam.term1.term2.tau-sums6)-digam.term2*term6
+				 -term4^2*trigam.term2-digam.tau*(2/tau^3)-(1/tau^4)*trigam.tau
+	dtausqu
+}
+
+hessian(function(tau)log(my_LBNB(tau=tau, y=10, mu=10.5, phi=2)), .2)
+grad(function(tau)My_tau_score(tau=tau, y=10, phi=2, mu=10.5), .2)
+My_tau_hess(y=10, mu=10.5, phi=2, tau=.2)		
+				 
+		
