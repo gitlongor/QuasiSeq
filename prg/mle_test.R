@@ -1,4 +1,4 @@
-base.dir=file.path('D:/work/dev/Rstudio/QuasiSeq')
+base.dir=file.path('C:/Users/Tharshan-PC/Desktop/Research/QuasiSeq')
 out.dir=file.path(base.dir, 'out')
 prg.dir=file.path(base.dir, 'prg')
 dat.dir=file.path(base.dir, 'dat')
