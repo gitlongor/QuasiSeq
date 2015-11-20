@@ -12,7 +12,7 @@ my_LBNB_mu<-function(y,mu,phi,tau)
 	-sum(log(ans))
 }
 
-dtau.phi=function(theta, y, mu)
+dtau.phi=function(theta, y, mu)#####
 {
 	phi=theta[1L]; tau=theta[2L]
 	const1=digamma((1-tau+2*tau*phi)/(tau*(phi-1)))
@@ -69,7 +69,7 @@ if(FALSE){
 			  (digam.term1.term2.tau+sums2)*(term3+term4)-digam.term2*term4
 		-sum(dphi)
 	}
-
+#recrrence relationship for tau?
 	library(numDeriv)
 	grad(function(phi)my_LBNB_mu(phi=phi, y=10:20, tau=.5, mu=10.5:20.5), 2)
 	My_phi_score(y=10:20, mu=10.5:20.5, phi=2, tau=.5)
