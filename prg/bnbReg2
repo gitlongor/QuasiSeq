@@ -1,3 +1,32 @@
+my_LBNB_mu<-function(y,mu,phi,tau)
+{
+    n=NROW(y)
+	G=NCOL(y)
+	term2 = (tau*(2*phi-1)+1)/(tau*(phi-1))
+	term3 = lbeta(term2,1/tau)
+	
+	term1=matrix(n,G)
+	numerator=matrix(n,G)
+	term4=matrix(n,G)
+	ans=matrix(n,G)
+	for(i in seq_len(n)){
+	{for(j in seq_len(G))
+	term1[i,j] = mu*(tau*phi+1)/(phi-1)[i,j]
+	numerator[i,j] = lbeta(term1+term2,y[i,j]+1/tau)
+	term4[i,j]=lbeta(y[i,j], term1[i,j])
+	ans[i,j] = exp(		
+		numerator[i,j]-term4[i,j]-term3
+	)/y[i,j]
+	y0[i,j]=which(y[i,j]==0)
+	ans[y0[i,j]]=exp(numerator[i,j]-term3)[y0[i,j]]
+	}
+	}
+	
+	-sum(log(ans))
+}
+
+
+
 My_score_Beta2<-function(beta, y, x, o, tau, phi)
 {
 	n=NROW(x)
@@ -17,19 +46,65 @@ My_score_Beta2<-function(beta, y, x, o, tau, phi)
 	pos.psi0=digamma(pos.psi0.arg)
 	neg.psi0=digamma(pos.psi0.arg+1/tau)
 	
-	sums=NULL
-	for(i in seq_len(n)){
-	{for(g in seq_len(G)) 
+	sums=matrix(n,G)
+	for(i in 1:n){
+	{for(g in 1:G) 
 		k=seq_len(y[i,g])-1L
 		pos.denom=k+mu.tau.phip1.dphin1[i,g]
 		neg.denom=pos.denom+ t.2phin1p1.dtphin1.p1tau
-		sums[[g]] = sum(1/pos.denom-1/neg.denom)
+		sums[i,g] = sum(1/pos.denom-1/neg.denom)
 	}
 	}
 	dmu=(sums+pos.psi0-neg.psi0)*tau.phip1.dphin1
 	score=NULL
 	for(g in seq_len(G)){
-	score[[g]]=colSums(as.vector(dmu[,g]) * mu.x)
+	score[[g]]=colSums(as.vector(dmu[,g]) * mu.x[[g]])
 	}
-	score
+	-score
+}
+
+My_hess_beta2<-function(beta, y, x, o, tau, phi)
+{
+	n=NROW(x)
+	G=ncol(y)
+    mu <- exp(x%*%beta+o)
+    mu.x=NULL
+	for(g in 1:G){
+	mu.x[[g]]=as.vector(mu[,g])*x
+	}
+	
+	
+	mu.tau.phip1.dphin1 = mu*(tau*phi+1)/(phi-1)
+	t.2phin1p1.dtphin1=(tau*(2*phi-1)+1)/(tau*(phi-1))
+	t.2phin1p1.dtphin1.p1tau=t.2phin1p1.dtphin1 +1/tau
+	tau.phip1.dphin1=(tau*phi+1)/(phi-1)
+	
+	pos.psi0.arg=mu.tau.phip1.dphin1+t.2phin1p1.dtphin1
+	pos.psi0=digamma(pos.psi0.arg)
+	neg.psi0=digamma(pos.psi0.arg+1/tau)
+	pos.psi2=trigamma(pos.psi0.arg)
+	neg.psi2=trigamma(pos.psi0.arg+1/tau)
+	
+	sums1=matrix(n,g)
+	sums2=matrix(n,g)
+	
+	for(i in seq_len(n)){
+	{for(g in seq_len(G)) 
+		k=seq_len(y[i,g])-1L
+		pos.denom1=k+mu.tau.phip1.dphin1[i,g]
+		neg.denom1=pos.denom1+ t.2phin1p1.dtphin1.p1tau
+		sums1[i,g] = sum(1/pos.denom1-1/neg.denom1)
+		neg.denom2=(k+mu.tau.phip1.dphin1[i,g])
+		squ.neg.denom2=(k+mu.tau.phip1.dphin1[i,g])^2
+		pos.denom2=(neg.denom2+ t.2phin1p1.dtphin1.p1tau)^2
+		sums2[i,g] = sum(1/pos.denom2-1/squ.neg.denom2)
+	}
+	}
+	dmu=(sums1+pos.psi0-neg.psi0)*tau.phip1.dphin1
+	for(g in 1:G){
+	dbetaj.dmuilogl.ai[[g]]<-as.vector((sums2[,g]+pos.psi2-neg.psi2)*(tau.phip1.dphin1)^2*mu)
+	dmu.xi.mu[[g]]<-t(as.vector(dmu[,g])*x)%*%(as.vector(mu[,g])*x)
+	Hess[[g]]<-dmu.xi.mu[[g]]+t(dbetaj.dmuilogl.ai[[g]]*x)%*%(as.vector(mu[,g])*x)
+	}
+	-Hess
 }
