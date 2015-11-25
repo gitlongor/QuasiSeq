@@ -1,0 +1,221 @@
+bnbRegMle_CommonPhiTau=function(y, x, o, beta.start=NULL, phitau.start=NULL, iter.max=1000L, eps.mu=1e-6, eps.tp=1e-3, verbose=FALSE)
+{
+	G=NROW(y)
+	n=NROW(x)
+	p=NCOL(X)
+
+	NLLmu = function(y,mu,phi,tau)
+	{
+		term1 = mu*(tau*phi+1)/(phi-1)
+		term2 = (tau*(2*phi-1)+1)/(tau*(phi-1))
+		numerator = lbeta(term1+term2,y+1/tau)
+		term3 = lbeta(term2,1/tau)
+		ans = 		
+			numerator-lbeta(y, term1)-term3 - log(y)
+		
+		y0=which(y==0)
+		ans[y0]=(numerator-term3)[y0]
+		-sum(ans)
+	}
+	betObj=function(bet, theta,y){
+		NLLmu(y, exp(x%*%bet+o), theta[1L], theta[2L])
+	}
+	betGrad=function(bet, theta,y){
+		phi=theta[1L]; tau=theta[2L]
+		mu <- exp(x%*%bet+o)
+		mu.x=as.vector(mu)*x
+
+		mu.tau.phip1.dphin1 = mu*(tau*phi+1)/(phi-1)
+		t.2phin1p1.dtphin1=(tau*(2*phi-1)+1)/(tau*(phi-1))
+		t.2phin1p1.dtphin1.p1tau=t.2phin1p1.dtphin1 +1/tau
+		tau.phip1.dphin1=(tau*phi+1)/(phi-1)
+
+		pos.psi0.arg=mu.tau.phip1.dphin1+t.2phin1p1.dtphin1
+		pos.psi0=digamma(pos.psi0.arg)
+		neg.psi0=digamma(pos.psi0.arg+1/tau)
+		
+		sums=numeric(n)
+		for(i in seq_len(n)){
+			k=seq_len(y[i])-1L
+			pos.denom=k+mu.tau.phip1.dphin1[i]
+			neg.denom=pos.denom+ t.2phin1p1.dtphin1.p1tau
+			sums[i] = sum(1/pos.denom-1/neg.denom)
+		}
+		dmu=(sums+pos.psi0-neg.psi0)*tau.phip1.dphin1
+		
+		-colSums(as.vector(dmu) * mu.x)
+	}
+	betHess=function(bet, theta,y){
+		phi=theta[1L]; tau=theta[2L]
+		mu <- exp(x%*%bet+o)
+		mu.x<-as.vector(mu)*x
+		
+		mu.tau.phip1.dphin1 = mu*(tau*phi+1)/(phi-1)
+		t.2phin1p1.dtphin1=(tau*(2*phi-1)+1)/(tau*(phi-1))
+		t.2phin1p1.dtphin1.p1tau=t.2phin1p1.dtphin1 +1/tau
+		tau.phip1.dphin1=(tau*phi+1)/(phi-1)
+		
+		pos.psi0.arg=mu.tau.phip1.dphin1+t.2phin1p1.dtphin1
+		pos.psi0=digamma(pos.psi0.arg)
+		neg.psi0=digamma(pos.psi0.arg+1/tau)
+		pos.psi2=trigamma(pos.psi0.arg)
+		neg.psi2=trigamma(pos.psi0.arg+1/tau)
+		
+		sums1=numeric(n)
+		sums2=numeric(n)
+		
+		for(i in seq_len(n)){
+			k=seq_len(y[i])-1L
+			pos.denom1=k+mu.tau.phip1.dphin1[i]
+			neg.denom1=pos.denom1+ t.2phin1p1.dtphin1.p1tau
+			sums1[i] = sum(1/pos.denom1-1/neg.denom1)
+			neg.denom2=(k+mu.tau.phip1.dphin1[i])
+			squ.neg.denom2=(k+mu.tau.phip1.dphin1[i])^2
+			pos.denom2=(neg.denom2+ t.2phin1p1.dtphin1.p1tau)^2
+			sums2[i] = sum(1/pos.denom2-1/squ.neg.denom2)
+		}
+		dmu=(sums1+pos.psi0-neg.psi0)*tau.phip1.dphin1
+		dbetaj.dmuilogl.ai<-as.vector((sums2+pos.psi2-neg.psi2)*(tau.phip1.dphin1)^2*mu)
+		dmu.xi.mu<-t(as.vector(dmu)*x)%*%(as.vector(mu)*x)
+		Hess<-dmu.xi.mu+t(dbetaj.dmuilogl.ai*x)%*%(as.vector(mu)*x)
+		-Hess
+	}
+	dtau.phi=function(theta, mu)
+	{
+		phi=theta[1L]; tau=theta[2L]
+		const1=digamma((1-tau+2*tau*phi)/(tau*(phi-1)))
+		const2=digamma((tau-phi-2*tau*phi)/(tau-tau*phi))
+		const3=digamma(1/tau)
+
+		dg1=digamma((1+mu*tau^2*phi+tau*(mu-1+2*phi))/(tau*(phi-1)))
+		dg2=digamma((phi+mu*tau^2*phi+tau*(mu-1+y*(phi-1)+2*phi))/(tau*(phi-1)))
+		dg3=digamma((mu*(1+tau*phi))/(phi-1))
+		dg4=digamma(y+(mu+mu*tau*phi)/(phi-1))
+		dg5=digamma(y+1/tau)
+
+		dtau=sum(
+			(1/(tau^2*(phi-1)))*(
+				const1 -dg1
+				+(phi-1)*(const3-dg5)
+				+phi*(dg2-const2)
+				+mu*tau^2*phi*(dg1-dg2-dg3+dg4)
+			))
+
+		dphi=sum(
+			(1/(tau * (phi-1)^2))*(1 + tau) * (
+				dg2 -const2 + const1 -dg1
+				+ mu * tau * (dg3 -dg4 +dg2 -dg1)
+			))
+	 
+		-c(dphi, dtau)
+	}
+	tpObj=function(theta, mu){
+		NLLmu(y, mu, theta[1L], theta[2L])
+	}
+	
+	optBet=function(start, theta){
+		ans=start
+		for(g in seq_len(G)) {
+			ans[g,]=
+			nlminb(start[g,], objective=betObj, gradient = betGrad, hessian = betHess,theta=theta, y=y[g,])$par
+		}#, error=function(...)rep(NA_real_, length(start)))
+		ans
+	}
+	optTheta=function(start, mu){
+		#tryCatch(
+			nlminb(start, objective=tpObj, gradient = dtau.phi, lower=1:0+1e-6,mu=mu)$par
+		#, error=function(...)rep(NA_real_, length(start)))
+	}
+	
+	if(is.null(start)){
+		.NotYetImplemented()
+	}
+	
+	old.bet=beta.start
+	old.tp =phitau.start
+	
+	oo=o[rep(seq_len(n), each=G)]
+	old.mu=exp(tcrossprod(old.bet,x)+oo)
+	old.ll=-NLLmu(y, old.mu, old.tp[1L], old.tp[2L])
+	
+	start.phis=1+10^seq(-6,6, length=50)
+	start.taus=10^seq(-6,6, length=50)
+	start.phiTaus=as.matrix(expand.grid(start.phis, start.taus))
+	start.lls=numeric(nrow(start.phiTaus))
+
+	if(verbose )
+		cat("iter=", 0, "\tphi=", old.tp[1L], "\ttau=", old.tp[2L], "\n")
+	for(iter in seq_len(iter.max)){
+
+		bet=optBet(old.bet, old.tp)
+		mu=exp(tcrossprod(bet,x)+oo)
+		
+		for(i in seq_along(start.lls)){
+			start.lls[i]=-NLLmu(y, mu, start.phiTaus[i,1L], start.phiTaus[i,2L])
+		}
+		theta=optTheta(start.phiTaus[which.max(start.lls),], mu)
+		ll=-NLLmu(y, mu, theta[1L], theta[2L])
+
+		if((#max(abs(bet-old.bet))<= eps.bet ||
+			max(abs(mu-old.mu))<= eps.mu     ) &&
+			max(abs(ll-old.ll))<= eps.mu      &&
+		   max(abs(theta-old.tp))<=eps.tp) break
+		   
+		if(verbose && iter%%verbose==0L){
+			cat("iter=", iter, "\tphi=", old.tp[1L], "\ttau=", old.tp[2L],  "\tdiffMu=", quantile(apply(abs(mu-old.mu),1L,max)), "\tLL=", ll, "\n")
+		}		
+		old.bet=bet
+		old.tp=theta
+		old.mu=mu
+		old.ll=ll
+	}
+	grads=matrix(NA_real_, G, p)
+	for(g in seq_len(G)) grads[g,]=betGrad(bet[g,], theta,y[g,])
+	grad.phi.tau=dtau.phi(theta, mu)
+	
+	if(iter==iter.max ) {
+		warning('Maximum iterations reached')
+	}
+	list(beta=bet, tau=theta[2L], phi=theta[1L], 
+		beta.grad=grads, phitau.grad=grad.phi.tau,
+		# hess.bet=betHess(bet, theta),
+		mu=mu, logLik=ll, 
+		iter=iter)
+}
+
+
+if(FALSE){
+
+	debug(bnbRegMle_CommonPhiTau)
+
+	set.seed(234345L)
+	tmpidx=seq_len(NROW(counts.nb))
+	#tmpidx=sort(sample(nrow(counts.nb),  500L) )
+	
+	tmp1=bnbRegMle_CommonPhiTau(y=counts.nb[tmpidx,], x=X, o=offs, beta.start=fit$coeff[tmpidx,], phitau.start=apply(tauPhihats[tmpidx,],2L,median), iter.max=1000L, eps.mu=1e-6, eps.tp=1e-3, verbose=1L)
+
+	tmp5=bnbRegMle_CommonPhiTau(y=counts.nb[tmpidx,], x=X, o=offs, beta.start=fit$coeff[tmpidx,], phitau.start=c(1+1e-5, 1e-5), iter.max=1000L, eps.mu=1e-6, eps.tp=1e-3, verbose=1L)
+
+	NLLmu = function(y,mu,phi,tau)
+	{
+		term1 = mu*(tau*phi+1)/(phi-1)
+		term2 = (tau*(2*phi-1)+1)/(tau*(phi-1))
+		numerator = lbeta(term1+term2,y+1/tau)
+		term3 = lbeta(term2,1/tau)
+		ans = 		
+			numerator-lbeta(y, term1)-term3 - log(y)
+		
+		y0=which(y==0)
+		ans[y0]=(numerator-term3)[y0]
+		-sum(ans)
+	}
+	start.phis=1+10^(-5:5)
+	start.taus=10^(-5:5)
+	start.phiTaus=expand.grid(start.phis, start.taus)
+	start.mus=fit$fitted.values+1e-3
+	start.lls=numeric(nrow(start.phiTaus))
+	for(i in seq_along(start.lls)){
+		start.lls[i]=-NLLmu(counts.nb[tmpidx,], start.mus[tmpidx,], start.phiTaus[i,1L], start.phiTaus[i,2L])
+	}
+	
+}
