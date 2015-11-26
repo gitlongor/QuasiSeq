@@ -20,7 +20,8 @@ bnbRegMle_CommonTau=function(y, x, o, beta.start=NULL, phitau.start=NULL, iter.m
 	betObj=function(bet, theta,y){
 		NLLmu(y, exp(x%*%bet+o), theta[1L], theta[2L])
 	}
-	betGrad=function(bet,y, phi,tau){
+	betGrad=function(bet, theta,y){
+		phi=theta[1L]; tau=theta[2L]
 		mu <- exp(x%*%bet+o)
 		mu.x=as.vector(mu)*x
 
@@ -44,7 +45,8 @@ bnbRegMle_CommonTau=function(y, x, o, beta.start=NULL, phitau.start=NULL, iter.m
 		
 		-colSums(as.vector(dmu) * mu.x)
 	}
-	betHess=function(bet,y, phi,tau){
+	betHess=function(bet, theta,y){
+		phi=theta[1L]; tau=theta[2L]
 		mu <- exp(x%*%bet+o)
 		mu.x<-as.vector(mu)*x
 		
@@ -78,7 +80,50 @@ bnbRegMle_CommonTau=function(y, x, o, beta.start=NULL, phitau.start=NULL, iter.m
 		Hess<-dmu.xi.mu+t(dbetaj.dmuilogl.ai*x)%*%(as.vector(mu)*x)
 		-Hess
 	}
-	dtau.phi=function(theta, mu,phi)
+	
+	dphi=function(phi, tau, mu, y)
+	{
+		const1=digamma((1-tau+2*tau*phi)/(tau*(phi-1)))
+		const2=digamma((tau-phi-2*tau*phi)/(tau-tau*phi))
+		const3=digamma(1/tau)
+
+		dg1=digamma((1+mu*tau^2*phi+tau*(mu-1+2*phi))/(tau*(phi-1)))
+		dg2=digamma((phi+mu*tau^2*phi+tau*(mu-1+y*(phi-1)+2*phi))/(tau*(phi-1)))
+		dg3=digamma((mu*(1+tau*phi))/(phi-1))
+		dg4=digamma(y+(mu+mu*tau*phi)/(phi-1))
+		dg5=digamma(y+1/tau)
+
+		dphi=sum(
+			(1/(tau * (phi-1)^2))*(1 + tau) * (
+				dg2 -const2 + const1 -dg1
+				+ mu * tau * (dg3 -dg4 +dg2 -dg1)
+			))
+	 
+		-dphi
+	}
+	dtau=function(tau, phi, mu, y)
+	{
+		const1=digamma((1-tau+2*tau*phi)/(tau*(phi-1)))
+		const2=digamma((tau-phi-2*tau*phi)/(tau-tau*phi))
+		const3=digamma(1/tau)
+
+		dg1=digamma((1+mu*tau^2*phi+tau*(mu-1+2*phi))/(tau*(phi-1)))
+		dg2=digamma((phi+mu*tau^2*phi+tau*(mu-1+y*(phi-1)+2*phi))/(tau*(phi-1)))
+		dg3=digamma((mu*(1+tau*phi))/(phi-1))
+		dg4=digamma(y+(mu+mu*tau*phi)/(phi-1))
+		dg5=digamma(y+1/tau)
+
+		dtau=sum(
+			(1/(tau^2*(phi-1)))*(
+				const1 -dg1
+				+(phi-1)*(const3-dg5)
+				+phi*(dg2-const2)
+				+mu*tau^2*phi*(dg1-dg2-dg3+dg4)
+			))
+ 
+		-dtau
+	}
+	dtau.phi=function(theta, mu)
 	{
 		phi=theta[1L]; tau=theta[2L]
 		const1=digamma((1-tau+2*tau*phi)/(tau*(phi-1)))
@@ -107,22 +152,40 @@ bnbRegMle_CommonTau=function(y, x, o, beta.start=NULL, phitau.start=NULL, iter.m
 	 
 		-c(dphi, dtau)
 	}
-	tpObj=function(theta, mu){
-		NLLmu(y, mu, theta[-(G+1L)], theta[G+1L])
+	tpObj=function(phi, tau, y, mu){
+		NLLmu(y, mu, phi, tau)
 	}
 	
 	optBet=function(start, phi, tau){
 		ans=start
 		for(g in seq_len(G)) {
 			ans[g,]=
-			nlminb(start[g,], objective=betObj, gradient = betGrad, hessian = betHess,phi=phi, tau=tau, y=y[g,])$par
+			nlminb(start[g,], objective=betObj, gradient = betGrad, hessian = betHess, theta=c(phi[g],tau), y=y[g,])$par
 		}#, error=function(...)rep(NA_real_, length(start)))
 		ans
 	}
-	optTheta=function(start, mu){
-		#tryCatch(
-			nlminb(start, objective=tpObj, gradient = dtau.phi, lower=rep(1:0+1e-6, c(G, 1L)), mu=mu)$par
-		#, error=function(...)rep(NA_real_, length(start)))
+	optTheta=function(start, mu, iter.max=15L){
+		obj=function(theta, mu)tpObj(theta[-(G+1L)], theta[G+1L], y, mu)
+		nlminb(start, objective=obj, gradient = dtau.phi, lower=rep(1:0+1e-6,c(G,1L)), upper=rep(1e6,G+1L), mu=mu, control=list(iter.max=iter.max))$par
+	}	
+	optTheta=function(start, mu, iter.max=15L){
+		old.ans=ans=start
+		iter.inner=1L
+		repeat{
+			for(g in seq_len(G)){
+				ans[g]=nlminb(old.ans[g], objective=tpObj, gradient = dphi, lower=1+1e-6, upper=1e6, tau=old.ans[G+1], y=y[g,], mu=mu[g,])$par
+			}
+			ans[G+1L]=nlminb(old.ans[G+1L], objective=tpObj, gradient = dtau, lower=1e-6, upper=1e6, phi=ans[-(G+1L)], y=y, mu=mu)$par
+			
+			if(	iter.inner>=iter.max+iter || 
+				max(abs(old.ans-ans))<=eps.tp
+			){
+				print(iter.inner)
+				return(ans)
+			} 
+			ans=old.ans
+			iter.inner=iter.inner+1L
+		}
 	}
 	
 	if(is.null(start)){
@@ -141,7 +204,7 @@ bnbRegMle_CommonTau=function(y, x, o, beta.start=NULL, phitau.start=NULL, iter.m
 	start.lls=numeric(nrow(start.phiTaus))
 
 	if(verbose )
-		cat("iter=", 0, "\tphi=", old.tp[1L], "\ttau=", old.tp[2L], "\n")
+		cat("iter=", 0, "\tphi=", quantile(old.tp[-(G+1L)]), "\ttau=", old.tp[G+1L], "\n")
 	for(iter in seq_len(iter.max)){
 
 		bet=optBet(old.bet, old.tp[-(G+1L)], old.tp[G+1L])
@@ -154,12 +217,12 @@ bnbRegMle_CommonTau=function(y, x, o, beta.start=NULL, phitau.start=NULL, iter.m
 		ll=-NLLmu(y, mu, theta[-(G+1L)], theta[G+1L])
 
 		if((#max(abs(bet-old.bet))<= eps.bet ||
-			max(abs(mu-old.mu))<= eps.mu     ) &&
+			max(abs(mu-old.mu)/pmax(1,abs(mu)))<= eps.mu     ) &&
 			max(abs(ll-old.ll))<= eps.mu      &&
 		   max(abs(theta-old.tp))<=eps.tp) break
 		   
 		if(verbose && iter%%verbose==0L){
-			cat("iter=", iter, "\tphi=", quantile(abs(old.tp[-(G+1L)]-theta[-(G+1L)])), "\ttau=", old.tp[G+1L],  "\tdiffMu=", quantile(apply(abs(mu-old.mu),1L,max)), "\tLL=", ll, "\n")
+			cat("iter=", iter, "\tphi=", quantile(abs(old.tp[-(G+1L)]-theta[-(G+1L)])), "\ttau=", old.tp[G+1L],  "\tdiffMu=", quantile(apply(abs(mu-old.mu),1L,max)), "\timaxDiffMu", which.max(apply(abs(mu-old.mu)/pmax(1,abs(mu)),1L,max)), "\tLL=", ll, "\n")
 		}		
 		old.bet=bet
 		old.tp=theta
@@ -167,7 +230,7 @@ bnbRegMle_CommonTau=function(y, x, o, beta.start=NULL, phitau.start=NULL, iter.m
 		old.ll=ll
 	}
 	grads=matrix(NA_real_, G, p)
-	for(g in seq_len(G)) grads[g,]=betGrad(bet[g,], y[g,], theta[g],theta[G+1L])
+	for(g in seq_len(G)) grads[g,]=betGrad(bet[g,], c(theta[g],theta[G+1L]), y[g,])
 	grad.phi.tau=dtau.phi(theta, mu)
 	
 	if(iter==iter.max ) {
@@ -189,7 +252,7 @@ if(FALSE){
 	tmpidx=seq_len(NROW(counts.nb))
 	#tmpidx=sort(sample(nrow(counts.nb),  500L) )
 	
-	tmp1=bnbRegMle_CommonTau(y=counts.nb[tmpidx,], x=X, o=offs, beta.start=fit$coeff[tmpidx,], phitau.start=c(tauPhihats[tmpidx,1],median(tauPhihats[tmpidx,2])), iter.max=1000L, eps.mu=1e-6, eps.tp=1e-3, verbose=1L)
+	tmp1=bnbRegMle_CommonTau(y=counts.nb[tmpidx,], x=X, o=offs, beta.start=fit$coeff[tmpidx,], phitau.start=c(pmin(1e6,tauPhihats[tmpidx,1]),median(tauPhihats[tmpidx,2])), iter.max=1000L, eps.mu=1e-6, eps.tp=1e-3, verbose=1L)
 
 	tmp5=bnbRegMle_CommonTau(y=counts.nb[tmpidx,], x=X, o=offs, beta.start=fit$coeff[tmpidx,], phitau.start=c(1+1e-5, 1e-5), iter.max=1000L, eps.mu=1e-6, eps.tp=1e-3, verbose=1L)
 
@@ -216,3 +279,6 @@ if(FALSE){
 	}
 	
 }
+
+
+	tmp1=bnbRegMle_CommonTau(y=counts.nb[tmpidx,], x=X, o=offs, beta.start=fit$coeff[tmpidx,], phitau.start=c(pmin(1e6,tauPhihats[tmpidx,1]),median(tauPhihats[tmpidx,2])), iter.max=1000L, eps.mu=1e-3, eps.tp=1e-3, verbose=1L)
