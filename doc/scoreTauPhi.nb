@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
-NotebookDataLength[     53297,       1625]
-NotebookOptionsPosition[     51587,       1560]
-NotebookOutlinePosition[     51957,       1576]
-CellTagsIndexPosition[     51914,       1573]
+NotebookDataLength[     53359,       1603]
+NotebookOptionsPosition[     51879,       1546]
+NotebookOutlinePosition[     52249,       1562]
+CellTagsIndexPosition[     52206,       1559]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -75,7 +75,7 @@ Cell[BoxData[
       RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "}"}]], "Output",
  CellChangeTimes->{3.656439724275238*^9, 3.657482303711236*^9, 
   3.6574871291076727`*^9, 3.657493121820257*^9, 3.657540199310114*^9, 
-  3.657540266849804*^9}]
+  3.657540266849804*^9, 3.6575441326560965`*^9, 3.657549628024977*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -95,7 +95,7 @@ Cell[BoxData[
   RowBox[{"\[Mu]", ">", "0"}]}]], "Output",
  CellChangeTimes->{3.656439744128222*^9, 3.657482307199663*^9, 
   3.657487165296252*^9, 3.657493164311308*^9, 3.657540199492195*^9, 
-  3.65754026685882*^9}]
+  3.65754026685882*^9, 3.657544132717126*^9, 3.6575496281730833`*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -133,7 +133,7 @@ Cell[BoxData[
  CellChangeTimes->{3.656419875916151*^9, 3.656438953554426*^9, 
   3.6564396496284266`*^9, 3.6564397294288454`*^9, 3.657482305757682*^9, 
   3.6574871308218594`*^9, 3.6574931233083253`*^9, 3.657540199497196*^9, 
-  3.6575402668648148`*^9}]
+  3.6575402668648148`*^9, 3.65754413272314*^9, 3.65754962819211*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -158,7 +158,8 @@ Cell[BoxData[
       RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", "\[Phi]"}]}], 
   "}"}]], "Output",
  CellChangeTimes->{3.656439689871872*^9, 3.6564397496591787`*^9, 
-  3.6574823085336065`*^9, 3.657540199513208*^9, 3.657540266894866*^9}]
+  3.6574823085336065`*^9, 3.657540199513208*^9, 3.657540266894866*^9, 
+  3.657544132745149*^9, 3.657549628242132*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -257,7 +258,7 @@ Cell[BoxData[
      "]"}]}]], "]"}]], "Output",
  CellChangeTimes->{3.6564389779917197`*^9, 3.656439700995753*^9, 
   3.6564397522109337`*^9, 3.6574823095873513`*^9, 3.6575401995192127`*^9, 
-  3.657540266902841*^9}]
+  3.657540266902841*^9, 3.657544132769174*^9, 3.657549628262161*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -269,15 +270,135 @@ Cell[BoxData[
     RowBox[{"logLik", ",", 
      RowBox[{"{", 
       RowBox[{"{", 
-       RowBox[{"\[Tau]", ",", "\[Phi]"}], "}"}], "}"}]}], "]"}], ",", " ", 
+       RowBox[{"\[Phi]", ",", "\[Tau]"}], "}"}], "}"}]}], "]"}], ",", " ", 
    RowBox[{"Assumptions", "\[Rule]", "Assps"}]}], "]"}]], "Input",
  CellChangeTimes->{{3.6564389305131283`*^9, 3.6564389437204633`*^9}, {
    3.656439704358111*^9, 3.6564397105975337`*^9}, {3.656439755085967*^9, 
-   3.6564397792690606`*^9}, 3.656439818221613*^9}],
+   3.6564397792690606`*^9}, 3.656439818221613*^9, {3.6575481576536903`*^9, 
+   3.657548160197476*^9}}],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{
+   RowBox[{
+    FractionBox["1", 
+     RowBox[{"\[Tau]", " ", 
+      SuperscriptBox[
+       RowBox[{"(", 
+        RowBox[{
+         RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], "2"]}]], 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"1", "+", "\[Tau]"}], ")"}], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", 
+        RowBox[{"PolyGamma", "[", 
+         RowBox[{"0", ",", 
+          FractionBox[
+           RowBox[{"\[Tau]", "-", "\[Phi]", "-", 
+            RowBox[{"2", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+           RowBox[{"\[Tau]", "-", 
+            RowBox[{"\[Tau]", " ", "\[Phi]"}]}]]}], "]"}]}], "+", 
+       RowBox[{"\[Mu]", " ", "\[Tau]", " ", 
+        RowBox[{"PolyGamma", "[", 
+         RowBox[{"0", ",", 
+          FractionBox[
+           RowBox[{"\[Mu]", " ", 
+            RowBox[{"(", 
+             RowBox[{"1", "+", 
+              RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
+           RowBox[{
+            RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}]}], "+", 
+       RowBox[{"PolyGamma", "[", 
+        RowBox[{"0", ",", 
+         FractionBox[
+          RowBox[{"1", "-", "\[Tau]", "+", 
+           RowBox[{"2", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+          RowBox[{"\[Tau]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}], "-", 
+       RowBox[{"PolyGamma", "[", 
+        RowBox[{"0", ",", 
+         FractionBox[
+          RowBox[{"1", "+", 
+           RowBox[{"\[Mu]", " ", 
+            SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]"}], "+", 
+           RowBox[{"\[Tau]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
+              RowBox[{"2", " ", "\[Phi]"}]}], ")"}]}]}], 
+          RowBox[{"\[Tau]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}], "-", 
+       RowBox[{"\[Mu]", " ", "\[Tau]", " ", 
+        RowBox[{"PolyGamma", "[", 
+         RowBox[{"0", ",", 
+          FractionBox[
+           RowBox[{"1", "+", 
+            RowBox[{"\[Mu]", " ", 
+             SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]"}], "+", 
+            RowBox[{"\[Tau]", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
+               RowBox[{"2", " ", "\[Phi]"}]}], ")"}]}]}], 
+           RowBox[{"\[Tau]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "+", 
+       RowBox[{"PolyGamma", "[", 
+        RowBox[{"0", ",", 
+         FractionBox[
+          RowBox[{"\[Phi]", "+", 
+           RowBox[{"\[Mu]", " ", 
+            SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]"}], "+", 
+           RowBox[{"\[Tau]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
+              RowBox[{"y", " ", 
+               RowBox[{"(", 
+                RowBox[{
+                 RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}], "+", 
+              RowBox[{"2", " ", "\[Phi]"}]}], ")"}]}]}], 
+          RowBox[{"\[Tau]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}], "+", 
+       RowBox[{"\[Mu]", " ", "\[Tau]", " ", 
+        RowBox[{"PolyGamma", "[", 
+         RowBox[{"0", ",", 
+          FractionBox[
+           RowBox[{"\[Phi]", "+", 
+            RowBox[{"\[Mu]", " ", 
+             SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]"}], "+", 
+            RowBox[{"\[Tau]", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
+               RowBox[{"y", " ", 
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}], "+", 
+               RowBox[{"2", " ", "\[Phi]"}]}], ")"}]}]}], 
+           RowBox[{"\[Tau]", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "-", 
+       RowBox[{"\[Mu]", " ", "\[Tau]", " ", 
+        RowBox[{"PolyGamma", "[", 
+         RowBox[{"0", ",", 
+          RowBox[{"y", "+", 
+           FractionBox[
+            RowBox[{"\[Mu]", "+", 
+             RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+            RowBox[{
+             RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}]}], ")"}]}]}], 
+   ",", 
    RowBox[{
     FractionBox["1", 
      RowBox[{
@@ -413,377 +534,573 @@ Cell[BoxData[
            RowBox[{"\[Mu]", "+", 
             RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
            RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}]}], ")"}]}], ",", 
+            RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}]}], ")"}]}]}], 
+  "}"}]], "Output",
+ CellChangeTimes->{{3.6564397711313066`*^9, 3.6564398185678368`*^9}, 
+   3.657482311272542*^9, 3.6575401996222973`*^9, 3.6575402669909153`*^9, 
+   3.6575441328522215`*^9, 3.657548160925989*^9, 3.65754962835122*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullSimplify", "[", 
+  RowBox[{
+   RowBox[{"D", "[", 
+    RowBox[{"logLik", ",", "\[Tau]", ",", "\[Mu]"}], "]"}], ",", " ", 
+   RowBox[{"Assumptions", "\[Rule]", "Assps"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.656445682367126*^9, 3.65644571595887*^9}, {
+  3.657544355458585*^9, 3.6575443566734266`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  FractionBox["1", 
    RowBox[{
-    FractionBox["1", 
-     RowBox[{"\[Tau]", " ", 
-      SuperscriptBox[
-       RowBox[{"(", 
+    SuperscriptBox["\[Tau]", "2"], " ", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], "2"]}]], 
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"-", 
+      SuperscriptBox["\[Tau]", "2"]}], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", "\[Phi]", " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"0", ",", 
+       FractionBox[
+        RowBox[{"\[Mu]", "+", 
+         RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
         RowBox[{
-         RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], "2"]}]], 
+         RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}]}], "+", 
+    RowBox[{
+     SuperscriptBox["\[Tau]", "2"], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", "\[Phi]", " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"0", ",", 
+       RowBox[{"1", "+", 
+        FractionBox[
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"1", "+", 
+            RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", 
+          RowBox[{"(", 
+           RowBox[{"1", "+", 
+            RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}]}], "]"}]}], "+", 
+    RowBox[{
+     SuperscriptBox["\[Tau]", "2"], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", "\[Phi]", " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"0", ",", 
+       RowBox[{"y", "+", 
+        FractionBox[
+         RowBox[{"\[Mu]", "+", 
+          RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+         RowBox[{
+          RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}], "-", 
+    RowBox[{
+     SuperscriptBox["\[Tau]", "2"], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", "\[Phi]", " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"0", ",", 
+       FractionBox[
+        RowBox[{"\[Phi]", "+", 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "-", "y", "+", "\[Mu]", "+", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"2", "+", "y", "+", 
+               RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", "\[Phi]"}]}], 
+           ")"}]}]}], 
+        RowBox[{"\[Tau]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "-", 
+    RowBox[{"\[Mu]", " ", 
+     SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]", " ", 
+     RowBox[{"(", 
+      RowBox[{"1", "+", 
+       RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"1", ",", 
+       FractionBox[
+        RowBox[{"\[Mu]", "+", 
+         RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+        RowBox[{
+         RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}]}], "+", 
+    RowBox[{"\[Mu]", " ", 
+     SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]", " ", 
+     RowBox[{"(", 
+      RowBox[{"1", "+", 
+       RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"1", ",", 
+       RowBox[{"y", "+", 
+        FractionBox[
+         RowBox[{"\[Mu]", "+", 
+          RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+         RowBox[{
+          RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}], "+", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"1", "+", 
+       RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", 
+       RowBox[{"\[Mu]", " ", 
+        SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]"}]}], ")"}], " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"1", ",", 
+       FractionBox[
+        RowBox[{"1", "+", 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
+            RowBox[{"2", " ", "\[Phi]"}], "+", 
+            RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], ")"}]}]}], 
+        RowBox[{"\[Tau]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "-", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", 
+       RowBox[{"\[Mu]", " ", 
+        SuperscriptBox["\[Tau]", "2"]}]}], ")"}], " ", "\[Phi]", " ", 
+     RowBox[{"(", 
+      RowBox[{"1", "+", 
+       RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"1", ",", 
+       FractionBox[
+        RowBox[{"\[Phi]", "+", 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "-", "y", "+", "\[Mu]", "+", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"2", "+", "y", "+", 
+               RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", "\[Phi]"}]}], 
+           ")"}]}]}], 
+        RowBox[{"\[Tau]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}]}], 
+   ")"}]}]], "Output",
+ CellChangeTimes->{{3.6564456966181817`*^9, 3.656445720641164*^9}, 
+   3.657540202747511*^9, 3.6575402701531515`*^9, 3.657544135581167*^9, 
+   3.657544367226904*^9, 3.6575496344785557`*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullSimplify", "[", 
+  RowBox[{
+   RowBox[{"D", "[", 
+    RowBox[{"logLik", ",", "\[Phi]", ",", "\[Mu]"}], "]"}], ",", " ", 
+   RowBox[{"Assumptions", "\[Rule]", "Assps"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.65644573259061*^9, 3.6564457338615203`*^9}, {
+  3.657544371771117*^9, 3.6575443738976164`*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  FractionBox["1", 
+   RowBox[{"\[Tau]", " ", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], "3"]}]], 
+  RowBox[{
+   RowBox[{"(", 
+    RowBox[{"1", "+", "\[Tau]"}], ")"}], " ", 
+   RowBox[{"(", 
+    RowBox[{
+     RowBox[{"\[Tau]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", 
+      RowBox[{"PolyGamma", "[", 
+       RowBox[{"0", ",", 
+        FractionBox[
+         RowBox[{"\[Mu]", "+", 
+          RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+         RowBox[{
+          RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}]}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"\[Tau]", "-", 
+        RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
+      RowBox[{"PolyGamma", "[", 
+       RowBox[{"0", ",", 
+        RowBox[{"1", "+", 
+         FractionBox[
+          RowBox[{
+           RowBox[{"(", 
+            RowBox[{"1", "+", 
+             RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", 
+           RowBox[{"(", 
+            RowBox[{"1", "+", 
+             RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
+          RowBox[{"\[Tau]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}]}], "]"}]}], "-", 
+     RowBox[{"\[Tau]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", 
+      RowBox[{"PolyGamma", "[", 
+       RowBox[{"0", ",", 
+        RowBox[{"y", "+", 
+         FractionBox[
+          RowBox[{"\[Mu]", "+", 
+           RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}], "+", 
+     RowBox[{"\[Tau]", " ", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", 
+      RowBox[{"PolyGamma", "[", 
+       RowBox[{"0", ",", 
+        FractionBox[
+         RowBox[{"\[Phi]", "+", 
+          RowBox[{"\[Tau]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"-", "1"}], "-", "y", "+", "\[Mu]", "+", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"2", "+", "y", "+", 
+                RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", "\[Phi]"}]}], 
+            ")"}]}]}], 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "+", 
+     RowBox[{"\[Mu]", " ", "\[Tau]", " ", 
+      RowBox[{"(", 
+       RowBox[{"1", "+", 
+        RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
+      RowBox[{"PolyGamma", "[", 
+       RowBox[{"1", ",", 
+        FractionBox[
+         RowBox[{"\[Mu]", "+", 
+          RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+         RowBox[{
+          RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}]}], "-", 
+     RowBox[{"\[Mu]", " ", "\[Tau]", " ", 
+      RowBox[{"(", 
+       RowBox[{"1", "+", 
+        RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
+      RowBox[{"PolyGamma", "[", 
+       RowBox[{"1", ",", 
+        RowBox[{"y", "+", 
+         FractionBox[
+          RowBox[{"\[Mu]", "+", 
+           RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}], "-", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"1", "+", 
+        RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"1", "+", 
+        RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
+      RowBox[{"PolyGamma", "[", 
+       RowBox[{"1", ",", 
+        FractionBox[
+         RowBox[{"1", "+", 
+          RowBox[{"\[Tau]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
+             RowBox[{"2", " ", "\[Phi]"}], "+", 
+             RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], ")"}]}]}], 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "+", 
+     RowBox[{
+      RowBox[{"(", 
+       RowBox[{"1", "+", 
+        RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", 
+      RowBox[{"(", 
+       RowBox[{"1", "+", 
+        RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
+      RowBox[{"PolyGamma", "[", 
+       RowBox[{"1", ",", 
+        FractionBox[
+         RowBox[{"\[Phi]", "+", 
+          RowBox[{"\[Tau]", " ", 
+           RowBox[{"(", 
+            RowBox[{
+             RowBox[{"-", "1"}], "-", "y", "+", "\[Mu]", "+", 
+             RowBox[{
+              RowBox[{"(", 
+               RowBox[{"2", "+", "y", "+", 
+                RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", "\[Phi]"}]}], 
+            ")"}]}]}], 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}]}], 
+    ")"}]}]}]], "Output",
+ CellChangeTimes->{3.656445736155141*^9, 3.657540203754222*^9, 
+  3.6575402711938753`*^9, 3.6575441365188255`*^9, 3.6575443748582973`*^9, 
+  3.657549639134843*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{"FullSimplify", "[", 
+  RowBox[{
+   RowBox[{"D", "[", 
+    RowBox[{"logLik", ",", "\[Phi]", ",", "\[Tau]"}], "]"}], ",", " ", 
+   RowBox[{"Assumptions", "\[Rule]", "Assps"}]}], "]"}]], "Input",
+ CellChangeTimes->{{3.6564457494545307`*^9, 3.656445749700712*^9}, {
+  3.6575443824116387`*^9, 3.657544384088856*^9}}],
+
+Cell[BoxData[
+ RowBox[{
+  FractionBox["1", 
+   RowBox[{
+    SuperscriptBox["\[Tau]", "3"], " ", 
+    SuperscriptBox[
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], "3"]}]], 
+  RowBox[{"(", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"\[Tau]", "-", 
+       RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"0", ",", 
+       RowBox[{"2", "+", 
+        FractionBox[
+         RowBox[{"1", "+", "\[Tau]"}], 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}]}], "]"}]}], "+", 
+    RowBox[{"\[Mu]", " ", 
+     SuperscriptBox["\[Tau]", "3"], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"0", ",", 
+       FractionBox[
+        RowBox[{"\[Mu]", "+", 
+         RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+        RowBox[{
+         RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}]}], "+", 
+    RowBox[{"\[Tau]", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"0", ",", 
+       RowBox[{"1", "+", 
+        FractionBox[
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"1", "+", "\[Tau]"}], ")"}], " ", "\[Phi]"}], 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}]}], "]"}]}], "-", 
+    RowBox[{"\[Tau]", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", 
+       RowBox[{"\[Mu]", " ", 
+        SuperscriptBox["\[Tau]", "2"]}]}], ")"}], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"0", ",", 
+       RowBox[{"1", "+", 
+        FractionBox[
+         RowBox[{
+          RowBox[{"(", 
+           RowBox[{"1", "+", 
+            RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", 
+          RowBox[{"(", 
+           RowBox[{"1", "+", 
+            RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}]}], "]"}]}], "-", 
+    RowBox[{"\[Mu]", " ", 
+     SuperscriptBox["\[Tau]", "3"], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"0", ",", 
+       RowBox[{"y", "+", 
+        FractionBox[
+         RowBox[{"\[Mu]", "+", 
+          RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+         RowBox[{
+          RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}], "+", 
+    RowBox[{"\[Tau]", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", 
+       RowBox[{"\[Mu]", " ", 
+        SuperscriptBox["\[Tau]", "2"]}]}], ")"}], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"0", ",", 
+       FractionBox[
+        RowBox[{"\[Phi]", "+", 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "-", "y", "+", "\[Mu]", "+", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"2", "+", "y", "+", 
+               RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", "\[Phi]"}]}], 
+           ")"}]}]}], 
+        RowBox[{"\[Tau]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "-", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"1", "+", "\[Tau]"}], ")"}], " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"1", ",", 
+       RowBox[{"2", "+", 
+        FractionBox[
+         RowBox[{"1", "+", "\[Tau]"}], 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}]}], "]"}]}], "+", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"1", "+", "\[Tau]"}], ")"}], " ", "\[Phi]", " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"1", ",", 
+       FractionBox[
+        RowBox[{"\[Tau]", "-", "\[Phi]", "-", 
+         RowBox[{"2", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+        RowBox[{"\[Tau]", "-", 
+         RowBox[{"\[Tau]", " ", "\[Phi]"}]}]]}], "]"}]}], "+", 
+    RowBox[{
+     SuperscriptBox["\[Mu]", "2"], " ", 
+     SuperscriptBox["\[Tau]", "3"], " ", 
+     RowBox[{"(", 
+      RowBox[{"1", "+", "\[Tau]"}], ")"}], " ", "\[Phi]", " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"1", ",", 
+       FractionBox[
+        RowBox[{"\[Mu]", "+", 
+         RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+        RowBox[{
+         RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}]}], "-", 
+    RowBox[{
+     SuperscriptBox["\[Mu]", "2"], " ", 
+     SuperscriptBox["\[Tau]", "3"], " ", 
+     RowBox[{"(", 
+      RowBox[{"1", "+", "\[Tau]"}], ")"}], " ", "\[Phi]", " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"1", ",", 
+       RowBox[{"y", "+", 
+        FractionBox[
+         RowBox[{"\[Mu]", "+", 
+          RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
+         RowBox[{
+          RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}], "-", 
     RowBox[{
      RowBox[{"(", 
       RowBox[{"1", "+", "\[Tau]"}], ")"}], " ", 
      RowBox[{"(", 
+      RowBox[{"1", "+", 
+       RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", 
+     RowBox[{"(", 
       RowBox[{
-       RowBox[{"-", 
-        RowBox[{"PolyGamma", "[", 
-         RowBox[{"0", ",", 
-          FractionBox[
-           RowBox[{"\[Tau]", "-", "\[Phi]", "-", 
-            RowBox[{"2", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-           RowBox[{"\[Tau]", "-", 
-            RowBox[{"\[Tau]", " ", "\[Phi]"}]}]]}], "]"}]}], "+", 
-       RowBox[{"\[Mu]", " ", "\[Tau]", " ", 
-        RowBox[{"PolyGamma", "[", 
-         RowBox[{"0", ",", 
-          FractionBox[
-           RowBox[{"\[Mu]", " ", 
-            RowBox[{"(", 
-             RowBox[{"1", "+", 
-              RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
+       RowBox[{"-", "1"}], "+", 
+       RowBox[{"\[Mu]", " ", 
+        SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]"}]}], ")"}], " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"1", ",", 
+       FractionBox[
+        RowBox[{"1", "+", 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
            RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}]}], "+", 
-       RowBox[{"PolyGamma", "[", 
-        RowBox[{"0", ",", 
-         FractionBox[
-          RowBox[{"1", "-", "\[Tau]", "+", 
-           RowBox[{"2", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-          RowBox[{"\[Tau]", " ", 
-           RowBox[{"(", 
+            RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
+            RowBox[{"2", " ", "\[Phi]"}], "+", 
+            RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], ")"}]}]}], 
+        RowBox[{"\[Tau]", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "+", 
+    RowBox[{
+     RowBox[{"(", 
+      RowBox[{"1", "+", "\[Tau]"}], ")"}], " ", 
+     RowBox[{"(", 
+      RowBox[{"1", "+", 
+       RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", "1"}], "+", 
+       RowBox[{"\[Mu]", " ", 
+        SuperscriptBox["\[Tau]", "2"]}]}], ")"}], " ", "\[Phi]", " ", 
+     RowBox[{"PolyGamma", "[", 
+      RowBox[{"1", ",", 
+       FractionBox[
+        RowBox[{"\[Phi]", "+", 
+         RowBox[{"\[Tau]", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"-", "1"}], "-", "y", "+", "\[Mu]", "+", 
             RowBox[{
-             RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}], "-", 
-       RowBox[{"PolyGamma", "[", 
-        RowBox[{"0", ",", 
-         FractionBox[
-          RowBox[{"1", "+", 
-           RowBox[{"\[Mu]", " ", 
-            SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]"}], "+", 
-           RowBox[{"\[Tau]", " ", 
-            RowBox[{"(", 
-             RowBox[{
-              RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
-              RowBox[{"2", " ", "\[Phi]"}]}], ")"}]}]}], 
-          RowBox[{"\[Tau]", " ", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}], "-", 
-       RowBox[{"\[Mu]", " ", "\[Tau]", " ", 
-        RowBox[{"PolyGamma", "[", 
-         RowBox[{"0", ",", 
-          FractionBox[
-           RowBox[{"1", "+", 
-            RowBox[{"\[Mu]", " ", 
-             SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]"}], "+", 
-            RowBox[{"\[Tau]", " ", 
              RowBox[{"(", 
-              RowBox[{
-               RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
-               RowBox[{"2", " ", "\[Phi]"}]}], ")"}]}]}], 
-           RowBox[{"\[Tau]", " ", 
-            RowBox[{"(", 
-             RowBox[{
-              RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "+", 
-       RowBox[{"PolyGamma", "[", 
-        RowBox[{"0", ",", 
-         FractionBox[
-          RowBox[{"\[Phi]", "+", 
-           RowBox[{"\[Mu]", " ", 
-            SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]"}], "+", 
-           RowBox[{"\[Tau]", " ", 
-            RowBox[{"(", 
-             RowBox[{
-              RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
-              RowBox[{"y", " ", 
-               RowBox[{"(", 
-                RowBox[{
-                 RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}], "+", 
-              RowBox[{"2", " ", "\[Phi]"}]}], ")"}]}]}], 
-          RowBox[{"\[Tau]", " ", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}], "+", 
-       RowBox[{"\[Mu]", " ", "\[Tau]", " ", 
-        RowBox[{"PolyGamma", "[", 
-         RowBox[{"0", ",", 
-          FractionBox[
-           RowBox[{"\[Phi]", "+", 
-            RowBox[{"\[Mu]", " ", 
-             SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]"}], "+", 
-            RowBox[{"\[Tau]", " ", 
-             RowBox[{"(", 
-              RowBox[{
-               RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
-               RowBox[{"y", " ", 
-                RowBox[{"(", 
-                 RowBox[{
-                  RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}], "+", 
-               RowBox[{"2", " ", "\[Phi]"}]}], ")"}]}]}], 
-           RowBox[{"\[Tau]", " ", 
-            RowBox[{"(", 
-             RowBox[{
-              RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "-", 
-       RowBox[{"\[Mu]", " ", "\[Tau]", " ", 
-        RowBox[{"PolyGamma", "[", 
-         RowBox[{"0", ",", 
-          RowBox[{"y", "+", 
-           FractionBox[
-            RowBox[{"\[Mu]", "+", 
-             RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-            RowBox[{
-             RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}]}], ")"}]}]}]}],
-   "}"}]], "Output",
- CellChangeTimes->{{3.6564397711313066`*^9, 3.6564398185678368`*^9}, 
-   3.657482311272542*^9, 3.6575401996222973`*^9, 3.6575402669909153`*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"FullSimplify", "[", 
-  RowBox[{
-   RowBox[{"D", "[", 
-    RowBox[{"logLik", ",", 
-     RowBox[{"{", 
-      RowBox[{"\[Tau]", ",", "\[Mu]"}], "}"}]}], "]"}], ",", " ", 
-   RowBox[{"Assumptions", "\[Rule]", "Assps"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.656445682367126*^9, 3.65644571595887*^9}}],
-
-Cell[BoxData[
- RowBox[{
-  SubscriptBox["\[PartialD]", 
-   RowBox[{"{", 
-    RowBox[{"\[Tau]", ",", "\[Mu]"}], "}"}]], 
-  RowBox[{"Log", "[", 
-   FractionBox[
-    RowBox[{
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       FractionBox["1", "\[Tau]"], ",", "y"}], "]"}], " ", 
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       RowBox[{"2", "+", 
-        FractionBox[
-         RowBox[{"1", "+", "\[Tau]"}], 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], ",", 
-       FractionBox[
-        RowBox[{"\[Mu]", " ", 
-         RowBox[{"(", 
-          RowBox[{"1", "+", 
-           RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
-        RowBox[{
-         RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}], " ", 
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       FractionBox[
-        RowBox[{"\[Mu]", " ", 
-         RowBox[{"(", 
-          RowBox[{"1", "+", 
-           RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
-        RowBox[{
-         RowBox[{"-", "1"}], "+", "\[Phi]"}]], ",", "y"}], "]"}]}], 
-    RowBox[{
-     RowBox[{"y", "!"}], " ", 
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       FractionBox[
-        RowBox[{"\[Tau]", "-", "\[Phi]", "-", 
-         RowBox[{"2", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-        RowBox[{"\[Tau]", "-", 
-         RowBox[{"\[Tau]", " ", "\[Phi]"}]}]], ",", 
-       FractionBox[
-        RowBox[{"\[Mu]", " ", 
-         RowBox[{"(", 
-          RowBox[{"1", "+", 
-           RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
-        RowBox[{
-         RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}], " ", 
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       FractionBox[
-        RowBox[{"\[Phi]", "+", 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
-            RowBox[{"2", " ", "\[Phi]"}], "+", 
-            RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], ")"}]}]}], 
+              RowBox[{"2", "+", "y", "+", 
+               RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", "\[Phi]"}]}], 
+           ")"}]}]}], 
         RowBox[{"\[Tau]", " ", 
          RowBox[{"(", 
           RowBox[{
-           RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]], ",", "y"}], 
-      "]"}]}]], "]"}]}]], "Output",
- CellChangeTimes->{{3.6564456966181817`*^9, 3.656445720641164*^9}, 
-   3.657540202747511*^9, 3.6575402701531515`*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"FullSimplify", "[", 
-  RowBox[{
-   RowBox[{"D", "[", 
-    RowBox[{"logLik", ",", 
-     RowBox[{"{", 
-      RowBox[{"\[Phi]", ",", "\[Mu]"}], "}"}]}], "]"}], ",", " ", 
-   RowBox[{"Assumptions", "\[Rule]", "Assps"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.65644573259061*^9, 3.6564457338615203`*^9}}],
-
-Cell[BoxData[
- RowBox[{
-  SubscriptBox["\[PartialD]", 
-   RowBox[{"{", 
-    RowBox[{"\[Phi]", ",", "\[Mu]"}], "}"}]], 
-  RowBox[{"Log", "[", 
-   FractionBox[
-    RowBox[{
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       FractionBox["1", "\[Tau]"], ",", "y"}], "]"}], " ", 
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       RowBox[{"2", "+", 
-        FractionBox[
-         RowBox[{"1", "+", "\[Tau]"}], 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], ",", 
-       FractionBox[
-        RowBox[{"\[Mu]", " ", 
-         RowBox[{"(", 
-          RowBox[{"1", "+", 
-           RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
-        RowBox[{
-         RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}], " ", 
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       FractionBox[
-        RowBox[{"\[Mu]", " ", 
-         RowBox[{"(", 
-          RowBox[{"1", "+", 
-           RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
-        RowBox[{
-         RowBox[{"-", "1"}], "+", "\[Phi]"}]], ",", "y"}], "]"}]}], 
-    RowBox[{
-     RowBox[{"y", "!"}], " ", 
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       FractionBox[
-        RowBox[{"\[Tau]", "-", "\[Phi]", "-", 
-         RowBox[{"2", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-        RowBox[{"\[Tau]", "-", 
-         RowBox[{"\[Tau]", " ", "\[Phi]"}]}]], ",", 
-       FractionBox[
-        RowBox[{"\[Mu]", " ", 
-         RowBox[{"(", 
-          RowBox[{"1", "+", 
-           RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
-        RowBox[{
-         RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}], " ", 
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       FractionBox[
-        RowBox[{"\[Phi]", "+", 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
-            RowBox[{"2", " ", "\[Phi]"}], "+", 
-            RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], ")"}]}]}], 
-        RowBox[{"\[Tau]", " ", 
-         RowBox[{"(", 
-          RowBox[{
-           RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]], ",", "y"}], 
-      "]"}]}]], "]"}]}]], "Output",
- CellChangeTimes->{3.656445736155141*^9, 3.657540203754222*^9, 
-  3.6575402711938753`*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"FullSimplify", "[", 
-  RowBox[{
-   RowBox[{"D", "[", 
-    RowBox[{"logLik", ",", 
-     RowBox[{"{", 
-      RowBox[{"\[Phi]", ",", "\[Tau]"}], "}"}]}], "]"}], ",", " ", 
-   RowBox[{"Assumptions", "\[Rule]", "Assps"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.6564457494545307`*^9, 3.656445749700712*^9}}],
-
-Cell[BoxData[
- RowBox[{
-  SubscriptBox["\[PartialD]", 
-   RowBox[{"{", 
-    RowBox[{"\[Phi]", ",", "\[Tau]"}], "}"}]], 
-  RowBox[{"Log", "[", 
-   FractionBox[
-    RowBox[{
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       FractionBox["1", "\[Tau]"], ",", "y"}], "]"}], " ", 
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       RowBox[{"2", "+", 
-        FractionBox[
-         RowBox[{"1", "+", "\[Tau]"}], 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], ",", 
-       FractionBox[
-        RowBox[{"\[Mu]", " ", 
-         RowBox[{"(", 
-          RowBox[{"1", "+", 
-           RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
-        RowBox[{
-         RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}], " ", 
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       FractionBox[
-        RowBox[{"\[Mu]", " ", 
-         RowBox[{"(", 
-          RowBox[{"1", "+", 
-           RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
-        RowBox[{
-         RowBox[{"-", "1"}], "+", "\[Phi]"}]], ",", "y"}], "]"}]}], 
-    RowBox[{
-     RowBox[{"y", "!"}], " ", 
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       FractionBox[
-        RowBox[{"\[Tau]", "-", "\[Phi]", "-", 
-         RowBox[{"2", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-        RowBox[{"\[Tau]", "-", 
-         RowBox[{"\[Tau]", " ", "\[Phi]"}]}]], ",", 
-       FractionBox[
-        RowBox[{"\[Mu]", " ", 
-         RowBox[{"(", 
-          RowBox[{"1", "+", 
-           RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
-        RowBox[{
-         RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}], " ", 
-     RowBox[{"Pochhammer", "[", 
-      RowBox[{
-       FractionBox[
-        RowBox[{"\[Phi]", "+", 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
-            RowBox[{"2", " ", "\[Phi]"}], "+", 
-            RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], ")"}]}]}], 
-        RowBox[{"\[Tau]", " ", 
-         RowBox[{"(", 
-          RowBox[{
-           RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]], ",", "y"}], 
-      "]"}]}]], "]"}]}]], "Output",
+           RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}]}], 
+   ")"}]}]], "Output",
  CellChangeTimes->{3.6564457512157736`*^9, 3.6575402048439884`*^9, 
-  3.6575402721385593`*^9}]
+  3.6575402721385593`*^9, 3.6575441373003654`*^9, 3.6575444091985655`*^9, 
+  3.657549643972265*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1000,7 +1317,7 @@ Cell[BoxData[
            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}]}], 
    ")"}]}]], "Output",
  CellChangeTimes->{3.656445786298571*^9, 3.6575402095933447`*^9, 
-  3.657540276942938*^9}]
+  3.657540276942938*^9, 3.657544142032728*^9, 3.6575496505729322`*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1224,338 +1541,7 @@ Cell[BoxData[
              RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}]}], 
      ")"}]}]}]}]], "Output",
  CellChangeTimes->{3.656445825794506*^9, 3.6575402251603484`*^9, 
-  3.6575402902893887`*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"FullSimplify", "[", 
-  RowBox[{
-   RowBox[{"D", "[", 
-    RowBox[{
-     RowBox[{"D", "[", 
-      RowBox[{"logLik", ",", "\[Mu]"}], "]"}], ",", "\[Tau]"}], "]"}], ",", 
-   RowBox[{"Assumptions", "\[Rule]", "Assps"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.65644595236597*^9, 3.656445990254735*^9}}],
-
-Cell[BoxData[
- RowBox[{
-  FractionBox["1", 
-   RowBox[{
-    SuperscriptBox["\[Tau]", "2"], " ", 
-    SuperscriptBox[
-     RowBox[{"(", 
-      RowBox[{
-       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], "2"]}]], 
-  RowBox[{"(", 
-   RowBox[{
-    RowBox[{
-     RowBox[{"-", 
-      SuperscriptBox["\[Tau]", "2"]}], " ", 
-     RowBox[{"(", 
-      RowBox[{
-       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", "\[Phi]", " ", 
-     RowBox[{"PolyGamma", "[", 
-      RowBox[{"0", ",", 
-       FractionBox[
-        RowBox[{"\[Mu]", "+", 
-         RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-        RowBox[{
-         RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}]}], "+", 
-    RowBox[{
-     SuperscriptBox["\[Tau]", "2"], " ", 
-     RowBox[{"(", 
-      RowBox[{
-       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", "\[Phi]", " ", 
-     RowBox[{"PolyGamma", "[", 
-      RowBox[{"0", ",", 
-       RowBox[{"1", "+", 
-        FractionBox[
-         RowBox[{
-          RowBox[{"(", 
-           RowBox[{"1", "+", 
-            RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", 
-          RowBox[{"(", 
-           RowBox[{"1", "+", 
-            RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}]}], "]"}]}], "+", 
-    RowBox[{
-     SuperscriptBox["\[Tau]", "2"], " ", 
-     RowBox[{"(", 
-      RowBox[{
-       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", "\[Phi]", " ", 
-     RowBox[{"PolyGamma", "[", 
-      RowBox[{"0", ",", 
-       RowBox[{"y", "+", 
-        FractionBox[
-         RowBox[{"\[Mu]", "+", 
-          RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-         RowBox[{
-          RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}], "-", 
-    RowBox[{
-     SuperscriptBox["\[Tau]", "2"], " ", 
-     RowBox[{"(", 
-      RowBox[{
-       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", "\[Phi]", " ", 
-     RowBox[{"PolyGamma", "[", 
-      RowBox[{"0", ",", 
-       FractionBox[
-        RowBox[{"\[Phi]", "+", 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "-", "y", "+", "\[Mu]", "+", 
-            RowBox[{
-             RowBox[{"(", 
-              RowBox[{"2", "+", "y", "+", 
-               RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", "\[Phi]"}]}], 
-           ")"}]}]}], 
-        RowBox[{"\[Tau]", " ", 
-         RowBox[{"(", 
-          RowBox[{
-           RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "-", 
-    RowBox[{"\[Mu]", " ", 
-     SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]", " ", 
-     RowBox[{"(", 
-      RowBox[{"1", "+", 
-       RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
-     RowBox[{"PolyGamma", "[", 
-      RowBox[{"1", ",", 
-       FractionBox[
-        RowBox[{"\[Mu]", "+", 
-         RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-        RowBox[{
-         RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}]}], "+", 
-    RowBox[{"\[Mu]", " ", 
-     SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]", " ", 
-     RowBox[{"(", 
-      RowBox[{"1", "+", 
-       RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
-     RowBox[{"PolyGamma", "[", 
-      RowBox[{"1", ",", 
-       RowBox[{"y", "+", 
-        FractionBox[
-         RowBox[{"\[Mu]", "+", 
-          RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-         RowBox[{
-          RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}], "+", 
-    RowBox[{
-     RowBox[{"(", 
-      RowBox[{"1", "+", 
-       RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
-     RowBox[{"(", 
-      RowBox[{
-       RowBox[{"-", "1"}], "+", 
-       RowBox[{"\[Mu]", " ", 
-        SuperscriptBox["\[Tau]", "2"], " ", "\[Phi]"}]}], ")"}], " ", 
-     RowBox[{"PolyGamma", "[", 
-      RowBox[{"1", ",", 
-       FractionBox[
-        RowBox[{"1", "+", 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
-            RowBox[{"2", " ", "\[Phi]"}], "+", 
-            RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], ")"}]}]}], 
-        RowBox[{"\[Tau]", " ", 
-         RowBox[{"(", 
-          RowBox[{
-           RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "-", 
-    RowBox[{
-     RowBox[{"(", 
-      RowBox[{
-       RowBox[{"-", "1"}], "+", 
-       RowBox[{"\[Mu]", " ", 
-        SuperscriptBox["\[Tau]", "2"]}]}], ")"}], " ", "\[Phi]", " ", 
-     RowBox[{"(", 
-      RowBox[{"1", "+", 
-       RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
-     RowBox[{"PolyGamma", "[", 
-      RowBox[{"1", ",", 
-       FractionBox[
-        RowBox[{"\[Phi]", "+", 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "-", "y", "+", "\[Mu]", "+", 
-            RowBox[{
-             RowBox[{"(", 
-              RowBox[{"2", "+", "y", "+", 
-               RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", "\[Phi]"}]}], 
-           ")"}]}]}], 
-        RowBox[{"\[Tau]", " ", 
-         RowBox[{"(", 
-          RowBox[{
-           RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}]}], 
-   ")"}]}]], "Output",
- CellChangeTimes->{{3.6564459591557665`*^9, 3.6564459666230435`*^9}, 
-   3.656446003210906*^9, 3.657540233631324*^9, 3.657540299099616*^9}]
-}, Open  ]],
-
-Cell[CellGroupData[{
-
-Cell[BoxData[
- RowBox[{"FullSimplify", "[", 
-  RowBox[{
-   RowBox[{"D", "[", 
-    RowBox[{
-     RowBox[{"D", "[", 
-      RowBox[{"logLik", ",", "\[Mu]"}], "]"}], ",", "\[Phi]"}], "]"}], ",", 
-   RowBox[{"Assumptions", "\[Rule]", "Assps"}]}], "]"}]], "Input",
- CellChangeTimes->{{3.65644595236597*^9, 3.656445990254735*^9}, {
-  3.6575403462729445`*^9, 3.657540360504002*^9}}],
-
-Cell[BoxData[
- RowBox[{
-  FractionBox["1", 
-   RowBox[{"\[Tau]", " ", 
-    SuperscriptBox[
-     RowBox[{"(", 
-      RowBox[{
-       RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], "3"]}]], 
-  RowBox[{
-   RowBox[{"(", 
-    RowBox[{"1", "+", "\[Tau]"}], ")"}], " ", 
-   RowBox[{"(", 
-    RowBox[{
-     RowBox[{"\[Tau]", " ", 
-      RowBox[{"(", 
-       RowBox[{
-        RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", 
-      RowBox[{"PolyGamma", "[", 
-       RowBox[{"0", ",", 
-        FractionBox[
-         RowBox[{"\[Mu]", "+", 
-          RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-         RowBox[{
-          RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}]}], "+", 
-     RowBox[{
-      RowBox[{"(", 
-       RowBox[{"\[Tau]", "-", 
-        RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
-      RowBox[{"PolyGamma", "[", 
-       RowBox[{"0", ",", 
-        RowBox[{"1", "+", 
-         FractionBox[
-          RowBox[{
-           RowBox[{"(", 
-            RowBox[{"1", "+", 
-             RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", 
-           RowBox[{"(", 
-            RowBox[{"1", "+", 
-             RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}]}], 
-          RowBox[{"\[Tau]", " ", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}]}], "]"}]}], "-", 
-     RowBox[{"\[Tau]", " ", 
-      RowBox[{"(", 
-       RowBox[{
-        RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", 
-      RowBox[{"PolyGamma", "[", 
-       RowBox[{"0", ",", 
-        RowBox[{"y", "+", 
-         FractionBox[
-          RowBox[{"\[Mu]", "+", 
-           RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-          RowBox[{
-           RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}], "+", 
-     RowBox[{"\[Tau]", " ", 
-      RowBox[{"(", 
-       RowBox[{
-        RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}], " ", 
-      RowBox[{"PolyGamma", "[", 
-       RowBox[{"0", ",", 
-        FractionBox[
-         RowBox[{"\[Phi]", "+", 
-          RowBox[{"\[Tau]", " ", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"-", "1"}], "-", "y", "+", "\[Mu]", "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"2", "+", "y", "+", 
-                RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", "\[Phi]"}]}], 
-            ")"}]}]}], 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "+", 
-     RowBox[{"\[Mu]", " ", "\[Tau]", " ", 
-      RowBox[{"(", 
-       RowBox[{"1", "+", 
-        RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
-      RowBox[{"PolyGamma", "[", 
-       RowBox[{"1", ",", 
-        FractionBox[
-         RowBox[{"\[Mu]", "+", 
-          RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-         RowBox[{
-          RowBox[{"-", "1"}], "+", "\[Phi]"}]]}], "]"}]}], "-", 
-     RowBox[{"\[Mu]", " ", "\[Tau]", " ", 
-      RowBox[{"(", 
-       RowBox[{"1", "+", 
-        RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
-      RowBox[{"PolyGamma", "[", 
-       RowBox[{"1", ",", 
-        RowBox[{"y", "+", 
-         FractionBox[
-          RowBox[{"\[Mu]", "+", 
-           RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], 
-          RowBox[{
-           RowBox[{"-", "1"}], "+", "\[Phi]"}]]}]}], "]"}]}], "-", 
-     RowBox[{
-      RowBox[{"(", 
-       RowBox[{"1", "+", 
-        RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", 
-      RowBox[{"(", 
-       RowBox[{"1", "+", 
-        RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
-      RowBox[{"PolyGamma", "[", 
-       RowBox[{"1", ",", 
-        FractionBox[
-         RowBox[{"1", "+", 
-          RowBox[{"\[Tau]", " ", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"-", "1"}], "+", "\[Mu]", "+", 
-             RowBox[{"2", " ", "\[Phi]"}], "+", 
-             RowBox[{"\[Mu]", " ", "\[Tau]", " ", "\[Phi]"}]}], ")"}]}]}], 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}], "+", 
-     RowBox[{
-      RowBox[{"(", 
-       RowBox[{"1", "+", 
-        RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", 
-      RowBox[{"(", 
-       RowBox[{"1", "+", 
-        RowBox[{"\[Tau]", " ", "\[Phi]"}]}], ")"}], " ", 
-      RowBox[{"PolyGamma", "[", 
-       RowBox[{"1", ",", 
-        FractionBox[
-         RowBox[{"\[Phi]", "+", 
-          RowBox[{"\[Tau]", " ", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"-", "1"}], "-", "y", "+", "\[Mu]", "+", 
-             RowBox[{
-              RowBox[{"(", 
-               RowBox[{"2", "+", "y", "+", 
-                RowBox[{"\[Mu]", " ", "\[Tau]"}]}], ")"}], " ", "\[Phi]"}]}], 
-            ")"}]}]}], 
-         RowBox[{"\[Tau]", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            RowBox[{"-", "1"}], "+", "\[Phi]"}], ")"}]}]]}], "]"}]}]}], 
-    ")"}]}]}]], "Output",
- CellChangeTimes->{{3.6575403544607306`*^9, 3.657540366875507*^9}}]
+  3.6575402902893887`*^9, 3.657544155254078*^9, 3.6575496712855725`*^9}]
 }, Open  ]]
 },
 WindowSize->{1421, 719},
@@ -1577,55 +1563,47 @@ CellTagsIndex->{}
 Notebook[{
 Cell[CellGroupData[{
 Cell[580, 22, 829, 26, 60, "Input"],
-Cell[1412, 50, 874, 27, 87, "Output"]
+Cell[1412, 50, 920, 27, 87, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2323, 82, 242, 6, 60, "Input"],
-Cell[2568, 90, 302, 7, 59, "Output"]
+Cell[2369, 82, 242, 6, 60, "Input"],
+Cell[2614, 90, 348, 7, 59, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2907, 102, 299, 6, 60, "Input"],
-Cell[3209, 110, 878, 25, 87, "Output"]
+Cell[2999, 102, 299, 6, 60, "Input"],
+Cell[3301, 110, 920, 25, 87, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[4124, 140, 373, 9, 60, "Input"],
-Cell[4500, 151, 347, 9, 59, "Output"]
+Cell[4258, 140, 373, 9, 60, "Input"],
+Cell[4634, 151, 394, 10, 59, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[4884, 165, 234, 7, 60, "Input"],
-Cell[5121, 174, 2709, 85, 118, "Output"]
+Cell[5065, 166, 234, 7, 60, "Input"],
+Cell[5302, 175, 2753, 85, 118, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[7867, 264, 479, 11, 60, "Input"],
-Cell[8349, 277, 9544, 259, 927, "Output"]
+Cell[8092, 265, 531, 12, 60, "Input"],
+Cell[8626, 279, 9619, 261, 928, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[17930, 541, 323, 8, 60, "Input"],
-Cell[18256, 551, 2284, 68, 180, "Output"]
+Cell[18282, 545, 331, 7, 60, "Input"],
+Cell[18616, 554, 5303, 156, 489, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[20577, 624, 325, 8, 60, "Input"],
-Cell[20905, 634, 2257, 68, 180, "Output"]
+Cell[23956, 715, 333, 7, 60, "Input"],
+Cell[24292, 724, 5052, 147, 488, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[23199, 707, 327, 8, 60, "Input"],
-Cell[23529, 717, 2262, 68, 205, "Output"]
+Cell[29381, 876, 335, 7, 60, "Input"],
+Cell[29719, 885, 7258, 217, 622, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[25828, 790, 320, 8, 60, "Input"],
-Cell[26151, 800, 6712, 202, 706, "Output"]
+Cell[37014, 1107, 320, 8, 60, "Input"],
+Cell[37337, 1117, 6758, 202, 706, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[32900, 1007, 373, 9, 60, "Input"],
-Cell[33276, 1018, 7309, 208, 714, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[40622, 1231, 323, 8, 60, "Input"],
-Cell[40948, 1241, 5253, 155, 514, "Output"]
-}, Open  ]],
-Cell[CellGroupData[{
-Cell[46238, 1401, 374, 9, 60, "Input"],
-Cell[46615, 1412, 4956, 145, 546, "Output"]
+Cell[44132, 1324, 373, 9, 60, "Input"],
+Cell[44508, 1335, 7355, 208, 714, "Output"]
 }, Open  ]]
 }
 ]
