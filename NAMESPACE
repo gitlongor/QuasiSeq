@@ -1,21 +1,21 @@
-export(NBDev, PoisDev, QL.fit, QL.results, glmsolve, nlsolve, bartlettFactor)
-#export(duplicated.matrix, unique.matrix)
+export(NBDev, PoisDev, QL.fit, QL.results)
+#export(glmsolve, nlsolve)
 
 import(edgeR)
+import(uniqueAtomMat)
 
 importFrom(mgcv, negbin)
 importFrom(pracma, broyden)
 
-import(uniqueAtomMat)
+## these are for comparison only
+importFrom(pracma, brentDekker, newtonRaphson, ridders, secant)
+importFrom(stats, uniroot)
+
 
 #importFrom(varComp, informationTypes)
 #import(MASS)
 #importFrom(nleqslv, nleqslv)
 
-
-
 S3method(coef, glm)
-#S3method(unique, matrix)
-#S3method(duplicated, matrix)
 
 useDynLib(QuasiSeq, .registration =TRUE, .fixes="C_")

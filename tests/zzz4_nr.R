@@ -78,7 +78,7 @@
 		this.bias=try(.Call(C_getGlmBias, rtwx = this.w2x, wrt = sqrt(this.weight), ngood, rk))
 		if(inherits(this.bias, 'try-error')) { ## original R version that is known working. 
 			## the next three rows consume 60% of the time
-			this.qr=qr(this.w2x,  tol=control$qr.tol)
+			this.qr=qr(this.w2x,  tol=qr.tol)
 			this.hatd=.rowSums(qr.Q(this.qr)[,seq_len(this.qr$rank), drop=FALSE]^2, ngood, this.qr$rank)## not affected by pivoting
 			this.bias=qr.coef(this.qr, -0.5*this.hatd/sqrt(this.weight))
 			this.bias[is.na(this.bias)]=0
@@ -133,7 +133,7 @@
 			.tmp=2*ns + infoParmsk * odisp^infoParmsm
 			fitted.mean=(.tmp*ybars+1)/(.tmp-odisp)
 		})
-	}else if(infoParmsj==0){ # quadratic solution
+	}else if(infoParsmj==0){ # quadratic solution
 		expression({
 			.tmpktaum=infoParmsk*odisp^infoParmsm
 			.tmp=.5*(ybars+(odisp-2*ns)/.tmpktaum/odisp - 1/odisp)
@@ -196,13 +196,22 @@
 						
 			ss=exp(oo)
 			ssOdisp=ss*odisp
-			if(infoParmsj==1 && infoParmsk==1 && infoParmsm==1){ ## OI full factorial iteratation equation
+			if(infoParmsj==1 && infoParmsk==1 && infoParmsm==1){ ## OI full factorial iteration equation
 				workMat=cbind(ss, yy, ss*(1+yy*odisp))
 				rhs=function(this.mu){
 					onePlusOdispMuScale=1+ssOdisp*this.mu[oneWayGroup]
 					tmpMat=workMat/onePlusOdispMuScale
 					tmpMat[,3L]=tmpMat[,3L]/onePlusOdispMuScale
 					ssSyssY=crossprod(oneWayX, tmpMat)
+					ans=ssSyssY[, 2L]/ssSyssY[, 1L]+.5*ssSyssY[, 3L]/ssSyssY[,1L]^2
+					if(any(is.na(ans))) ans=exp(log(ssSyssY[, 2L])-log(ssSyssY[, 1L]))+.5*exp(log(ssSyssY[, 3L])-2*log(ssSyssY[,1L]))
+					ans
+				}
+				rhs1=function(this.mu, grpId){
+					onePlusOdispMuScale=1+ssOdisp*this.mu #[oneWayGroup]
+					tmpMat=workMat/onePlusOdispMuScale
+					tmpMat[,3L]=tmpMat[,3L]/onePlusOdispMuScale
+					ssSyssY=crossprod(oneWayX[,grpId], tmpMat)
 					ans=ssSyssY[, 2L]/ssSyssY[, 1L]+.5*ssSyssY[, 3L]/ssSyssY[,1L]^2
 					if(any(is.na(ans))) ans=exp(log(ssSyssY[, 2L])-log(ssSyssY[, 1L]))+.5*exp(log(ssSyssY[, 3L])-2*log(ssSyssY[,1L]))
 					ans
@@ -218,9 +227,17 @@
 					( ssSyssY[, 1L]*ssSyssY[, 2L] + .5*(ssSyssY[, 4L] +ssSyssY[, 1L]  )  )/
 						( ssSyssY[, 1L]^2 + .5*ssSyssY[, 3L]  )
 				}
+				rhs1=function(this.mu, grpId){
+					onePlusOdispMuScale=1+ssOdisp*this.mu #[oneWayGroup]
+					tmpMat=workMat/onePlusOdispMuScale
+					tmpMat[,3L:4L]=tmpMat[,3L:4L]/onePlusOdispMuScale^infoParmsj
+					ssSyssY=crossprod(oneWayX[,grpId], tmpMat)
+					( ssSyssY[, 1L]*ssSyssY[, 2L] + .5*(ssSyssY[, 4L] +ssSyssY[, 1L]  )  )/
+						( ssSyssY[, 1L]^2 + .5*ssSyssY[, 3L]  )
+				}
 			}
 			
-			tryCatch({ ## fixed-point algorithm
+			tryCatch({ ## NR algorithm
 				it=1L
 				iterMax=control$maxit
 				startExpXb0=startExpXb1=as.vector(crossprod(oneWayX, exp(xx%*%start))/oneWayN)
@@ -239,70 +256,15 @@
 					startAdjscore = fffAdjscore
 				}
 				
-				bracketFactor = rep(0.618, rk)
-				expXbLower =expXbUpper = startExpXb0
-				idx0 = startAdjscore < 0
-				if(any( idx0 ) ){
-					bf=bracketFactor; bf[!idx0]=1 
-					repeat{
-						expXbLower = expXbLower * bf
-						tmpIdx = rhs(expXbLower)[idx0] > expXbLower[idx0]
-						if(all(tmpIdx)) { break
-						}else bf[idx0 & tmpIdx] = 1
-					}
-				}
-				idx0=!idx0
-				if ( any(idx0) ){
-					bf=bracketFactor; bf[!idx0]=1
-					repeat{
-						expXbUpper= expXbUpper / bf
-						tmpIdx = rhs(expXbUpper)[idx0] < expXbUpper[idx0]
-						if(all(tmpIdx)) { break
-						}else bf[idx0 & tmpIdx] = 1
-					}
+			
+				### NR Iterations
+				nextExpXb = startExpXb1
+				for(grpId in seq_len(rk)){
+					objFunc = function(mu) (rhs1(mu, grpId)-mu)
+					tmpans = newtonRaphson(objFunc, startExpXb1[grpId], maxiter=control$maxit, tol=control$tol)
+					nextExpXb[grpId] = tmpans$root
 				}
 				
-				rhsNextExpXb=rhs(startExpXb1)
-				while(it<=iterMax){ ## bisection-protected Steffensen-accelerated fixed-point iterations
-					nextExpXb=rhsNextExpXb
-					if(it%%2L==0L && all((steffDenom<-nextExpXb-2*startExpXb1+startExpXb0)!=0)) {
-						bak=nextExpXb
-						nextExpXb=startExpXb0-(startExpXb1-startExpXb0)^2/steffDenom  #  Steffensen's method (Aitken acceleration)
-						if(any(!is.finite(nextExpXb))) {
-							nextExpXb=bak
-						}
-					}
-					
-					outsideIdx =(nextExpXb < expXbLower | nextExpXb > expXbUpper) 
-					if(any(outsideIdx)) { ## fixed point steps outside bracketing interval
-						nextExpXb[outsideIdx]=(expXbLower + .5*(expXbUpper-expXbLower))[outsideIdx]
-						rhsNextExpXb = rhs(nextExpXb)
-							tmpIdx = rhsNextExpXb[outsideIdx] > nextExpXb[outsideIdx]
-							if(any(tmpIdx)) 	expXbLower[outsideIdx][tmpIdx] =  nextExpXb[outsideIdx][tmpIdx]
-							tmpIdx = !tmpIdx
-							if(any(tmpIdx)) 	expXbUpper[outsideIdx][tmpIdx] =  nextExpXb[outsideIdx][tmpIdx]
-					}else rhsNextExpXb = rhs(nextExpXb)
-					
-					insideIdx = !outsideIdx
-					if(any(insideIdx)) { ## fixed point stays inside bracketing interval
-						tmpIdx = rhsNextExpXb[insideIdx] > nextExpXb[insideIdx]
-						if(any(tmpIdx)) expXbLower[insideIdx][tmpIdx] = nextExpXb[insideIdx][tmpIdx]
-						tmpIdx = !tmpIdx
-						if(any(tmpIdx)) expXbUpper[insideIdx][tmpIdx] = nextExpXb[insideIdx][tmpIdx]
-					}
-					
-					if( sqrt(sum((nextExpXb-startExpXb1)^2))   <= control$tol 
-					 || sqrt(sum((expXbLower - expXbUpper)^2)) <= control$tol
-					) {
-						diffbet=abs((nextExpXb-startExpXb1)/nextExpXb)
-						if(all(abs(xxuniqInv%*%(diffbet-.5*diffbet^2+diffbet^3/3)) <=control$tol) )
-							break  ## 3-term Taylor approx log(startExpXb)-log(nextExpXb)
-					}
-
-					it=it+1L
-					startExpXb0=startExpXb1
-					startExpXb1=nextExpXb
-				}
 				start= as.vector(xxuniqInv %*% linkfun(nextExpXb))
 				startAdjscore=adjScoreFunc(start,approxJacob=FALSE)
 				if(sqrt(sum(startAdjscore^2))<=control$tol) {
@@ -316,7 +278,7 @@
 	}else stop("rank of x is larger than number of unique rows of x")
 	
 
-	if(doIteration){
+	if(doIteration){ print("doIteration")
 		approxJacob=adjScoreFunc(start,approxJacob=TRUE)
 		ans=suppressWarnings(nlsolve(start, adjScoreFunc, control$solvers, control))
 		if(!attr(ans, 'nlsolve.success')){
@@ -366,9 +328,9 @@
 
 
 fbrNBglm.control=
-function (standardizeX = TRUE, coefOnly=TRUE, solvers=nlSolvers, verbose = FALSE, maxit=25L, start = NULL, infoParms=list(j=1,k=1,m=1), tol=sqrt(.Machine$double.eps), qr.tol=tol) 
+function (standardizeX = TRUE, coefOnly=TRUE, solvers=nlSolvers, verbose = FALSE, maxit=25L, start = NULL, infoParms=list(j=1,k=1,m=1), tol=sqrt(.Machine$double.eps)) 
 {
 	stopifnot(all(sort(names(infoParms))==c('j','k','m')))
-    structure(list(standardizeX = standardizeX, coefOnly = coefOnly, infoParms=infoParms, solvers = solvers, verbose = verbose, maxit=maxit, start = start, tol = tol, qr.tol=qr.tol), class = "fbrNBglm.control")
+    structure(list(standardizeX = standardizeX, coefOnly = coefOnly, infoParms=infoParms, solvers = solvers, verbose = verbose, maxit=maxit, start = start, tol = tol), class = "fbrNBglm.control")
 }
 

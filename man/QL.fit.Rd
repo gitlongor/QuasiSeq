@@ -96,6 +96,7 @@ design.list[[2]]<-rep(1,length(trt))
 
 log.offset<-log(apply(simdat,2,quantile,.75))
 
+\dontrun{
 ### Analyze using QL, QLShrink and QLSpline methods applied to quasi-Poisson model
 fit<-QL.fit(simdat, design.list,log.offset=log.offset, Model="Poisson")
 
@@ -106,7 +107,7 @@ apply(results$Q.values[[3]]<.05,2,sum)
 
 ### Indexes for Top 10 most significant genes from QLSpline method
 head(order(results$P.values[[3]]), 10)
-
+}
 ### Analyze using QL, QLShrink and QLSpline methods 
 ### applied to quasi-negative binomial model
 fit2<-QL.fit(simdat, design.list,log.offset=log.offset, nb.disp=est.nb.disp, Model="NegBin")
