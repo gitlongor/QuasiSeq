@@ -25,3 +25,5 @@ Description: Identify differentially expressed genes in RNA-seq count data
     reduced estimates of log fold changes.
 License: GPL (>= 2)
 NeedsCompilation: yes
+LazyData: yes
+Biarch: yes

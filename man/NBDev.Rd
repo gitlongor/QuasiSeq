@@ -37,10 +37,35 @@ Lund, Nettleton, McCarthy and Smyth (2012) "Detecting differential expression in
 McCullagh and Nelder (1989) "Generalized Linear Models", 2nd edition. London: Chapman and Hall. 
 }
 
+\examples{
+#\dontrun{
 
+## no bias reduction
+noReduction = 
+with(mockRNASeqData,
+	NBDev(counts, design.matrix, log(estimated.offset),
+		  estimated.nbdisp, bias.fold.tolerance=Inf)
+)
+
+## bias reduction for all genes
+allReduction = 
+with(mockRNASeqData,
+	NBDev(counts, design.matrix, log(estimated.offset),
+		  estimated.nbdisp, bias.fold.tolerance=1)
+)
+
+## default: bias reduction for genes showing large bias
+someReduction = 
+with(mockRNASeqData,
+	NBDev(counts, design.matrix, log(estimated.offset),
+		  estimated.nbdisp, bias.fold.tolerance=1.1)
+)
+
+#}
+}
 \author{Steve Lund (\email{lundsp@gmail.com}), Long Qu (\email{long.qu@wright.edu})}
 
-     \keyword{RNA-seq, quasi-likelihood, differential expression, negative binomial}
+\keyword{distribution, iteration}
 
 
 

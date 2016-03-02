@@ -12,7 +12,6 @@ importFrom(pracma, brentDekker, newtonRaphson, ridders, secant)
 importFrom(stats, uniroot)
 
 
-#importFrom(varComp, informationTypes)
 #import(MASS)
 #importFrom(nleqslv, nleqslv)
 

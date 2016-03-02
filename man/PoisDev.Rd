@@ -21,7 +21,7 @@
 
 \author{Steve Lund \email{lundsp@gmail.com}}
 
-     \keyword{RNA-seq, quasi-likelihood, differential expression, Poisson}
+\keyword{distribution, iteration}
 
 
 
