@@ -97,9 +97,12 @@ bartlettFactor=function(glmFit)  # this requires cumulant3 and cumulant 4
 
 bartlettFactor=function(glmFit) ## based Cordeiro, JRSSB, 1983
 {
-  good.weights=glmFit$weights>0  ## ??
-  yy=glmFit$y[good.weights]; xx=glmFit$x[good.weights,,drop=FALSE]; oo=glmFit$offset[good.weights]
-
+  good.weights=glmFit$weights>0 & glmFit$prior.weights>0 ## ??
+  yy=glmFit$y[good.weights]; 
+  xx = (if(is.null(glmFit[['x']])) model.matrix(glmFit) else glmFit$x)[good.weights,,drop=FALSE]; 
+  oo=glmFit$offset[good.weights]; 
+	if(is.null(oo)) oo = rep(0, sum(good.weights))
+	
   family=glmFit$family
   if(is.null(family$d2link)) family=fix.family.link(family)
   if(is.null(family$dvar) || is.null(family$d2var)) family=fix.family.var(family)
@@ -123,11 +126,12 @@ bartlettFactor=function(glmFit) ## based Cordeiro, JRSSB, 1983
   #this.cum4 = family$cumulant4(mu=this.mu, var=this.var)
 
   wvec.cord=(this.mu.eta)^2/this.var; wvec.half.cord=sqrt(wvec.cord); #wmat.cord=diag(wvec.cord)
-  ZZ.cord=(tcrossprod(qr.Q(glmFit$qr)))
+  ZZ.cord=(tcrossprod(qr.Q(glmFit$qr))) # prior weights already incorporated in qr
   nncol=col(ZZ.cord)
   
-  phi.cord =  if(FALSE) glmFit$df.residual / glmFit$deviance else 1
-  Z.cord=phi.cord * 1/wvec.half.cord*ZZ.cord/wvec.half.cord[nncol]
+  phi.cord = glmFit$prior.weights # phi is not over-disp but prior weights
+  wPhivec.half = wvec.half.cord * sqrt(phi.cord)
+  Z.cord=1/wPhivec.half * ZZ.cord /wPhivec.half[nncol]
   Z3.cord=Z.cord^3
 
   H.cord=1/this.var*this.mu2.eta*(this.mu2.eta-4*wvec.cord*this.dvar)+wvec.cord^2*(2/this.var*this.dvar^2-this.d2var)
