@@ -14,9 +14,9 @@
 }
 \item{design.matrix}{This is an example of design matrix corresponding to \code{treatment}.
 }
-\item{true.offset}{This is a numeric vector of normalizing factors actually used to simulate the data matrix. 
+\item{true.normalization}{This is a numeric vector of normalizing factors actually used to simulate the data matrix. 
 }
-\item{estimated.offset}{This is a numeric vector of normalizing factors estimated from the data matrix, using the so-called "TMM" method.
+\item{estimated.normalization}{This is a numeric vector of normalizing factors estimated from the data matrix, using the so-called "TMM" method.
 }
 \item{true.nbdisp}{This is a numeric vector of negative binomial over-dispersion parameters actually used to simulate the data. This is using the parameterization such that \code{true.nbdisp = 1/size}, where \code{size} is the parameter used in \code{\link{rnbinom}}. 
 }

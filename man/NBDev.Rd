@@ -1,12 +1,14 @@
 % File src/library/QuasiSeq/man/NBDev.Rd
-     \name{NBDev}
-     \alias{NBDev}
-     \title{Fit a negative binomial GLM for given design matrix}
-     \description{A function called within \code{QL.fit} to fit a negative binomial GLM of each gene for given design matrix}
-     \usage{
-     NBDev(counts,design,log.offset,nb.disp,print.progress=TRUE, bias.fold.tolerance=1.10)
-     }
-     \arguments{
+\name{NBDev}
+\alias{NBDev}
+\title{Fit a negative binomial GLM for given design matrix}
+\description{A function called within \code{QL.fit} to fit a negative binomial GLM of each gene for given design matrix}
+
+\usage{
+NBDev(counts,design,log.offset,nb.disp,print.progress=TRUE, bias.fold.tolerance=1.10)
+}
+
+\arguments{
       \item{counts}{RNA-seq data matrix of integer expression counts.  Each row contains observations from a single gene. Each column contains observations from a single experimental unit.}
       \item{design}{A single element from the \code{design.list} argument given to \code{QL.fit}.}
 	\item{log.offset}{A vector of log-scale, additive factors used to adjust estimated log-scale means for differences in library sizes across samples.  Commonly used offsets include,\code{log.offset=log(colSums(counts))} or \code{log.offset=log(apply(counts,2,quantile,.75))}.  The default setting  in \code{QLfit} makes no adjustment for library sizes (i.e. log.offset=0).}
@@ -43,21 +45,21 @@ McCullagh and Nelder (1989) "Generalized Linear Models", 2nd edition. London: Ch
 ## no bias reduction
 noReduction = 
 with(mockRNASeqData,
-	NBDev(counts, design.matrix, log(estimated.offset),
+	NBDev(counts, design.matrix, log(estimated.normalization),
 		  estimated.nbdisp, bias.fold.tolerance=Inf)
 )
 
 ## bias reduction for all genes
 allReduction = 
 with(mockRNASeqData,
-	NBDev(counts, design.matrix, log(estimated.offset),
+	NBDev(counts, design.matrix, log(estimated.normalization),
 		  estimated.nbdisp, bias.fold.tolerance=1)
 )
 
 ## default: bias reduction for genes showing large bias
 someReduction = 
 with(mockRNASeqData,
-	NBDev(counts, design.matrix, log(estimated.offset),
+	NBDev(counts, design.matrix, log(estimated.normalization),
 		  estimated.nbdisp, bias.fold.tolerance=1.1)
 )
 

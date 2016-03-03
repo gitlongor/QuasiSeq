@@ -61,7 +61,7 @@ design.list=list(
 fit = 
 with(mockRNASeqData,
 	QL.fit(counts, design.list,
-	log.offset=log(estimated.offset),
+	log.offset=log(estimated.normalization),
 	 Model="Poisson")
 )
 results = QL.results(fit)
@@ -79,7 +79,7 @@ head(order(results$P.values[[3]]), 10)
 fit2 = 
 with(mockRNASeqData,
 	QL.fit(counts, design.list,
-		log.offset=log(estimated.offset),
+		log.offset=log(estimated.normalization),
 		Model="NegBin")
 )
 ##########################################################

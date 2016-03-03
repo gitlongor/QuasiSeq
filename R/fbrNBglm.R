@@ -1,6 +1,54 @@
-	fbrNBglm.fit=function(x, y, weights = rep(1, length(y)), offset = rep(0, length(y)), family, link='log', odisp, control = fbrNBglm.control()) 
+#' Firth-Type Bias-Reduced Negative Binomial Log-Linear Model
+#' 
+#' This is the estimation algorithm for generalized linear model with negative binomial responses
+#' and log link function. Sore functions are modified properly such that 
+#' bias in the coefficients are reduced. 
+#' 
+#' @param x,y,weights,offset Defined the same as in \code{\link{glm.fit}}.
+#' @param family The same as in \code{\link{glm.fit}}, but the default 
+#'      (and the only currently supported) choice is \code{negbin{'log', odisp}}, 
+#'      where \code{odisp} is defined below.
+#' @param odisp A numeric scalar of negative binomial over-dispersion parameter. 
+#'      This is the same as \code{1/size}, where \code{size} is the parameter 
+#'      as in \code{\link{dnbinom}}.
+#' @param control A list returned from \code{fbrNBglm.control}.
+#' @return It depends.
+#' @export
+#' @name fbrNBglm
+#' @rdname fbrNBglm
+#' @author Long Qu <long.qu@wright.edu>
+#' @keywords models, regression, iteration
+#' @examples 
+#'  ## prepare example data
+#'  data(mockRNASeqData)
+#'  x=mockRNASeqData$design.matrix
+#'  y=mockRNASeqData$counts[3462,]
+#'  offset = log(mockRNASeqData$estimated.normalization)
+#'  overDisp = mockRNASeqData$estimated.nbdisp[3462]
+#'  nbfam = negbin('log', overDisp)
+#'  
+#'  ## usual maximum likelihood estimate
+#'  coef(glm.fit(x, y, offset=offset, family=nbfam))
+#'  
+#'  ## 2nd-order biased reduced fit with observed information
+#'  ctrl= fbrNBglm.control(infoParms=list(j=1,k=1,m=1), order=2L, coefOnly=TRUE)
+#'  fbrNBglm.fit(x, y, offset=offset, family=nbfam, control=ctrl)
+#'
+#'  ## 2nd-order biased reduced fit with expected information
+#'  ctrl= fbrNBglm.control(infoParms=list(j=0,k=1,m=1), order=2L, coefOnly=TRUE)
+#'  fbrNBglm.fit(x, y, offset=offset, family=nbfam, control=ctrl)
+#'  
+#'  ## 3rd-order biased reduced fit with observed information
+#'  ## Not available yet if offsets are non-constants with a treatment
+#'  offset.avg = ave(offset, mockRNASeqData$treatment)
+#'  ctrl= fbrNBglm.control(infoParms=list(j=1,k=1,m=1), order=3L, coefOnly=TRUE)
+#'  fbrNBglm.fit(x, y, offset=offset.avg, family=nbfam, control=ctrl)
+#'
+fbrNBglm.fit=function(x, y, weights = rep(1, length(y)), 
+                      offset = rep(0, length(y)), family, 
+                      odisp, control = fbrNBglm.control()) 
 {
-	if(missing(family)) family=negbin(link, odisp)
+	if(missing(family)) family=negbin('log', odisp)
 	if(family$link!='log') stop('Currently only log link has been implemented.')
 	
 	nobs=NROW(y)
@@ -8,8 +56,10 @@
 	ngood=length(good.weights)
 	if(ngood==0L) stop('None of the weights is positive')
 	ww=weights[good.weights]
-	if(any(ww!=ww[1L])) stop('Bias reduction in the presence of non-equal positive prior weights is currently not available')
-	ww[]=1
+	if(any(ww!=ww[1L])) {
+		warning('Bias reduction in the presence of non-equal positive prior weights has not been thoroughly tested. Use this option with caution.')
+		# ww[]=1
+	}
 
 	if(!is.matrix(x)) x=as.matrix(x)
 	ncolx=NCOL(x)
@@ -53,6 +103,7 @@
 	infoParmsj=control$infoParms$j
 	infoParmsk=control$infoParms$k
 	infoParmsm=control$infoParms$m
+	fbrOrder =control$order
 	
 	.C(C_initQRdecomp, ngood, rk)
 	on.exit(.C(C_finalQRdecomp))  ## should not call adjScoreFunc anymore
@@ -104,11 +155,14 @@
 		#constOffset = sapply(split(oo, group), function(ooo)max(ooo)==min(ooo)) # faster than by, tapply, ave
 		
 		group=grpDuplicated(xx)
-		constOffset = max(oo)==min(oo)
+		constOffset = all(ave(oo, group) == oo)
 		oneWayX=1 * (group==rep(seq_len(rk), each=ngood)); dim(oneWayX)=c(ngood, rk)
 	
 		#exact = (infoParmsk==0 || infoParmsj==1) && all(constOffset)
-		exact = (infoParmsk==0 || infoParmsj==1) && constOffset
+		exact =  constOffset && (
+			(fbrOrder==2L && (infoParmsk==0 || infoParmsj==1) ) || 
+			(fbrOrder==3L && infoParmsj==1) 
+			)
 		#attr(exact, 'group')=unclass(group)
 		attr(exact, 'group')=group
 		attr(exact, 'oneWayX')=oneWayX
@@ -116,10 +170,16 @@
 		exact
 	}
 	
-	fullFactorial1Step=function(groupX) ## yy, odisp
-	{	ns=.colSums(groupX, ngood, rk)
-		fitted.mean=ybars=crossprod(groupX, yy)/ns  
-		off=crossprod(groupX, oo)/ns  
+	fullFactorial1Step=function( ## yy, odisp, ngood, rk, oo
+		groupX, 
+		ns=.colSums(groupX, ngood, rk), 
+		ybars=crossprod(groupX, yy)/ns,
+		off=crossprod(groupX, oo)/ns, 
+		fitted.mean    ## only for shuting up CRAN checker
+		) 
+	{	#ns=.colSums(groupX, ngood, rk)
+		#fitted.mean=ybars=crossprod(groupX, yy)/ns  
+		#off=crossprod(groupX, oo)/ns  
 		eval(expr.1step)   # defined below
 		fitted.coef=xxuniqInv %*% ( linkfun(fitted.mean)-off)
 	}
@@ -128,10 +188,18 @@
 		expression(
 			fitted.mean <- (ns*ybars+0.5)/(ns-odisp*.5)
 		)
-	}else if(infoParmsj==1){ # linear solution (including observed information)
+	}else if(infoParmsj==1 && fbrOrder ==2L){ # linear solution (including observed information)
 		expression({
 			.tmp=2*ns + infoParmsk * odisp^infoParmsm
 			fitted.mean=(.tmp*ybars+1)/(.tmp-odisp)
+		})
+	}else if (infoParmsj==1 && fbrOrder ==3L){ # 3rd order: quadratic solution 
+		expression({
+			.tmpktaum=infoParmsk*odisp^infoParmsm
+			.tmpc=1+.tmpktaum*ybars;
+			.tmpb=12*ns+24*ns^2*ybars+5*.tmpktaum+12*ns*ybars*.tmpktaum+6*ybars*.tmpktaum^2-ybars*.tmpktaum*odisp;
+			.tmpa=-24*ns^2+12*ns*odisp-odisp^2-12*ns*.tmpktaum-6*.tmpktaum^2+7*.tmpktaum*odisp;
+			fitted.mean = (-.tmpb - sqrt(.tmpb^2 - 4 * .tmpa * .tmpc))/2/.tmpa
 		})
 	}else if(infoParmsj==0){ # quadratic solution
 		expression({
@@ -186,17 +254,17 @@
 		
 		if(FFtestRslt){
 			doIteration=FALSE
-			start=fullFactorial1Step(oneWayX)
+			start=fullFactorial1Step(oneWayX, ns=oneWayN)
 			attr(start, 'method')='exact'
 			attr(start, 'success')=TRUE
-			attr(start, 'iter')=1L
+			attr(start, 'iter')=0L
 		}else{
 			doIteration=TRUE
 			if(is.null(start)) eval(getMuStart)
 						
 			ss=exp(oo)
 			ssOdisp=ss*odisp
-			if(infoParmsj==1 && infoParmsk==1 && infoParmsm==1){ ## OI full factorial iteratation equation
+			if(infoParmsj==1 && infoParmsk==1 && infoParmsm==1 && fbrOrder==2L){ ## OI full factorial iteratation equation
 				workMat=cbind(ss, yy, ss*(1+yy*odisp))
 				rhs=function(this.mu){
 					onePlusOdispMuScale=1+ssOdisp*this.mu[oneWayGroup]
@@ -207,6 +275,8 @@
 					if(any(is.na(ans))) ans=exp(log(ssSyssY[, 2L])-log(ssSyssY[, 1L]))+.5*exp(log(ssSyssY[, 3L])-2*log(ssSyssY[,1L]))
 					ans
 				}
+			}else if(infoParmsj==1 && fbrOrder==3L){ ## 3rd order correction
+				.NotYetImplemented()
 			}else{	## full factorial iteration (general) equation
 				tmp=ss*infoParmsk*odisp^infoParmsm
 				workMat=cbind(ss, yy, ss2=ss*tmp, sy=yy*tmp)
@@ -220,7 +290,7 @@
 				}
 			}
 			
-			tryCatch({ ## fixed-point algorithm
+			tryCatch({ ## fixed-point algorithm with bisection bracketing and Steffensen acceleration
 				it=1L
 				iterMax=control$maxit
 				startExpXb0=startExpXb1=as.vector(crossprod(oneWayX, exp(xx%*%start))/oneWayN)
@@ -229,7 +299,7 @@
 				startAdjscore = rhs(startExpXb0) - startExpXb0
 					yy.bak=yy; oo.bak=oo
 					yy=yy/exp(oo-mean(oo)); oo[]=mean(oo)
-				fff=fullFactorial1Step(oneWayX)
+				fff=fullFactorial1Step(oneWayX, ns=oneWayN)
 					yy=yy.bak; oo=oo.bak
 				fffmu=as.vector(crossprod(oneWayX, exp(xx%*%fff))/oneWayN)
 				fffAdjscore=rhs(fffmu) - fffmu
@@ -364,11 +434,49 @@
 	}
 }
 
-
+#' @rdname fbrNBglm
+#' @param standardizeX A logical scalar. If \code{TRUE}, columns of 
+#'      design matrix will be standardized with norm 1 during the 
+#'      fitting process, except for columns with identical values. 
+#' @param coefOnly A logical scalar. If \code{TRUE}, only the regression
+#'      coefficients will be returned. This is useful when being called
+#'      from other functions, e.g. \code{\link{NBDev}}. If \code{coef=FALSE},
+#'      a \code{glm} object will be returned. 
+#' @param solvers The non-linear equation solvers to be used if iterative 
+#'      fitting is necessary.
+#' @param verbose A logical scalar, indicating whether intermediate messages 
+#'      should be printed.
+#' @param maxit A positive integer, the maximum number of iterations allowed
+#'      if iterative fitting is necessary. 
+#' @param start A numeric vector of starting values, with length being the
+#'      same as the number of columns of \code{x}.
+#' @param infoParms A list of three components, named \code{j}, \code{k}, 
+#'      and \code{m}, respectively. These parameters control the type of 
+#'      adjustment made to the score function. When all j, k, and m are 1, 
+#'      the observed information is used in the adjustment. When \code{k=0},
+#'      the expected information is used. See reference for details. 
+#' @param order A positive integer. Usually this should be set to 2, 
+#'      indicating the second order, i.e., \eqn{O(n^{-1})}{O(n^{-1})} bias 
+#'      being reduced by the adjustment. For one-way design, if \code{infoParms$j=1} and offsets are constants within each treatment, the third
+#'      order bias reduction with \code{order=3} is also support, resulting 
+#'      in an estimate with both \eqn{O(n^{-1})}{O(n^{-1})} order and 
+#'      \eqn{O(n^{-2})}{O(n^{-2})} order biases being reduced. 
+#' @param tol Small positive integer, indicating the desired accuracy
+#'      of parameter estimates.
+#' @param qr.tol The same as the \code{tol} argument of \link[base:qr]{qr}.
+#' @export
 fbrNBglm.control=
-function (standardizeX = TRUE, coefOnly=TRUE, solvers=nlSolvers, verbose = FALSE, maxit=25L, start = NULL, infoParms=list(j=1,k=1,m=1), tol=sqrt(.Machine$double.eps), qr.tol=tol) 
+function (standardizeX = TRUE, coefOnly=TRUE, solvers=nlSolvers, 
+          verbose = FALSE, maxit=25L, start = NULL, 
+          infoParms=list(j=1,k=1,m=1), order=2L, 
+          tol=sqrt(.Machine$double.eps), qr.tol=tol) 
 {
 	stopifnot(all(sort(names(infoParms))==c('j','k','m')))
-    structure(list(standardizeX = standardizeX, coefOnly = coefOnly, infoParms=infoParms, solvers = solvers, verbose = verbose, maxit=maxit, start = start, tol = tol, qr.tol=qr.tol), class = "fbrNBglm.control")
+	if (order == 3L){
+		if(infoParms$j!=1) stop(message("Third order bias reduction with 'infoParms$j != 1' is not implemented yet"))
+	}else if (order != 2L){
+		stop(message('Currently "order" needs to be 2 or 3.'))
+	}
+    structure(list(standardizeX = standardizeX, coefOnly = coefOnly, infoParms=infoParms, order=order, solvers = solvers, verbose = verbose, maxit=maxit, start = start, tol = tol, qr.tol=qr.tol), class = "fbrNBglm.control")
 }
 

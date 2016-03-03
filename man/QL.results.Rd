@@ -1,13 +1,13 @@
 % File src/library/QuasiSeq/man/QL.results.Rd
-     \name{QL.results}
-     \alias{QL.results}
-     \title{Obtain p-values and q-values using results from \code{QL.fit}}
-     \description{
-       Obtain significance results for quasi-likelihood model fits to RNA-seq expression count data using the methods detailed in Lund, Nettleton, McCarthy, and Smyth (2012).}
-     \usage{	
-	QL.results(fit,Dispersion="Deviance",spline.df=NULL,Plot=TRUE)
-	     }
-     \arguments{
+ \name{QL.results}
+ \alias{QL.results}
+ \title{Obtain p-values and q-values using results from \code{QL.fit}}
+ \description{
+   Obtain significance results for quasi-likelihood model fits to RNA-seq expression count data using the methods detailed in Lund, Nettleton, McCarthy, and Smyth (2012).}
+ \usage{	
+QL.results(fit,Dispersion="Deviance",spline.df=NULL,Plot=TRUE)
+}
+ \arguments{
       \item{fit}{The list returned by the function QL.fit}
 	\item{Dispersion}{Must be one of "Deviance" or "Pearson", specifying which type of estimator should be used for estimating quasi-likelihood dispersion parameter.}
 	\item{spline.df}{Optional.  User may specify the degrees of freedom to use when fitting a cubic spline to log-scale(estimated dispersion) versus the log(average count).  Default uses cross-validation in \code{sreg} function to pick appropriate degrees of freedom.} 	
@@ -45,7 +45,7 @@ design.list=list(
 fit = 
 with(mockRNASeqData,
 	QL.fit(counts, design.list,
-	log.offset=log(estimated.offset),
+	log.offset=log(estimated.normalization),
 	 Model="Poisson")
 )
 results = QL.results(fit)
@@ -63,7 +63,7 @@ head(order(results$P.values[[3]]), 10)
 fit2 = 
 with(mockRNASeqData,
 	QL.fit(counts, design.list,
-		log.offset=log(estimated.offset),
+		log.offset=log(estimated.normalization),
 		Model="NegBin")
 )
 ##########################################################

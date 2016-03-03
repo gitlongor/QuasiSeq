@@ -1,8 +1,39 @@
-###########################################
-### negbin was authored by Long Qu <long.qu@wright.edu> 
-###########################################
-
-### This extends the mgcv::negbin link function by providing different implementation of linkinv, initialize and an additional d2linkfun function 
+#' Negative Binomial Family
+#' 
+#' This is an extension of the \code{\link[mgcv:negbin]{negbin}} in the
+#'  \code{mgcv} package, providing additional components related to the 
+#'  negative binomial distribution with log link. 
+#'  
+#'  Compared to \code{\link[mgcv:negbin]{negbin}}, this function provides
+#'  a different implementation of \code{linkinv}, removed \code{initialize}
+#'  but allow a list \code{initializers} of such initialization expression, 
+#'  added the \code{d2linkfun} as the 2nd derivative of link, added the 
+#'  third and fourth order cumulant functions \code{cumulant3} and 
+#'  \code{cumulant4}.
+#'  
+#' @param link The link funciton. Only \code{'log'} is supported currently.
+#' @param overdisp A positive overdispersion parameter. This is the same as
+#'   \code{1/size}, where \code{size} is the same as in \code{\link{dnbinom}}.
+#'  
+#' @return A list of class \code{c("fbrNBfamily", "family")}, containing 
+#'   all components from the \code{\link[mgcv:negbin]{mgcv::negbin}} with 
+#'   additional components: 
+#' \describe{
+#'  \item{d2linkfun}{A function of \code{mu}, returning the second derivative
+#'      of link function.}
+#'  \item{setTheta}{A function setting the overdispersion parameter to a 
+#'      specified value. The input argument to this function is \code{1/overdisp}.}
+#'  \item{cumulant3}{A function returning the third cumulant of the distribution. 
+#'      Input arguments are the mean \code{mu} and variance \code{var}.} 
+#'  \item{cumulant4}{A function returning the fourth cumulant of the distribution. 
+#'      Input arguments are the mean \code{mu} and variance \code{var}.} 
+#'  \item{initializers}{A list of expressions that can be used to provide 
+#'      starting values for iterative fitting. See the \code{initialize} component
+#'      of the result from \code{\link[stats:family]{family}}.}
+#'  }
+#' @examples 
+#'  negbin('log', 1)
+#' @export
 negbin=function( link = "log", overdisp = stop("'overdisp' must be specified"))
 {
 	stopifnot(link=='log')
