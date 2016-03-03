@@ -1,9 +1,10 @@
 export(NBDev, PoisDev, QL.fit, QL.results)
-export(fbrNBglm.fit, fbrNBglm.control, negbin)
+export(fbrNBglm.fit, fbrNBglm.control, negbin, coef.glm)
 #export(glmsolve, nlsolve)
 
 import(edgeR)
 import(uniqueAtomMat)
+#import(numDeriv, hessian) ## to get d2linkfun in coef.glm
 
 importFrom(mgcv, negbin)
 importFrom(pracma, broyden)

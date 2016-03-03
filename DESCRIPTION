@@ -15,10 +15,13 @@ Imports:
     edgeR,
     mgcv,
     pracma,
-    uniqueAtomMat (>= 0.1-1)
+    uniqueAtomMat (>= 0.1-1), 
+	numDeriv
 Suggests:
     BB,
     nleqslv
+Enhances: 
+	stats
 Description: Identify differentially expressed genes in RNA-seq count data
     using quasi-Poisson or quasi-negative binomial models with 'QL', 'QLShrink' and
     'QLSpline' methods (Lund, Nettleton, McCarthy, and Smyth, 2012). Report bias-
