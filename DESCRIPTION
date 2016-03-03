@@ -15,8 +15,7 @@ Imports:
     edgeR,
     mgcv,
     pracma,
-    uniqueAtomMat (>= 0.1-1), 
-	numDeriv
+    uniqueAtomMat (>= 0.1-1)
 Suggests:
     BB,
     nleqslv

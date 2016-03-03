@@ -1,5 +1,5 @@
 if(FALSE){### implementation based on the GLM book (chapter 15)
-bartlettFactor=function(glmFit)  
+bartlettFactor=function(glmFit)  # this requires cumulant3 and cumulant 4
 {
   good.weights=glmFit$weights>0  ## ??
   yy=glmFit$y[good.weights]; xx=glmFit$x[good.weights,,drop=FALSE]; oo=glmFit$offset[good.weights]
@@ -9,7 +9,7 @@ bartlettFactor=function(glmFit)
   mu.eta=family$mu.eta
   variance=family$variance
   linkinv=family$linkinv
-  d2linkfun=family$d2linkfun
+  d2link=family$d2link
 
   odisp=1/family$getTheta()
   this.beta=glmFit$coef
@@ -19,7 +19,7 @@ bartlettFactor=function(glmFit)
   this.var=variance(this.mu)
   this.dvar=family$dvar(this.mu)
   this.d2var=family$d2var(this.mu)
-  this.d2g=d2linkfun(this.mu)
+  this.d2g=d2link(this.mu)
   this.mu2.eta=-this.d2g*(this.mu.eta)^3
   this.cum3 = family$cumulant3(mu=this.mu, var=this.var)
   this.cum4 = family$cumulant4(mu=this.mu, var=this.var)
@@ -101,13 +101,15 @@ bartlettFactor=function(glmFit) ## based Cordeiro, JRSSB, 1983
   yy=glmFit$y[good.weights]; xx=glmFit$x[good.weights,,drop=FALSE]; oo=glmFit$offset[good.weights]
 
   family=glmFit$family
+  if(is.null(family$d2link)) family=fix.family.link(family)
+  if(is.null(family$dvar) || is.null(family$d2var)) family=fix.family.var(family)
 
   mu.eta=family$mu.eta
   variance=family$variance
   linkinv=family$linkinv
-  d2linkfun=family$d2linkfun
+  d2link=family$d2link
 
-  odisp=1/family$getTheta()
+  # odisp=1/family$getTheta()
   this.beta=glmFit$coef
   this.eta=as.vector(xx%*%this.beta+oo)
   this.mu=linkinv(this.eta)
@@ -115,7 +117,7 @@ bartlettFactor=function(glmFit) ## based Cordeiro, JRSSB, 1983
   this.var=variance(this.mu)
   this.dvar=family$dvar(this.mu)
   this.d2var=family$d2var(this.mu)
-  this.d2g=d2linkfun(this.mu)
+  this.d2g=d2link(this.mu)
   this.mu2.eta=-this.d2g*(this.mu.eta)^3
   #this.cum3 = family$cumulant3(mu=this.mu, var=this.var)
   #this.cum4 = family$cumulant4(mu=this.mu, var=this.var)

@@ -14,11 +14,9 @@ negbin(link = "log", overdisp = stop("'overdisp' must be specified"))
 }
 \value{
 A list of class \code{c("fbrNBfamily", "family")}, containing 
-  all components from the \code{\link[mgcv:negbin]{mgcv::negbin}} with 
-  additional components: 
+  all components from the \code{mgcv::\link[mgcv]{negbin}} followed by a call to 
+  \code{\link[mgcv]{fix.family.link}} with the following additional components: 
 \describe{
- \item{d2linkfun}{A function of \code{mu}, returning the second derivative
-     of link function.}
  \item{setTheta}{A function setting the overdispersion parameter to a 
      specified value. The input argument to this function is \code{1/overdisp}.}
  \item{cumulant3}{A function returning the third cumulant of the distribution. 
@@ -35,12 +33,12 @@ This is an extension of the \code{\link[mgcv:negbin]{negbin}} in the
  \code{mgcv} package, providing additional components related to the 
  negative binomial distribution with log link. 
  
- Compared to \code{\link[mgcv:negbin]{negbin}}, this function provides
- a different implementation of \code{linkinv}, removed \code{initialize}
- but allow a list \code{initializers} of such initialization expression, 
- added the \code{d2linkfun} as the 2nd derivative of link, added the 
- third and fourth order cumulant functions \code{cumulant3} and 
- \code{cumulant4}.
+ Compared to \code{\link[mgcv]{negbin}} followed by a call to 
+ \code{\link[mgcv]{fix.family.link}} in the \code{mgcv} package
+ this function provides a different implementation of \code{linkinv}, 
+ added a component \code{initializers} of 
+ initialization expressions, added the third and fourth order 
+ cumulant functions \code{cumulant3} and \code{cumulant4}.
 }
 \examples{
  negbin('log', 1)

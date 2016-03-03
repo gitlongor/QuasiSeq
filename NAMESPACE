@@ -4,9 +4,9 @@ export(fbrNBglm.fit, fbrNBglm.control, negbin, coef.glm)
 
 import(edgeR)
 import(uniqueAtomMat)
-#import(numDeriv, hessian) ## to get d2linkfun in coef.glm
 
-importFrom(mgcv, negbin)
+
+importFrom(mgcv, negbin, fix.family.link, fix.family.var)
 importFrom(pracma, broyden)
 
 ## these are for comparison only

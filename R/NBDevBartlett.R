@@ -1,3 +1,4 @@
+if(FALSE){ ## does not seem to be needed anymore; just keep for reference
 NBDevBartlett <- function(counts, design, log.offset, nb.disp, print.progress = TRUE, bias.fold.tolerance=1.10) {
 
   n <- ncol(counts)
@@ -66,6 +67,6 @@ NBDevBartlett <- function(counts, design, log.offset, nb.disp, print.progress = 
 
   return(list(dev = deviance.vector, means = means, parms = parms))
 }
-
+}
 
 

@@ -44,20 +44,10 @@ coef.glm=function(object, type=c('raw','bias','corrected'), ...)
 
 	this.mu=object$fitted.values[good.wt]
 	this.eta=object$family$linkfun(this.mu)
-	d2link = if(!is.null(object$family$`d2linkfun`)){
-		object$family$d2linkfun(this.mu) ## this requires existence of d2linkfun components on the family
-	}else switch(object$family$link, ## named links in stats::make.link
-		'log'= -1/this.mu^2,
-		'sqrt'=	-.25/this.mu^1.5,
-		'logit'= (2*this.mu - 1)/(this.mu*(1-this.mu))^2,
-		'probit'=local({.a=qnorm(this.mu); .a/dnorm(.a)^2}), 
-		'cauchit'=-2*(base::pi)^2/tanpi(this.mu)/sinpi(this.mu)^2,
-		'cloglog'=local({.a=1-this.mu; .b=log(.a); -(1+log(.a))/.a^2/.b^2}),
-		'identity'=this.mu,
-		'1/mu^2'=6/this.mu^4,
-		'inverse'=2/this.mu^3,
-		numDeriv::hessian(object$family$linkfun, this.mu)
-	)
+	d2link = if(!is.null(object$family$`d2link`)){
+		object$family$d2link(this.mu) 
+	}else fix.family.link(object$family)$d2link(this.mu)
+	
 	this.w2ksi= 0.5* this.hatd / sqrt(object$weights[good.wt]) *d2link*object$family$mu.eta(this.eta)^2  
 	this.bias=qr.coef(this.qr, this.w2ksi)
 	if(type=='bias') return(this.bias)

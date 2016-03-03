@@ -35,7 +35,7 @@
     linkfun <- family$linkfun
     linkinv <- family$linkinv
     mu.eta <- family$mu.eta	
-	d2linkfun = family$d2linkfun
+	d2link = family$d2link
 	dvar = family$dvar
 	
 
@@ -63,7 +63,7 @@
 		this.mu.eta=mu.eta(this.eta)
 
 		this.var=variance(this.mu)
-		#this.d2g=d2linkfun(this.mu)
+		#this.d2g=d2link(this.mu)
 		#this.dvar=dvar(this.mu)
 		#this.dg=1/this.mu.eta
 		
@@ -85,7 +85,7 @@
 		}
 		
 		this.adjWt=this.weight*(
-			this.resid*infoParmsk*(this.var*d2linkfun(this.mu)+dvar(this.mu)/this.mu.eta)^infoParmsm/(this.var/this.mu.eta)^infoParmsj +1
+			this.resid*infoParmsk*(this.var*d2link(this.mu)+dvar(this.mu)/this.mu.eta)^infoParmsm/(this.var/this.mu.eta)^infoParmsj +1
 			## k=0    : this is EI weight
 			## k=j=m=1:  this is OI weight
 		)
