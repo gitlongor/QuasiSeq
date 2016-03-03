@@ -17,7 +17,9 @@
 #' @name fbrNBglm
 #' @rdname fbrNBglm
 #' @author Long Qu <long.qu@wright.edu>
-#' @keywords models, regression, iteration
+#' @keywords models regression iteration
+#' @concept bias reduction
+#' @concept Firth
 #' @examples 
 #'  ## prepare example data
 #'  data(mockRNASeqData)

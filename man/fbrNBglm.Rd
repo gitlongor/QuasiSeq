@@ -104,7 +104,12 @@ bias in the coefficients are reduced.
 \author{
 Long Qu <long.qu@wright.edu>
 }
+\concept{
+bias reduction
+
+Firth
+}
 \keyword{iteration}
-\keyword{models,}
-\keyword{regression,}
+\keyword{models}
+\keyword{regression}
 

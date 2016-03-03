@@ -21,7 +21,12 @@
 
 \author{Steve Lund \email{lundsp@gmail.com}}
 
-\keyword{distribution, iteration}
+\keyword{distribution}
+\keyword{iteration}
+\concept{RNA-seq}
+\concept{quasi-likelihood}
+\concept{differential expression}
+\concept{Poisson}
 
 
 

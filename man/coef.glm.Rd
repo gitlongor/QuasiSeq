@@ -44,10 +44,10 @@ Long Qu <long.qu@wright.edu>
 \references{
 McCullagh and Nelder (1989) "Generalized Linear Models", 2nd edition. London: Chapman and Hall.
 
- Cordeiro and McCullah (1991) "Bias Correction in Generalized Linear Models", \emph{Journal of the Royal Statistical Society: Series B}, \bold{53}, 629-643.
+Cordeiro and McCullah (1991) "Bias Correction in Generalized Linear Models", \emph{Journal of the Royal Statistical Society: Series B}, \bold{53}, 629-643.
 }
 \concept{
-bias glm
+bias correction
 }
 \keyword{methods}
 

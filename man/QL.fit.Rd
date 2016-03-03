@@ -99,5 +99,13 @@ head(order(results2$P.values[[2]]), 10)
 }
 
 
-\keyword{models, regression, iteration, multivariate}
+\keyword{models}
+\keyword{regression}
+\keyword{iteration} 
+\keyword{multivariate}
+\concept{RNA-seq}
+\concept{quasi-likelihood}
+\concept{differential expression}
+\concept{negative binomial}
+\concept{poisson}
 

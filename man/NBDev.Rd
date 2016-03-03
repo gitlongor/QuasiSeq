@@ -67,7 +67,12 @@ with(mockRNASeqData,
 }
 \author{Steve Lund (\email{lundsp@gmail.com}), Long Qu (\email{long.qu@wright.edu})}
 
-\keyword{distribution, iteration}
+\keyword{distribution}
+\keyword{iteration}
+\concept{RNA-seq}
+\concept{quasi-likelihood}
+\concept{differential expression}
+\concept{negative binomial}
 
 
 

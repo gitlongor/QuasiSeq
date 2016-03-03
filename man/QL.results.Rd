@@ -82,7 +82,13 @@ head(order(results2$P.values[[2]]), 10)
 
 }
 
-\keyword{htest, regression}
+\keyword{htest}
+\keyword{regression}
+\concept{RNA-seq}
+\concept{quasi-likelihood}
+\concept{differential expression}
+\concept{negative binomial}
+\concept{poisson}
 
 
 

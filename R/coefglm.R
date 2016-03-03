@@ -31,7 +31,7 @@
 #'  coef(glmfit, type='corrected')
 #'  
 #' @keywords methods
-#' @concept bias glm
+#' @concept bias correction
 #' @export
 coef.glm=function(object, type=c('raw','bias','corrected'), ...)
 {
