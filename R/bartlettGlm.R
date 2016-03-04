@@ -97,11 +97,14 @@ bartlettFactor=function(glmFit)  # this requires cumulant3 and cumulant 4
 
 bartlettFactor=function(glmFit) ## based Cordeiro, JRSSB, 1983
 {
-  good.weights=glmFit$weights>0 & glmFit$prior.weights>0 ## ??
-  yy=glmFit$y[good.weights]; 
-  xx = (if(is.null(glmFit[['x']])) model.matrix(glmFit) else glmFit$x)[good.weights,,drop=FALSE]; 
-  oo=glmFit$offset[good.weights]; 
-	if(is.null(oo)) oo = rep(0, sum(good.weights))
+  good.weights=zapsmall(glmFit$weights)>0 & glmFit$prior.weights>0 
+	## zapsmall used to remove close to zero weights
+  
+  ### the following are replaced by linear predictors
+  ## yy=glmFit$y[good.weights]; 
+  ## xx = (if(is.null(glmFit[['x']])) model.matrix(glmFit) else glmFit$x)[good.weights,,drop=FALSE]; 
+  ## oo=glmFit$offset[good.weights]; 
+	## if(is.null(oo)) oo = rep(0, sum(good.weights))
 	
   family=glmFit$family
   if(is.null(family$d2link)) family=fix.family.link(family)
@@ -113,8 +116,9 @@ bartlettFactor=function(glmFit) ## based Cordeiro, JRSSB, 1983
   d2link=family$d2link
 
   # odisp=1/family$getTheta()
-  this.beta=glmFit$coef
-  this.eta=as.vector(xx%*%this.beta+oo)
+  #this.beta=glmFit$coef
+  #this.eta=as.vector(xx%*%this.beta+oo)
+  this.eta = glmFit$linear.predictors[good.weights]
   this.mu=linkinv(this.eta)
   this.mu.eta=mu.eta(this.eta)
   this.var=variance(this.mu)

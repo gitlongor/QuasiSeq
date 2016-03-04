@@ -1,6 +1,7 @@
 
 QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Model = "NegBin", print.progress = TRUE, 
-                   NBdisp = "trend", bias.fold.tolerance=1.10, ...) {
+                   NBdisp = "trend", bias.fold.tolerance=1.10, ...) 
+{
   if(is.data.frame(counts)) counts<-as.matrix(counts)
   ### Note: First element of design.list should pertain to overall full model.  This is the design used to obtain
   ### dispersion estimates for quasi-likelihood models.
@@ -73,14 +74,13 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
           
           ### Default to using edgeR's suggested normalization routine
           if (is.null(log.offset)) { 
-            d <- DGEList(counts = counts, group = design[, 2])
+            d <- DGEList(counts = counts, group = grpDuplicated(design))
             d <- calcNormFactors(d)
+          }else {
+			### If provided, use prespecified library size normalizations instead of edgeR's normalization routine
+            d <- DGEList(counts = counts, group = grpDuplicated(design), lib.size = exp(log.offset))
           }
-          
-          ### If provided, use prespecified library size normalizations instead of edgeR's normalization routine
-          if (!is.null(log.offset)) 
-            d <- DGEList(counts = counts, group = design[, 2], lib.size = exp(log.offset))
-          
+		  
           ### If requested, use gene-specific trended dispersion estimates from GLM edgeR (McCarthy et al., 2012).
           if (NBdisp == "trend") 
             nb.disp <- estimateGLMTrendedDisp(d, design)$trended.dispersion
@@ -88,9 +88,8 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
           ### If requested, use common dispersion estimate from GLM edgeR (McCarthy et al., 2012).
           if (NBdisp == "common") 
             nb.disp <- rep(estimateGLMCommonDisp(d, design, ...)$common.dispersion, nrow(counts))
-        }
-        ### If provided, use prespecified dispersion estimates.
-        if (length(NBdisp) == nrow(counts)) {
+        }else if (length(NBdisp) == nrow(counts)) {
+		  ### If provided, use prespecified dispersion estimates.
           if (is.numeric(NBdisp) & !any(NBdisp < 0)) 
             nb.disp <- NBdisp
         }
@@ -98,28 +97,33 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
       
       ### Analyze genes with positive dispersion parameters using quasi-negative binomial model
       if (any(nb.disp > 0)) 
-        res <- NBDev(counts[nb.disp > 0, ], design, log.offset, nb.disp[nb.disp > 0], print.progress, bias.fold.tolerance=bias.fold.tolerance)
+        res <- NBDev(counts[nb.disp > 0, ,drop=FALSE], design, log.offset, nb.disp[nb.disp > 0], print.progress, bias.fold.tolerance=bias.fold.tolerance)
       
       ### If present, analyze genes for which nb.disp==0 using quasi-Poisson model
-      if (any(nb.disp == 0)) {
-        res2 <- PoisDev(counts[nb.disp == 0, ], design, log.offset, print.progress)
-        means <- dev <- rep(NA, nrow(counts))
-        parms <- matrix(NA, nrow(counts), ncol(design))
-        means[nb.disp == 0] <- res2$means
-        dev[nb.disp == 0] <- res2$dev
-        parms[nb.disp == 0, ] <- res2$parms
-        if (any(nb.disp > 0)) {
-          means[nb.disp > 0] <- res$means
-          dev[nb.disp > 0] <- res$dev
-          parms[nb.disp > 0, ] <- res$parms
+      if (any(tmpIdx <- nb.disp == 0)) {
+        res2 <- PoisDev(counts[tmpIdx, ,drop=FALSE], design, log.offset, print.progress)
+        BartEpsilons = dev <- rep(NA_real_, nrow(counts))
+		means <- matrix(NA_real_, nrow(counts), ncol(design))
+        parms <- matrix(NA_real_, nrow(counts), ncol(design))
+        means[tmpIdx,] <- res2$means
+        dev[tmpIdx] <- res2$dev
+        parms[tmpIdx, ] <- res2$parms
+		BartEpsilons[tmpIdx] = res2$bartlett.epsilon
+		tmpIdx = !tmpIdx
+        if (any(tmpIdx)) {
+          means[tmpIdx,] <- res$means
+          dev[tmpIdx] <- res$dev
+          parms[tmpIdx, ] <- res$parms
+  		  BartEpsilons[tmpIdx] = res$bartlett.epsilon
         }
-        res <- list(dev = dev, means = means, parms = parms)
+        res <- list(dev = dev, means = means, parms = parms, barlett.epsilon=BartEpsilons)
       }
     }
     
     ### Analyze using quasi-Poisson model, if chosen
     if (Model == "Poisson") res <- PoisDev(counts, design, log.offset, print.progress)
-    ### Record means and parameter estimate from full model
+    
+	### Record means and parameter estimate from full model
     if (jj == 1) {
       means <- res$means
       parms <- res$parms
@@ -164,9 +168,17 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
   phi.hat.pearson <- rowSums(phi.hat.pearson)/den.df
   
   if (Model == "Poisson") 
-    return(list(LRT = LRT, phi.hat.dev = phi.hat.dev, phi.hat.pearson = phi.hat.pearson, mn.cnt = rowMeans(counts), 
-                den.df = den.df, num.df = num.df, Model = Model, fitted.values = means, coefficients = parms))
+    return(list(
+		LRT = LRT, LRT.Bart=LRT.bart, 
+		phi.hat.dev = phi.hat.dev, phi.hat.pearson = phi.hat.pearson, 
+        den.df = den.df, num.df = num.df, 
+		mn.cnt = rowMeans(counts), fitted.values = means, coefficients = parms,
+		Model = Model))
   if (Model == "NegBin") 
-    return(list(LRT = LRT, LRT.Bart=LRT.bart, phi.hat.dev = phi.hat.dev, phi.hat.pearson = phi.hat.pearson, mn.cnt = rowMeans(counts), 
-                den.df = den.df, num.df = num.df, Model = Model, NB.disp = nb.disp, fitted.values = means, coefficients = parms))
+    return(list(
+		LRT = LRT, LRT.Bart=LRT.bart, 
+		phi.hat.dev = phi.hat.dev, phi.hat.pearson = phi.hat.pearson, 
+		den.df = den.df, num.df = num.df, 
+		mn.cnt = rowMeans(counts), NB.disp = nb.disp, fitted.values = means, coefficients = parms,
+		Model = Model))
 } 

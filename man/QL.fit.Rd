@@ -23,6 +23,7 @@
 
 \value{list containing:
 	\item{"LRT"}{matrix providing unadjusted likelihood ratio test statistics.  Each column contains statistics from a single hypothesis test, applied separately to each gene.}
+	\item{"LRT.Bart"}{The same as \code{LRT}, except that the LRT test statistics are adjusted by the Bartlett factor to better match their asymptotic moments.}
 	\item{"phi.hat.dev"}{vector providing unshrunken, deviance-based estimates of quasi-dispersion (phi) for each gene.}
 	\item{"phi.hat.pearson"}{vector providing unshrunken, Pearson estimates of quasi-dispersion (phi) for each gene.}
 	\item{"mn.cnt"}{vector providing average count for each gene.}
@@ -41,11 +42,13 @@ Kosmidis and Firth (2009) "Bias reduction in exponential family nonlinear models
 Lund, Nettleton, McCarthy and Smyth (2012) "Detecting differential expression in RNA-sequence data using quasi-likelihood with shrunken dispersion estimates" \emph{SAGMB}, \bold{11}(5).
 
 McCarthy, Chen and Smyth (2012) "Differential expression analysis of multifactor RNA-Seq experiments with respect to biological variation" \emph{Nucleic Acids Res.} \bold{40}(10), 4288--97.
+
+Cordeiro (1983) "Improved Likelihood Ratio Statistics for Generalized Linear Models" \emph{Journal of the Royal Statistical Society. Series B (Methodological)}, \bold{45}, 404--413.
 }
 
-\seealso{\code{\link{QL.results}}, \code{\link{NBDev}}, \code{\link{mockRNASeqData}}}
+\seealso{\code{\link{QL.results}}, \code{\link{NBDev}}, \code{\link{PoisDev}}, \code{\link{mockRNASeqData}}}
 
-\author{Steve Lund \email{lundsp@gmail.com}}
+\author{Originally authored by Steve Lund \email{lundsp@gmail.com}; later modified by Long Qu \email{long.qu@wright.edu}}
 
 \examples{ 
 data(mockRNASeqData)
@@ -56,7 +59,7 @@ design.list=list(
 	matrix(1, nrow=rep(mockRNASeqData$nsamples))
 )
 
-\dontrun{
+#\dontrun{
 ### Analyze using QL, QLShrink and QLSpline methods applied to quasi-Poisson model
 fit = 
 with(mockRNASeqData,
@@ -71,7 +74,7 @@ apply(results$Q.values[[3]]<.05,2,sum)
 
 ### Indexes for Top 10 most significant genes from QLSpline method
 head(order(results$P.values[[3]]), 10)
-}
+#}
 
 
 ### Analyze using QL, QLShrink and QLSpline methods 

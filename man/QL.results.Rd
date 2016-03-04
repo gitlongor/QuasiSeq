@@ -40,7 +40,7 @@ design.list=list(
 	matrix(1, nrow=rep(mockRNASeqData$nsamples))
 )
 
-\dontrun{
+#\dontrun{
 ### Analyze using QL, QLShrink and QLSpline methods applied to quasi-Poisson model
 fit = 
 with(mockRNASeqData,
@@ -55,7 +55,7 @@ apply(results$Q.values[[3]]<.05,2,sum)
 
 ### Indexes for Top 10 most significant genes from QLSpline method
 head(order(results$P.values[[3]]), 10)
-}
+#}
 
 
 ### Analyze using QL, QLShrink and QLSpline methods 

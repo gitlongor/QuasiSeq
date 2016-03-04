@@ -6,10 +6,10 @@ NBDev <- function(counts, design, log.offset, nb.disp, print.progress = TRUE, bi
         log.offset <- rep(0, ncol(counts))
     est.offset <- exp(log.offset)
     
-    deviance.vector <- rep(NA, nrow(counts))
-    means <- matrix(NA, nrow(counts), ncol(counts))
-    parms <- matrix(NA, nrow(counts), ncol(design))
-	BartEpsilons = numeric(nrow(counts))
+    deviance.vector <- rep(NA_real_, nrow(counts))
+    means <- matrix(NA_real_, nrow(counts), ncol(counts))
+    parms <- matrix(NA_real_, nrow(counts), ncol(design))
+	BartEpsilons = deviance.vector # NA's
 	design.df=as.data.frame(design)
 	glm.ctrl=glm.control(epsilon = 1e-08, maxit = 1500L, trace = FALSE)
 	fbrNBglm.ctrl=fbrNBglm.control(coefOnly=TRUE, infoParms=list(j=1,k=1,m=1), maxit=1500L, tol=1e-8, standardizeX=TRUE)

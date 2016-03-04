@@ -14,13 +14,27 @@
 }
 	
 \value{list containing:
-\item{dev}{vector containing the deviance for each gene under a Poisson model fit to design matrix (or vector, for one-factor experiments) specified by \code{design}. This vector is passed along within the \code{QL.fit} function.}
-  \item{means}{matrix of fitted mean values for each gene}
-\item{parms}{matrix of estimated coefficients for each gene}	
+	\item{dev}{vector containing the deviance for each gene under a Poisson model fit to design matrix (or vector, for one-factor experiments) specified by \code{design}. This vector is passed along within the \code{QL.fit} function.}
+  
+	\item{means}{matrix of fitted mean values for each gene}
+
+	\item{parms}{matrix of estimated coefficients for each gene}	
+	
+	\item{bartlett.epsilon}{A numeric vector containing the epsilon values that can be later used for Bartllet correction of likelihood ratio test.}
 }
 
-\author{Steve Lund \email{lundsp@gmail.com}}
+\author{Originally authored by Steve Lund \email{lundsp@gmail.com}; later modified by Long Qu \email{long.qu@wright.edu}}
 
+\examples{
+#\dontrun{
+
+pois.fit =
+with(mockRNASeqData,
+	PoisDev(counts, design.matrix, log(estimated.normalization))
+)
+
+#}
+}
 \keyword{distribution}
 \keyword{iteration}
 \concept{RNA-seq}
