@@ -13,7 +13,12 @@ importFrom(pracma, broyden)
 importFrom(pracma, brentDekker, newtonRaphson, ridders, secant)
 importFrom(stats, uniroot)
 
-
+importFrom("grDevices", "dev.new")
+importFrom("graphics", "layout", "legend", "lines", "par", "plot")
+importFrom("stats", "coef", "gaussian", "glm", "glm.control", "lm.fit",
+     "median", "model.matrix", "optimize", "pf", "predict", "qf",
+     "quantile", "smooth.spline", "var")
+	 
 #import(MASS)
 #importFrom(nleqslv, nleqslv)
 
