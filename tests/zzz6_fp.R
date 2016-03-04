@@ -104,7 +104,7 @@
 		#constOffset = sapply(split(oo, group), function(ooo)max(ooo)==min(ooo)) # faster than by, tapply, ave
 		
 		group=grpDuplicated(xx)
-		constOffset = max(oo)==min(oo)
+		constOffset = all(ave(oo, group) == oo)
 		oneWayX=1 * (group==rep(seq_len(rk), each=ngood)); dim(oneWayX)=c(ngood, rk)
 	
 		#exact = (infoParmsk==0 || infoParmsj==1) && all(constOffset)
