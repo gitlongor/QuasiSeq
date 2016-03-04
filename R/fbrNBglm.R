@@ -383,7 +383,7 @@ fbrNBglm.fit=function(x, y, weights = rep(1, length(y)),
 					attr(start, 'success')=TRUE
 					attr(start, 'iter')=it
 				}
-			}, error=function(e){doIteration <<- TRUE; print(e); NULL})  ## tryCatch
+			}, error=function(e){doIteration <<- TRUE; message(e); NULL})  ## tryCatch
 		}
 	}else stop("rank of x is larger than number of unique rows of x")
 	

@@ -4,7 +4,7 @@ export(fbrNBglm.fit, fbrNBglm.control, negbin, coef.glm)
 
 import(edgeR)
 import(uniqueAtomMat)
-
+importFrom(utils, txtProgressBar)
 
 importFrom(mgcv, negbin, fix.family.link, fix.family.var)
 importFrom(pracma, broyden)

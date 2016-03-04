@@ -18,11 +18,12 @@ NBDev <- function(counts, design, log.offset, nb.disp, print.progress = TRUE, bi
 	log10=log(10)
 	
     ### For each gene and given design matrix, fit glm using provided negative binomial dispersion estimate
+	if(print.progress) progressBar = txtProgressBar(max = NROW(counts))
     for (gn in 1:nrow(counts)) {
         ### If wanted, provide running progress update (eventually once every 5000 genes)
-        if (gn %in% c(2, 10, 100, 500, 1000, 2500, 5000 * (1:200)) & print.progress) 
-            print(paste("Analyzing Gene #", gn))
-        
+        #if (gn %in% c(2, 10, 100, 500, 1000, 2500, 5000 * (1:200)) & print.progress)             print(paste("Analyzing Gene #", gn))
+        if(print.progress) setTxtProgressBar(progressBar, value=gn)
+		
         #### For 2000 Fly genes, glm takes roughly 9 seconds (optim took roughly 21 seconds)
 		glm.fitted <- glmsolve(formula = counts[gn, ] ~ . - 1 + offset(log.offset), family = update.fbrNBfamily(nbLogFamily, overdisp=nb.disp[gn]), data = design.df, control = glm.ctrl, x=TRUE) 
 			
@@ -52,6 +53,7 @@ NBDev <- function(counts, design, log.offset, nb.disp, print.progress = TRUE, bi
 		### NOTE: This line was originally before the Firth bias correction block. 
 		means[gn, ] <- as.vector(exp(design[,tmp.nonNA,drop=FALSE] %*% parms[gn, tmp.nonNA]) * est.offset)
     }
+	if(print.progress) close(progressBar)
     return(list(dev = deviance.vector, means = means, parms = parms, bartlett.epsilon = BartEpsilons))
 } 
 

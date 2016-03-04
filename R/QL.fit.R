@@ -24,6 +24,9 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
     
     if (length(NBdisp) == nrow(counts) & any(NBdisp < 0)) 
       stop("NBdisp contains negative values.\nAll negative binomial dispersion parameters must be non-negative real numbers.")
+  }else if(Model == "Poisson"){
+	if(bias.fold.tolerance > 0 && is.finite(bias.fold.tolerance))
+	  message("Currently, bias reduction has not yet been implemented for Poisson model. ")
   }
   
   ### Fit model and evaluate deviance under each design provided in design.list
@@ -139,7 +142,7 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
     ### in design.list, which should be the full model
     
     if (is.null(test.mat)) {
-      print("Note: 'test.mat' not provided. Comparing each model \nfrom 'design.list' to first model in 'design.list', which must be the full model")
+      message("Note: 'test.mat' not provided. Comparing each model \nfrom 'design.list' to first model in 'design.list', which must be the full model")
       test.mat <- cbind(1, 2:length(design.list))
       rownames(test.mat) <- paste("Design", 1, " vs Design", 2:length(design.list), sep = "")
     }

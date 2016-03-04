@@ -60,7 +60,7 @@ fit.method<-"spline"
 y2<-phi.hat/exp(spline.pred)
 shrink<-shrink.phi(y2,den.df)
 D0<-shrink[[2]]; 
-phi0<-shrink[[3]]; print(paste("Spline scaling factor:",phi0)) 
+phi0<-shrink[[3]]; message(paste("Spline scaling factor:",phi0)) 
 
 
 ### If desired, plot resulting cubic spline fit

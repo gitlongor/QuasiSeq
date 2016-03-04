@@ -45,13 +45,16 @@ PoisDev<-function(counts,design,log.offset,print.progress=TRUE)
 			prior.weights = rep(1, n), 
 			family=fix.family.link(fix.family.var(poisson('log')))
 		)
+		if(print.progress) progressBar = txtProgressBar(max = NROW(counts))
 		for(i in seq_len(nrow(counts))){
-			if(i%in%c(2,10,100,500,1000,2500,4000,5000*(1:200))&print.progress) print(paste("Analyzing Gene #",i))
+			#if(i%in%c(2,10,100,500,1000,2500,4000,5000*(1:200))&print.progress) print(paste("Analyzing Gene #",i))
+			if(print.progress) setTxtProgressBar(progressBar, value=i)
 			glmFit$linear.predictors=linear.predictors[i,]
 			glmFit$weights=means[i,]
 			glmFit$qr=qr(sqrt(means[i,])*design)
 			BartEpsilons[i]=bartlettFactor(glmFit)
 		}
+		if(print.progress) close(progressBar)
 	}else{
 		### For general designs, the first column of each element (matrix) of design.list should be a column of 1's, pertaining to the intercept. 
 		## Note by LQ: There seems no reason to require an intercept... Changed model formula below in glm.
@@ -62,9 +65,11 @@ PoisDev<-function(counts,design,log.offset,print.progress=TRUE)
 		BartEpsilons = deviance ## NA's
 		
 		### For each gene and given design matrix, fit GLM to find model parameters (for mean structure) that optimize quasi-likelihood
+		if(print.progress) progressBar = txtProgressBar(max = NROW(counts))
 		for(i in 1:nrow(counts)){
 			### If wanted, provide running progress update (eventually once every 5000 genes) 
-			if(i%in%c(2,10,100,500,1000,2500,4000,5000*(1:200))&print.progress) print(paste("Analyzing Gene #",i))
+			#if(i%in%c(2,10,100,500,1000,2500,4000,5000*(1:200))&print.progress) print(paste("Analyzing Gene #",i))
+			if(print.progress) setTxtProgressBar(progressBar, value=i)
 			
 			### Fit GLM
 			res<-withCallingHandlers(
@@ -80,6 +85,7 @@ PoisDev<-function(counts,design,log.offset,print.progress=TRUE)
 			### Save deviance (used to compute LRT for comparing models and also deviance dispersion estimator)
 			deviance[i]<-res$deviance
 		}
+		if(print.progress) close(progressBar)
 	}
 
 return(list(dev=deviance,means=means,parms=parms, bartlett.epsilon = BartEpsilons))
