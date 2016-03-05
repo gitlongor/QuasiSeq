@@ -45,7 +45,7 @@ PoisDev<-function(counts,design,log.offset,print.progress=TRUE)
 			prior.weights = rep(1, n), 
 			family=fix.family.link(fix.family.var(poisson('log')))
 		)
-		if(print.progress) progressBar = txtProgressBar(max = NROW(counts))
+		if(print.progress) progressBar = txtProgressBar(max = NROW(counts),style=3L)
 		for(i in seq_len(nrow(counts))){
 			#if(i%in%c(2,10,100,500,1000,2500,4000,5000*(1:200))&print.progress) print(paste("Analyzing Gene #",i))
 			if(print.progress) setTxtProgressBar(progressBar, value=i)
@@ -65,7 +65,7 @@ PoisDev<-function(counts,design,log.offset,print.progress=TRUE)
 		BartEpsilons = deviance ## NA's
 		
 		### For each gene and given design matrix, fit GLM to find model parameters (for mean structure) that optimize quasi-likelihood
-		if(print.progress) progressBar = txtProgressBar(max = NROW(counts))
+		if(print.progress) progressBar = txtProgressBar(max = NROW(counts),style=3L)
 		for(i in 1:nrow(counts)){
 			### If wanted, provide running progress update (eventually once every 5000 genes) 
 			#if(i%in%c(2,10,100,500,1000,2500,4000,5000*(1:200))&print.progress) print(paste("Analyzing Gene #",i))

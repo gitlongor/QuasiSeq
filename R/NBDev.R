@@ -18,7 +18,7 @@ NBDev <- function(counts, design, log.offset, nb.disp, print.progress = TRUE, bi
 	log10=log(10)
 	
     ### For each gene and given design matrix, fit glm using provided negative binomial dispersion estimate
-	if(print.progress) progressBar = txtProgressBar(max = NROW(counts))
+	if(print.progress) progressBar = txtProgressBar(max = NROW(counts),style=3L)
     for (gn in 1:nrow(counts)) {
         ### If wanted, provide running progress update (eventually once every 5000 genes)
         #if (gn %in% c(2, 10, 100, 500, 1000, 2500, 5000 * (1:200)) & print.progress)             print(paste("Analyzing Gene #", gn))
