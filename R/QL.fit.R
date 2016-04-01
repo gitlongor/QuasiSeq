@@ -73,7 +73,7 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
       }
       if (jj == 1) {
         ### Obtain negative binomial dispersion estimates from edgeR, if requested
-        if(NBdisp %in% c("trend", "common")){
+        if(NBdisp[1L] %in% c("trend", "common")){
           
           ### Default to using edgeR's suggested normalization routine
           if (is.null(log.offset)) { 
