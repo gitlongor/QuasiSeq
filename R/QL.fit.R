@@ -152,8 +152,8 @@ QL.fit <- function(counts, design.list, test.mat = cbind(1L, 2:length(design.lis
       i2 <- test.mat[i, 2L]
       num.df <- c(num.df, abs(p[i2] - p[i1]))
 	  tmp  = -(deviance.list[[i2]] - deviance.list[[i1]])/(p[i2] - p[i1])
-      LRT <- cbind(LRT, tmp)
-	  LRT.bart = cbind(LRT.bart, tmp/(1+ (bartEpsilons[,i2]-bartEpsilons[,i1])/(p[i2] - p[i1])))
+      LRT <- cbind(LRT, pmax(0, tmp))
+	  LRT.bart = cbind(LRT.bart, pmax(0, tmp/(1+ (bartEpsilons[,i2]-bartEpsilons[,i1])/(p[i2] - p[i1]))))
     }
     colnames(LRT) <- colnames(LRT.bart) <- rownames(test.mat)
   }
