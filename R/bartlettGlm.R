@@ -97,7 +97,7 @@ bartlettFactor=function(glmFit)  # this requires cumulant3 and cumulant 4
 
 bartlettFactor=function(glmFit) ## based Cordeiro, JRSSB, 1983
 {
-  good.weights=zapsmall(glmFit$weights)>0 & glmFit$prior.weights>0 
+  good.weights=zapsmall(glmFit$weights, digits=3L)>0 & glmFit$prior.weights>0 
 	## zapsmall used to remove close to zero weights
   
   ### the following are replaced by linear predictors
