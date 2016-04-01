@@ -130,10 +130,10 @@ bartlettFactor=function(glmFit) ## based Cordeiro, JRSSB, 1983
   #this.cum4 = family$cumulant4(mu=this.mu, var=this.var)
 
   wvec.cord=(this.mu.eta)^2/this.var; wvec.half.cord=sqrt(wvec.cord); #wmat.cord=diag(wvec.cord)
-  ZZ.cord=(tcrossprod(qr.Q(glmFit$qr))) # prior weights already incorporated in qr
+  ZZ.cord=(tcrossprod(qr.Q(glmFit$qr)))[good.weights, good.weights, drop=FALSE] # prior weights already incorporated in qr
   nncol=col(ZZ.cord)
   
-  phi.cord = glmFit$prior.weights # phi is not over-disp but prior weights
+  phi.cord = glmFit$prior.weights[good.weights] # phi is not over-disp but prior weights
   wPhivec.half = wvec.half.cord * sqrt(phi.cord)
   Z.cord=1/wPhivec.half * ZZ.cord /wPhivec.half[nncol]
   Z3.cord=Z.cord^3
