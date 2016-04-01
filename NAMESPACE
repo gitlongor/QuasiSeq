@@ -1,6 +1,6 @@
 export(NBDev, PoisDev, QL.fit, QL.results)
 export(fbrNBglm.fit, fbrNBglm.control, negbin, coef.glm)
-#export(glmsolve, nlsolve)
+export(glmsolve, nlsolve)
 
 import(edgeR)
 import(uniqueAtomMat)
