@@ -7,8 +7,8 @@
 Fit a quasi-likelihood model to RNA-seq expression count data using the methods detailed in Lund, Nettleton, McCarthy, and Smyth (2012).}
 
 \usage{
-QL.fit(counts,design.list, test.mat=NULL, log.offset=NULL, 
-	   Model="NegBin", print.progress=TRUE, NBdisp="trend", 
+QL.fit(counts, design.list, test.mat=cbind(1L, 2:length(design.list)), 
+	   log.offset=NULL, Model="NegBin", print.progress=TRUE, NBdisp="trend", 
 	   bias.fold.tolerance=1.10, ...)
 }
 \arguments{
@@ -16,7 +16,7 @@ QL.fit(counts,design.list, test.mat=NULL, log.offset=NULL,
     
     \item{design.list}{List of design matrices for the full model and reduced model(s). The first element of \code{design.list} must describe the overall full model, as this design is used to compute deviance residuals for estimating dispersion.  One-factor designs may be specified as vectors. The number of rows in each design matrix (or the length of each design vector) must be \code{ncol(counts)}.  Means are modeled with a log link function.}
     
-	\item{test.mat}{T by 2 matrix dictating which designs are to be compared, where T is the total number of desired hypothesis tests for each gene.  Each row contains two integers, which provide the indices within \code{design.list} of the two designs to be compared.  If \code{test.mat} is not specified, the default is compare the first design (the full model) to each of the other designs provided in \code{design.list} in order (i.e. first design compared to second design, first design compared to third design, first design compared to fourth design, etc.).}
+	\item{test.mat}{T by 2 matrix dictating which designs are to be compared, where T is the total number of desired hypothesis tests for each gene.  Each row contains two integers, which provide the indices within \code{design.list} of the two designs to be compared.  If \code{test.mat} is not specified, the default is compare the first design (the full model) to each of the other designs provided in \code{design.list} in order (i.e. first design compared to second design, first design compared to third design, first design compared to fourth design, etc.). If \code{length(design.list)=1}, then \code{test.mat} is ignored.}
     
 	\item{log.offset}{A vector of log-scale, additive factors used to adjust estimated log-scale means for differences in library sizes across samples.  Commonly used offsets include \code{log.offset=log(colSums(counts))} and \code{log.offset=log(apply(counts[rowSums(counts)!=0,],2,quantile,.75))}.  The default setting makes no adjustment for library sizes (i.e. log.offset=0).}
     

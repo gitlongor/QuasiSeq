@@ -1,5 +1,5 @@
 
-QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Model = "NegBin", print.progress = TRUE, 
+QL.fit <- function(counts, design.list, test.mat = cbind(1L, 2:length(design.list)), log.offset = NULL, Model = "NegBin", print.progress = TRUE, 
                    NBdisp = "trend", bias.fold.tolerance=1.10, ...) 
 {
   if(is.data.frame(counts)) counts<-as.matrix(counts)
@@ -42,7 +42,7 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
       p <- c(p, length(unique(design)))  ## Record the d.f. for current model
       
       ### Check for errors if the current model design is specified as a vector
-      if (p[jj] > p[1]) 
+      if (p[jj] > p[1L]) 
         stop(paste("Full model design must be first element in 'design.list'.\n'p' for element", jj, "is larger than 'p' for first element,\nindicating first element does not provide full model design."))
       if (length(design) != n) 
         stop(paste("Element", jj, "in 'design.list' has length", length(design), ".\nDesign vectors must have length", 
@@ -59,7 +59,7 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
       if (nrow(design) != n) 
         stop(paste("Element", jj, "in 'design.list' has", nrow(design), "rows.\nDesign matrices must have", 
                    n, "rows (to match number of columns in data)."))
-      if (p[jj] > p[1]) 
+      if (p[jj] > p[1L]) 
         stop(paste("Full model design must be first element in 'design.list'.\n'p' for element", jj, "is larger than 'p' for first element,\nindicating first element does not provide full model design."))
     }
     
@@ -71,7 +71,7 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
         if (length(unique(design)) == 1) 
           design <- matrix(1, ncol(counts), 1)
       }
-      if (jj == 1) {
+      if (jj == 1L) {
         ### Obtain negative binomial dispersion estimates from edgeR, if requested
         if(NBdisp[1L] %in% c("trend", "common")){
           
@@ -127,7 +127,7 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
     if (Model == "Poisson") res <- PoisDev(counts, design, log.offset, print.progress)
     
 	### Record means and parameter estimate from full model
-    if (jj == 1) {
+    if (jj == 1L) {
       means <- res$means
       parms <- res$parms
     }
@@ -137,19 +137,19 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
   
   LRT <- LRT.bart <- num.df <- NULL
   
-  if (length(design.list) > 1) {
+  if (length(design.list) > 1L) {
     ### Compute likelihood ratio test statistics. If not otherwise specified, compare each model to the first model
     ### in design.list, which should be the full model
     
-    if (is.null(test.mat)) {
-      message("Note: 'test.mat' not provided. Comparing each model \nfrom 'design.list' to first model in 'design.list', which must be the full model")
-      test.mat <- cbind(1, 2:length(design.list))
-      rownames(test.mat) <- paste("Design", 1, " vs Design", 2:length(design.list), sep = "")
+    if (is.null(rownames(test.mat))) {
+      # message("Note: 'test.mat' not provided. Comparing each model \nfrom 'design.list' to first model in 'design.list', which must be the full model")
+      # test.mat <- cbind(1, 2:length(design.list))
+      rownames(test.mat) <- paste0('Design',test.mat[,1L],' vs Design',test.mat[,2L])
     }
     
     for (i in 1:nrow(test.mat)) {
-      i1 <- test.mat[i, 1]
-      i2 <- test.mat[i, 2]
+      i1 <- test.mat[i, 1L]
+      i2 <- test.mat[i, 2L]
       num.df <- c(num.df, abs(p[i2] - p[i1]))
 	  tmp  = -(deviance.list[[i2]] - deviance.list[[i1]])/(p[i2] - p[i1])
       LRT <- cbind(LRT, tmp)
@@ -157,7 +157,7 @@ QL.fit <- function(counts, design.list, test.mat = NULL, log.offset = NULL, Mode
     }
     colnames(LRT) <- colnames(LRT.bart) <- rownames(test.mat)
   }
-  den.df <- (n - p[1])
+  den.df <- (n - p[1L])
   
   ### Compute deviance dispersion estimate
   phi.hat.dev <- deviance.list[[1]]/den.df
