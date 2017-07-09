@@ -16,11 +16,9 @@ static R_CallMethodDef callMethods[]  = {
 static R_NativePrimitiveArgType initQRdecomp_t[] = {
     INTSXP, INTSXP
 };
-static R_NativePrimitiveArgType finalQRdecomp_t[] = {
-};
 static R_CMethodDef cMethods[] = {
   {"initQRdecomp", (DL_FUNC) &initQRdecomp, 2, initQRdecomp_t},
-  {"finalQRdecomp", (DL_FUNC) &finalQRdecomp, 0, finalQRdecomp_t},
+  {"finalQRdecomp", (DL_FUNC) &finalQRdecomp, 0, NULL},
   {NULL, NULL, 0, NULL}
 };
 

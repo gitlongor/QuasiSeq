@@ -32,14 +32,14 @@ PoisDev(counts,design,log.offset,print.progress=TRUE)
 \author{Originally authored by Steve Lund \email{lundsp@gmail.com}; later modified by Long Qu \email{rtistician@gmail.com}}
 
 \examples{
-#\dontrun{
+\dontrun{
 
 pois.fit =
 with(mockRNASeqData,
 	PoisDev(counts, design.matrix, log(estimated.normalization))
 )
 
-#}
+}
 }
 \keyword{distribution}
 \keyword{iteration}
