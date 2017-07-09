@@ -41,54 +41,7 @@ Lund, Nettleton, McCarthy and Smyth (2012) "Detecting differential expression in
 \seealso{\code{\link{QL.fit}}, \code{\link{NBDev}}, \code{\link{mockRNASeqData}}}
 
 \examples{  
-data(mockRNASeqData)
-
-### Create list of designs describing model under null and alternative hypotheses
-design.list=list(
-	mockRNASeqData$design.matrix, 
-	matrix(1, nrow=rep(mockRNASeqData$nsamples))
-)
-
-#\dontrun{
-### Analyze using QL, QLShrink and QLSpline methods applied to quasi-Poisson model
-fit = 
-with(mockRNASeqData,
-	QL.fit(counts, design.list,
-	log.offset=log(estimated.normalization),
-	 Model="Poisson", bias.fold.tolerance=Inf)
-)
-results = QL.results(fit)
-
-### How many significant genes at FDR=.05 from QLSpline method?
-apply(results$Q.values[[3]]<.05,2,sum)
-
-### Indexes for Top 10 most significant genes from QLSpline method
-head(order(results$P.values[[3]]), 10)
-#}
-
-
-### Analyze using QL, QLShrink and QLSpline methods 
-### applied to quasi-negative binomial model
-fit2 = 
-with(mockRNASeqData,
-	QL.fit(counts, design.list,
-		log.offset=log(estimated.normalization),
-		Model="NegBin")
-)
-##########################################################
-## Note: 'NBdisp' typically will not be specified when  ##
-## calling QL.fit while analyzing real data. Providing  ##
-## numeric values for 'NBdisp' prevents neg binomial    ##
-## dispersions from being estimated from the data.      ##
-##########################################################
-results2<-QL.results(fit2)
-
-### How many significant genes at FDR=.05 for QLSpline method?
-apply(results2$Q.values[[3]]<.05,2,sum)
-
-### Indexes for Top 10 most significant genes from QLShrink method
-head(order(results2$P.values[[2]]), 10)
-
+## see examples for QL.fit()
 }
 
 \keyword{htest}

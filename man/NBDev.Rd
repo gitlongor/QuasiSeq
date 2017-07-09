@@ -45,7 +45,7 @@ McCullagh and Nelder (1989) "Generalized Linear Models", 2nd edition. London: Ch
 }
 
 \examples{
-#\dontrun{
+\dontrun{
 
 ## no bias reduction
 noReduction = 
@@ -68,7 +68,7 @@ with(mockRNASeqData,
 		  estimated.nbdisp, bias.fold.tolerance=1.1)
 )
 
-#}
+}
 }
 \author{Steve Lund (\email{lundsp@gmail.com}), Long Qu (\email{rtistician@gmail.com})}
 
