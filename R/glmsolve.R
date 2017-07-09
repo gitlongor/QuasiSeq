@@ -17,10 +17,17 @@ ignorableWarnings=function(w)
 	invokeRestart("muffleWarning")
 }
 
+#' @rdname glmSolve
+#' @export
+#' @format \code{glmSolvers} is currently a list of length 4. See 
+#' \code{solvers} argument for details and the example. 
+#' @examples
+#' str(glmSolvers) ## available solvers stored in glmSolvers object
 glmSolvers=list(
 	glm=list(solve=expression(withCallingHandlers(glm(formula=formula, family=family, data=data, control=control, ...),simpleWarning=ignorableWarnings	)),
 			 success=expression(ans$converged), 
 			 result=expression(ans)),
+			 
 	glm.fit3=list(solve=expression(withCallingHandlers(glm(formula=formula, family=family, data=data, control=control, method=glm.fit3, ...),simpleWarning=ignorableWarnings)),
 			 success=expression(ans$converged), 
 			 result=expression(ans)), 
@@ -65,9 +72,67 @@ glmSolvers=list(
 		}))
 )
 
-glmsolve=function(formula, family, data, control, solvers=glmSolvers, ...)
+#' Generalized linear model (glm) solvers
+#' 
+#' \code{glmsolve} sequencially tries multiple glm solvers and returns the 
+#' result from the success. This tries to avoid numerical instabilities
+#' that occassionally affect some glm solving routines. If one fails, the 
+#' next solver will be tried. 
+#' 
+#' Currently, the supported are solvers are \code{c('glm', 'glm.fit3', 
+#' 'nlminb', 'BFGS')}. \code{'glm'} is the one that comes with the default
+#' \code{stats} package. \code{'glm.fit3'} is a modification with better 
+#' stability (but slightly slower). \code{'nlminb'} uses the general 
+#' optimization routine \code{\link[stats]{nlminb}}. \code{'BFGS'} uses 
+#' the \code{method='BFGS'} option provided by \code{\link{optim}}.
+#' 
+#' @param formula,family,data Identical to those of \code{\link{glm}}.
+#' @param control A list of named control options that specifies the 
+#' details for each solver. Named elements not used by any solver will 
+#' be ignored. 
+#' @param solvers A named list of glm solvers, default to \code{glmSolvers}. 
+#' Each element is itself 
+#' a list with components named \code{solve}, \code{success}, and 
+#' \code{result}, each of which is an expression. \code{solve} is an 
+#' expression used to fit the glm model, the result of which is assigned
+#' to an object \code{ans}. \code{success} is an expression that returns a 
+#' logical scalar, indicating whether the solver has succeeded. It may 
+#' refer to the \code{ans} returned by \code{solve}. Often, it will check 
+#' the \code{converged} element of \code{ans}, or something similar. 
+#' \code{result} is an expression that returns a \code{glm} object from 
+#' the success solver. If the \code{solver} does not return a \code{glm} 
+#' object, it is the duty of \code{result} expression to convert it to a 
+#' \code{glm} object. 
+#' @param ... Additional arguments passed to solvers. 
+#' 
+#' @return If at least one of the solvers succeed, an \code{glm} object
+#' will be returned from the success. If all solvers fail but at least 
+#' one solver did not throw an error, the result from the last solver 
+#' that did not throw an error will be returned. In this case, 
+#' \code{glmsolve} will throw a warning, stating that none of the solvers
+#' succeeded. If all solvers ended up throwing errors, \code{glmsolve} 
+#' will also throw an error, again stating that non of the solvers 
+#' succeeded.
+#' 
+#' @author Long Qu
+#' @keywords iteration
+#' @seealso \code{\link[stats]{glm}}, \code{\link[stats]{nlminb}}, 
+#' \code{\link[stats]{optim}}, \code{\link{nlsolve}}
+#' 
+#' @examples
+#' ## Taken from stats::glm:
+#' counts <- c(18,17,15,20,10,20,25,13,12)
+#' outcome <- gl(3,1,9)
+#' treatment <- gl(3,3)
+#' print(d.AD <- data.frame(treatment, outcome, counts))
+#' glm.D93 <- glmsolve(counts ~ outcome + treatment, family = poisson())
+#' 
+#' @export 
+#' @name glmSolve
+glmsolve=function(formula, family=gaussian, data, control=list(...), solvers=glmSolvers, ...)
 {
 	nsolvers=length(solvers)
+	if(missing(data)) data=parent.frame()
 	if(nsolvers==0L || !is.list(solvers))stop('solvers must be supplied as a list')
 	solver.names=names(solvers)
 	if(is.null(solver.names)) solver.names=paste('anonymous',seq_len(nsolvers),sep='.')
@@ -92,9 +157,10 @@ glmsolve=function(formula, family, data, control, solvers=glmSolvers, ...)
 		}
 	}
 	
-	family=tryCatch(reinitialize.fbrNBfamily(family), simpleWarning=function(w)w$message)
-	if(inherits(family, 'fbrNBfamily')) 
+	if(inherits(family, 'fbrNBfamily')) {
+		family=tryCatch(reinitialize.fbrNBfamily(family), simpleWarning=function(w)w$message)
 		return(Recall(formula, family, data, control, solvers, ...))
+	}
 	
 	do.call(if(is.null(lastNonError)) 'stop' else 'warning', list('None of the glm solvers succeeded.'))
 	lastNonError

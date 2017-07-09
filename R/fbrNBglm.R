@@ -16,7 +16,7 @@
 #' @export
 #' @name fbrNBglm
 #' @rdname fbrNBglm
-#' @author Long Qu <long.qu@wright.edu>
+#' @author Long Qu <rtistician@gmail.com>
 #' @keywords models regression iteration
 #' @concept bias reduction
 #' @concept Firth

@@ -5,7 +5,7 @@ PoisDev<-function(counts,design,log.offset,print.progress=TRUE)
 	if(!is.matrix(counts)) counts=as.matrix(counts)
 
 	### For one-way equivalent designs, MLE's for Poisson GLM have simple closed form, so we can avoid one-gene-at-a-time GLM fitting.
-	### This part was rewritten by Long Qu since version 1.0-9. 
+	### This part was rewritten by Long Qu <rtistician@gmail.com> since version 1.0-9. 
 	### Even if "design" is not a vector 
 	if(is.vector(design) || (is.factor(design) && is.null(dim(design))) )
 		design = model.matrix(~as.factor(design))

@@ -68,7 +68,7 @@ Cordeiro (1983) "Improved Likelihood Ratio Statistics for Generalized Linear Mod
 
 \seealso{\code{\link{QL.results}}, \code{\link{NBDev}}, \code{\link{PoisDev}}, \code{\link{mockRNASeqData}}}
 
-\author{Originally authored by Steve Lund \email{lundsp@gmail.com}; later modified by Long Qu \email{long.qu@wright.edu}}
+\author{Originally authored by Steve Lund \email{lundsp@gmail.com}; later modified by Long Qu \email{rtistician@gmail.com}}
 
 \examples{ 
 data(mockRNASeqData)

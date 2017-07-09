@@ -13,13 +13,20 @@ static R_CallMethodDef callMethods[]  = {
   {"getGlmBias", (DL_FUNC) &getGlmBias, 4},
   {NULL, NULL, 0}
 };
+static R_NativePrimitiveArgType initQRdecomp_t[] = {
+    INTSXP, INTSXP
+};
+static R_NativePrimitiveArgType finalQRdecomp_t[] = {
+};
 static R_CMethodDef cMethods[] = {
-  {"initQRdecomp", (DL_FUNC) &initQRdecomp, 2},
-  {"finalQRdecomp", (DL_FUNC) &finalQRdecomp, 0},
-  {NULL, NULL, 0}
+  {"initQRdecomp", (DL_FUNC) &initQRdecomp, 2, initQRdecomp_t},
+  {"finalQRdecomp", (DL_FUNC) &finalQRdecomp, 0, finalQRdecomp_t},
+  {NULL, NULL, 0, NULL}
 };
 
 void R_init_QuasiSeq(DllInfo *info)
 {
    R_registerRoutines(info, cMethods, callMethods, NULL, NULL);
+  R_useDynamicSymbols(info, FALSE);
+  R_forceSymbols(info, TRUE); 
 }

@@ -43,4 +43,3 @@ This is an extension of the \code{\link[mgcv:negbin]{negbin}} in the
 \examples{
  negbin('log', 1)
 }
-

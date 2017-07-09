@@ -17,7 +17,7 @@
 #'  When \code{type='corrected'}, the \code{'bias'} attribute
 #'  will be set to a numeric vector of estimated biases 
 #'  being subtracted from the raw coefficients.
-#' @author Long Qu <long.qu@wright.edu>
+#' @author Long Qu <rtistician@gmail.com>
 #' @references McCullagh and Nelder (1989) "Generalized Linear Models", 2nd edition. London: Chapman and Hall.
 #' 
 #' Cordeiro and McCullah (1991) "Bias Correction in Generalized Linear Models", \emph{Journal of the Royal Statistical Society: Series B}, \bold{53}, 629-643.

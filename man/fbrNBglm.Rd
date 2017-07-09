@@ -2,8 +2,8 @@
 % Please edit documentation in R/fbrNBglm.R
 \name{fbrNBglm}
 \alias{fbrNBglm}
-\alias{fbrNBglm.control}
 \alias{fbrNBglm.fit}
+\alias{fbrNBglm.control}
 \title{Firth-Type Bias-Reduced Negative Binomial Log-Linear Model}
 \usage{
 fbrNBglm.fit(x, y, weights = rep(1, length(y)), offset = rep(0, length(y)),
@@ -102,7 +102,7 @@ bias in the coefficients are reduced.
 
 }
 \author{
-Long Qu <long.qu@wright.edu>
+Long Qu <rtistician@gmail.com>
 }
 \concept{
 bias reduction
@@ -112,4 +112,3 @@ Firth
 \keyword{iteration}
 \keyword{models}
 \keyword{regression}
-

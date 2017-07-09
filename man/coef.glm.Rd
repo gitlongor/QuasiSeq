@@ -38,16 +38,15 @@ generalized linear model (glm) fit.
  coef(glmfit, type='corrected')
  
 }
-\author{
-Long Qu <long.qu@wright.edu>
-}
 \references{
 McCullagh and Nelder (1989) "Generalized Linear Models", 2nd edition. London: Chapman and Hall.
 
 Cordeiro and McCullah (1991) "Bias Correction in Generalized Linear Models", \emph{Journal of the Royal Statistical Society: Series B}, \bold{53}, 629-643.
 }
+\author{
+Long Qu <rtistician@gmail.com>
+}
 \concept{
 bias correction
 }
 \keyword{methods}
-

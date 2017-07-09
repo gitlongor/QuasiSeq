@@ -29,7 +29,7 @@ PoisDev(counts,design,log.offset,print.progress=TRUE)
 	\item{bartlett.epsilon}{A numeric vector containing the epsilon values that can be later used for Bartllet correction of likelihood ratio test.}
 }
 
-\author{Originally authored by Steve Lund \email{lundsp@gmail.com}; later modified by Long Qu \email{long.qu@wright.edu}}
+\author{Originally authored by Steve Lund \email{lundsp@gmail.com}; later modified by Long Qu \email{rtistician@gmail.com}}
 
 \examples{
 #\dontrun{

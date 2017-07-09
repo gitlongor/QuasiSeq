@@ -70,7 +70,7 @@ with(mockRNASeqData,
 
 #}
 }
-\author{Steve Lund (\email{lundsp@gmail.com}), Long Qu (\email{long.qu@wright.edu})}
+\author{Steve Lund (\email{lundsp@gmail.com}), Long Qu (\email{rtistician@gmail.com})}
 
 \keyword{distribution}
 \keyword{iteration}
